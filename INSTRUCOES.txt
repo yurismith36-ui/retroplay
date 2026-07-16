@@ -1,32 +1,8 @@
-RETROPLAY V4 — ESTILO STEAM
+1. Extraia o ZIP.
+2. Envie todo o conteúdo para a raiz do repositório.
+3. Coloque sua ROM autorizada em jogos/snes/meu-jogo/rom/jogo.sfc
+4. Confirme as alterações.
+5. Aguarde o GitHub Pages.
+6. Abra o site e clique em Jogar.
 
-COMO INSTALAR
-
-1. Extraia este ZIP.
-2. Abra seu repositório RetroPlay no GitHub.
-3. Clique em Adicionar arquivo.
-4. Clique em Carregar arquivos.
-5. Arraste:
-   - index.html
-   - README.md
-   - INSTRUCOES.txt
-   - pasta css
-   - pasta js
-   - pasta jogos
-6. Clique em Confirmar alterações.
-7. Aguarde aproximadamente 1 minuto.
-8. Abra seu site.
-9. Pressione Ctrl + F5.
-
-RECURSOS
-
-- Visual inspirado na Steam
-- Imagem grande do jogo
-- Informações ao lado
-- Avaliação por estrelas
-- Favoritos
-- Pesquisa
-- Filtros
-- Janela de detalhes
-- Galeria
-- Jogos relacionados
+O EmulatorJS é carregado pelo CDN oficial, então não é necessário enviar os 289 MB ao GitHub.
