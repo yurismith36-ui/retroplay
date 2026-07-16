@@ -1,39 +1,41 @@
-const $ = (selector) => document.querySelector(selector);
-const $$ = (selector) => [...document.querySelectorAll(selector)];
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
 
-const searchInput = $("#searchInput");
-const allGames = $("#allGames");
-const featuredGames = $("#featuredGames");
-const recentGames = $("#recentGames");
-const favoriteGames = $("#favoriteGames");
-const favoriteEmpty = $("#favoriteEmpty");
-const searchEmpty = $("#searchEmpty");
-const resultCount = $("#resultCount");
+const searchInput=$("#searchInput");
+const gamesGrid=$("#gamesGrid");
+const favoritesGrid=$("#favoritesGrid");
+const favoritesEmpty=$("#favoritesEmpty");
+const emptyState=$("#emptyState");
+const resultCount=$("#resultCount");
 
-const heroBackground = $("#heroBackground");
-const heroTitle = $("#heroTitle");
-const heroText = $("#heroText");
-const heroTag = $("#heroTag");
-const heroDetails = $("#heroDetails");
-const heroFavorite = $("#heroFavorite");
-const heroDots = $("#heroDots");
+const heroBg=$("#heroBg");
+const heroArt=$("#heroArt");
+const heroConsole=$("#heroConsole");
+const heroTitle=$("#heroTitle");
+const heroRating=$("#heroRating");
+const heroDescription=$("#heroDescription");
+const heroMeta=$("#heroMeta");
+const heroDetails=$("#heroDetails");
+const heroFavorite=$("#heroFavorite");
+const heroDots=$("#heroDots");
 
-const modal = $("#gameModal");
-const modalArt = $("#modalArt");
-const modalIcon = $("#modalIcon");
-const modalConsole = $("#modalConsole");
-const modalTitle = $("#modalTitle");
-const modalDescription = $("#modalDescription");
-const modalMetadata = $("#modalMetadata");
-const modalPlay = $("#modalPlay");
-const modalFavorite = $("#modalFavorite");
+const modal=$("#gameModal");
+const modalArt=$("#modalArt");
+const modalConsole=$("#modalConsole");
+const modalTitle=$("#modalTitle");
+const modalRating=$("#modalRating");
+const modalDescription=$("#modalDescription");
+const modalMeta=$("#modalMeta");
+const modalAbout=$("#modalAbout");
+const modalGallery=$("#modalGallery");
+const relatedGames=$("#relatedGames");
+const modalPlay=$("#modalPlay");
+const modalFavorite=$("#modalFavorite");
 
-let selectedConsole = "Todos";
-let heroIndex = 0;
-let selectedGame = null;
-
-const savedFavorites = JSON.parse(localStorage.getItem("retroplay-favorites") || "[]");
-const favorites = new Set(savedFavorites);
+let selectedConsole="Todos";
+let heroIndex=0;
+let selectedGame=null;
+const favorites=new Set(JSON.parse(localStorage.getItem("retroplay-favorites")||"[]"));
 
 function normalize(text){
   return text.toLocaleLowerCase("pt-BR").normalize("NFD").replace(/[\u0300-\u036f]/g,"");
@@ -48,7 +50,7 @@ function isFavorite(id){
 }
 
 function toggleFavorite(id){
-  isFavorite(id) ? favorites.delete(id) : favorites.add(id);
+  isFavorite(id)?favorites.delete(id):favorites.add(id);
   saveFavorites();
   renderAll();
   updateHero();
@@ -59,8 +61,7 @@ function card(game){
   return `
     <article class="game-card">
       <div class="game-cover" style="--start:${game.colors[0]};--end:${game.colors[1]}">
-        <span class="console-badge">${game.console}</span>
-        <button class="favorite-button ${isFavorite(game.id)?"active":""}" data-favorite="${game.id}">
+        <button class="favorite ${isFavorite(game.id)?"active":""}" data-favorite="${game.id}">
           ${isFavorite(game.id)?"♥":"♡"}
         </button>
         <span class="game-icon">${game.icon}</span>
@@ -68,7 +69,11 @@ function card(game){
       <div class="game-info">
         <h3>${game.title}</h3>
         <p>${game.description}</p>
-        <button class="details-button" data-details="${game.id}">Ver detalhes</button>
+        <div class="card-meta">
+          <span>${game.console}</span>
+          <span>★ ${game.rating}</span>
+        </div>
+        <button class="details" data-details="${game.id}">Ver detalhes</button>
       </div>
     </article>
   `;
@@ -89,45 +94,54 @@ function renderInto(container,list){
   bind(container);
 }
 
-function getFilteredGames(){
+function getFiltered(){
   const query=normalize(searchInput.value.trim());
 
   return games.filter(game=>{
-    const matchesConsole=selectedConsole==="Todos"||game.console===selectedConsole;
-    const text=normalize(`${game.title} ${game.console} ${game.description} ${game.genre}`);
-    return matchesConsole&&text.includes(query);
+    const matchConsole=selectedConsole==="Todos"||game.console===selectedConsole;
+    const haystack=normalize(`${game.title} ${game.console} ${game.genre} ${game.description}`);
+    return matchConsole&&haystack.includes(query);
   });
 }
 
 function renderCatalog(){
-  const filtered=getFilteredGames();
-  renderInto(allGames,filtered);
+  const filtered=getFiltered();
+  renderInto(gamesGrid,filtered);
   resultCount.textContent=`${filtered.length} jogo${filtered.length===1?"":"s"}`;
-  searchEmpty.hidden=filtered.length!==0;
+  emptyState.hidden=filtered.length!==0;
+}
+
+function renderFavorites(){
+  const list=games.filter(game=>isFavorite(game.id));
+  renderInto(favoritesGrid,list);
+  favoritesEmpty.hidden=list.length!==0;
 }
 
 function renderAll(){
-  renderInto(featuredGames,games.filter(game=>game.featured));
-  renderInto(recentGames,[...games].sort((a,b)=>b.added-a.added));
-  const favoriteList=games.filter(game=>isFavorite(game.id));
-  renderInto(favoriteGames,favoriteList);
-  favoriteEmpty.hidden=favoriteList.length!==0;
   renderCatalog();
+  renderFavorites();
 }
 
 function updateHero(){
-  const list=games.filter(game=>game.featured);
-  const game=list[heroIndex%list.length];
+  const featured=games.filter(game=>game.featured);
+  const game=featured[heroIndex%featured.length];
 
-  heroBackground.style.background=`linear-gradient(135deg,${game.colors[0]},${game.colors[1]})`;
+  heroBg.style.background=`linear-gradient(135deg,${game.colors[0]},${game.colors[1]})`;
+  heroArt.textContent=game.icon;
+  heroConsole.textContent=game.console;
   heroTitle.textContent=game.title;
-  heroText.textContent=game.description;
-  heroTag.textContent=`${game.console} • ${game.genre}`;
+  heroRating.textContent=game.rating;
+  heroDescription.textContent=game.description;
+  heroMeta.innerHTML=`
+    <span>${game.year}</span>
+    <span>${game.genre}</span>
+    <span>${game.developer}</span>
+  `;
   heroFavorite.textContent=isFavorite(game.id)?"♥ Favoritado":"♡ Favoritar";
   heroDetails.onclick=()=>openGame(game.id);
   heroFavorite.onclick=()=>toggleFavorite(game.id);
 
-  heroDots.innerHTML=list.map((_,index)=>
+  heroDots.innerHTML=featured.map((_,index)=>
     `<button class="hero-dot ${index===heroIndex?"active":""}" data-index="${index}"></button>`
   ).join("");
 
@@ -145,18 +159,33 @@ function openGame(id){
 
   selectedGame=game;
   modalArt.style.background=`linear-gradient(145deg,${game.colors[0]},${game.colors[1]})`;
-  modalIcon.textContent=game.icon;
+  modalArt.textContent=game.icon;
   modalConsole.textContent=game.console;
   modalTitle.textContent=game.title;
+  modalRating.textContent=game.rating;
   modalDescription.textContent=game.description;
-  modalMetadata.innerHTML=`
+  modalAbout.textContent=game.about;
+  modalMeta.innerHTML=`
     <span>Ano: ${game.year}</span>
     <span>Gênero: ${game.genre}</span>
     <span>Desenvolvedora: ${game.developer}</span>
   `;
 
+  modalGallery.innerHTML=[1,2,3].map((n,index)=>
+    `<div class="gallery-item" style="--g1:${game.colors[index%2]};--g2:${game.colors[(index+1)%2]}">${game.icon}</div>`
+  ).join("");
+
+  const related=games.filter(item=>item.id!==game.id && (item.console===game.console || item.genre===game.genre)).slice(0,3);
+  relatedGames.innerHTML=related.map(item=>
+    `<button data-related="${item.id}"><strong>${item.title}</strong><br><small>${item.console} • ${item.genre}</small></button>`
+  ).join("");
+
+  relatedGames.querySelectorAll("[data-related]").forEach(button=>{
+    button.onclick=()=>openGame(button.dataset.related);
+  });
+
   modalPlay.onclick=()=>{
-    alert("Na próxima etapa este botão será conectado ao emulador e a um jogo permitido.");
+    alert("Na próxima etapa este botão será ligado ao emulador e a um jogo permitido.");
   };
 
   modalFavorite.onclick=()=>toggleFavorite(game.id);
@@ -201,4 +230,4 @@ setInterval(()=>{
   const total=games.filter(game=>game.featured).length;
   heroIndex=(heroIndex+1)%total;
   updateHero();
-},6000);
+},6500);

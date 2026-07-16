@@ -3,22 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#07090e">
-  <meta name="description" content="RetroPlay — portal retrô com catálogo, pesquisa e favoritos.">
-  <title>RetroPlay</title>
+  <meta name="theme-color" content="#171a21">
+  <meta name="description" content="RetroPlay V4 — portal retrô em estilo Steam.">
+  <title>RetroPlay V4</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#inicio"><span>🎮</span> RETRO<b>PLAY</b></a>
-
+    <a class="brand" href="#inicio">🎮 RETRO<span>PLAY</span></a>
     <nav>
-      <a href="#inicio">Início</a>
-      <a href="#destaques">Destaques</a>
-      <a href="#recentes">Recentes</a>
+      <a href="#inicio">Loja</a>
+      <a href="#biblioteca">Biblioteca</a>
       <a href="#favoritos">Favoritos</a>
     </nav>
-
     <label class="search">
       🔎
       <input id="searchInput" type="search" placeholder="Pesquisar jogo...">
@@ -27,32 +24,46 @@
 
   <main>
     <section class="hero" id="inicio">
-      <div class="hero-background" id="heroBackground"></div>
+      <div class="hero-bg" id="heroBg"></div>
       <div class="hero-shade"></div>
 
-      <div class="hero-content">
-        <p class="tag" id="heroTag">JOGO EM DESTAQUE</p>
-        <h1 id="heroTitle">Aventura Pixel</h1>
-        <p id="heroText">Explore um mundo retrô cheio de desafios e segredos.</p>
+      <div class="hero-layout">
+        <div class="hero-art" id="heroArt">🗡️</div>
 
-        <div class="hero-actions">
-          <button class="primary" id="heroDetails">▶ Ver detalhes</button>
-          <button class="secondary" id="heroFavorite">♡ Favoritar</button>
+        <div class="hero-info">
+          <p class="eyebrow" id="heroConsole">SNES</p>
+          <h1 id="heroTitle">Aventura Pixel</h1>
+
+          <div class="rating">
+            <span class="stars">★★★★★</span>
+            <strong id="heroRating">4.8</strong>
+          </div>
+
+          <p id="heroDescription">
+            Explore um mundo retrô cheio de desafios, segredos e inimigos.
+          </p>
+
+          <div class="meta" id="heroMeta"></div>
+
+          <div class="actions">
+            <button class="primary" id="heroDetails">Ver detalhes</button>
+            <button class="secondary" id="heroFavorite">♡ Favoritar</button>
+          </div>
         </div>
       </div>
 
       <div class="hero-dots" id="heroDots"></div>
     </section>
 
-    <section class="section consoles">
-      <div class="section-title">
+    <section class="section filters">
+      <div class="section-head">
         <div>
-          <p class="tag">CATEGORIAS</p>
-          <h2>Escolha um console</h2>
+          <p class="eyebrow">CATEGORIAS</p>
+          <h2>Consoles</h2>
         </div>
       </div>
 
-      <div class="console-buttons">
+      <div class="console-list">
         <button class="console active" data-console="Todos">Todos</button>
         <button class="console" data-console="SNES">SNES</button>
         <button class="console" data-console="Mega Drive">Mega Drive</button>
@@ -63,50 +74,31 @@
       </div>
     </section>
 
-    <section class="section" id="destaques">
-      <div class="section-title">
+    <section class="section" id="biblioteca">
+      <div class="section-head">
         <div>
-          <p class="tag">EM ALTA</p>
-          <h2>Jogos em destaque</h2>
-        </div>
-      </div>
-      <div class="games-row" id="featuredGames"></div>
-    </section>
-
-    <section class="section" id="recentes">
-      <div class="section-title">
-        <div>
-          <p class="tag">NOVIDADES</p>
-          <h2>Últimos adicionados</h2>
-        </div>
-      </div>
-      <div class="games-row" id="recentGames"></div>
-    </section>
-
-    <section class="section" id="favoritos">
-      <div class="section-title">
-        <div>
-          <p class="tag">SUA LISTA</p>
-          <h2>Favoritos</h2>
-        </div>
-      </div>
-      <div class="games-row" id="favoriteGames"></div>
-      <div class="empty" id="favoriteEmpty">
-        Você ainda não favoritou nenhum jogo.
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-title">
-        <div>
-          <p class="tag">CATÁLOGO</p>
+          <p class="eyebrow">BIBLIOTECA</p>
           <h2>Todos os jogos</h2>
         </div>
         <span id="resultCount"></span>
       </div>
 
-      <div class="games-grid" id="allGames"></div>
-      <div class="empty" id="searchEmpty" hidden>Nenhum jogo encontrado.</div>
+      <div class="games-grid" id="gamesGrid"></div>
+      <div class="empty" id="emptyState" hidden>Nenhum jogo encontrado.</div>
+    </section>
+
+    <section class="section" id="favoritos">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">SUA CONTA</p>
+          <h2>Favoritos</h2>
+        </div>
+      </div>
+
+      <div class="games-grid" id="favoritesGrid"></div>
+      <div class="empty" id="favoritesEmpty">
+        Você ainda não adicionou jogos aos favoritos.
+      </div>
     </section>
   </main>
 
@@ -116,25 +108,48 @@
     <article class="modal-card">
       <button class="modal-close" data-close>×</button>
 
-      <div class="modal-art" id="modalArt">
-        <span id="modalIcon">🎮</span>
+      <div class="modal-hero">
+        <div class="modal-art" id="modalArt">🎮</div>
+
+        <div class="modal-main">
+          <p class="eyebrow" id="modalConsole"></p>
+          <h2 id="modalTitle"></h2>
+
+          <div class="rating">
+            <span class="stars">★★★★★</span>
+            <strong id="modalRating"></strong>
+          </div>
+
+          <p id="modalDescription"></p>
+
+          <div class="meta" id="modalMeta"></div>
+
+          <div class="actions">
+            <button class="primary" id="modalPlay">▶ Jogar</button>
+            <button class="secondary" id="modalFavorite">♡ Favoritar</button>
+          </div>
+        </div>
       </div>
 
-      <div class="modal-info">
-        <p class="tag" id="modalConsole"></p>
-        <h2 id="modalTitle"></h2>
-        <p id="modalDescription"></p>
+      <div class="modal-body">
+        <section>
+          <h3>Sobre este jogo</h3>
+          <p id="modalAbout"></p>
+        </section>
 
-        <div class="metadata" id="modalMetadata"></div>
+        <section>
+          <h3>Galeria</h3>
+          <div class="gallery" id="modalGallery"></div>
+        </section>
 
-        <div class="hero-actions">
-          <button class="primary" id="modalPlay">▶ Jogar</button>
-          <button class="secondary" id="modalFavorite">♡ Favoritar</button>
-        </div>
+        <section>
+          <h3>Jogos relacionados</h3>
+          <div class="related" id="relatedGames"></div>
+        </section>
 
         <small>
-          O botão Jogar deve ser usado somente com jogos próprios, homebrews,
-          domínio público ou conteúdos que você tenha autorização para disponibilizar.
+          Use o botão Jogar somente com jogos próprios, homebrews, domínio público
+          ou conteúdos para os quais você tenha autorização.
         </small>
       </div>
     </article>

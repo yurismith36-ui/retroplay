@@ -4,77 +4,83 @@ const games = [
     title:"Aventura Pixel",
     console:"SNES",
     description:"Explore um mundo retrô cheio de desafios, inimigos e segredos.",
+    about:"Aventura Pixel combina exploração, combate e fases clássicas em um mundo inspirado nos jogos de 16 bits.",
     icon:"🗡️",
     colors:["#174b35","#101e46"],
     year:"1994",
     genre:"Aventura",
     developer:"RetroPlay Studio",
-    featured:true,
-    added:6
+    rating:"4.8",
+    featured:true
   },
   {
     id:"corrida-turbo",
     title:"Corrida Turbo",
     console:"Mega Drive",
     description:"Velocidade, curvas perigosas e pistas inspiradas nos anos 1990.",
+    about:"Corrida Turbo traz campeonatos rápidos, pistas variadas e uma experiência arcade direta.",
     icon:"🏎️",
     colors:["#7a1f2c","#2b163e"],
     year:"1993",
     genre:"Corrida",
     developer:"Pixel Motors",
-    featured:true,
-    added:5
+    rating:"4.6",
+    featured:true
   },
   {
     id:"pocket-quest",
     title:"Pocket Quest",
     console:"Game Boy",
     description:"Uma pequena aventura portátil com exploração e mistérios.",
+    about:"Pocket Quest é um RPG compacto com vilas, cavernas e combates por turnos.",
     icon:"🧙",
     colors:["#536b2d","#24351d"],
     year:"1992",
     genre:"RPG",
     developer:"Green Pocket",
-    featured:true,
-    added:4
+    rating:"4.7",
+    featured:true
   },
   {
     id:"arena-64",
     title:"Arena 64",
     console:"Nintendo 64",
     description:"Batalhas tridimensionais em arenas cheias de obstáculos.",
+    about:"Arena 64 oferece confrontos rápidos em mapas tridimensionais com foco em ação.",
     icon:"⚔️",
     colors:["#5c2570","#17244d"],
     year:"1998",
     genre:"Ação",
     developer:"Polygon Works",
-    featured:true,
-    added:3
+    rating:"4.5",
+    featured:true
   },
   {
     id:"racer-one",
     title:"Racer One",
     console:"PlayStation",
     description:"Corridas noturnas com carros rápidos e visual clássico.",
+    about:"Racer One mistura corridas urbanas, pistas noturnas e progressão por campeonatos.",
     icon:"🌃",
     colors:["#313b73","#4b152e"],
     year:"1997",
     genre:"Corrida",
     developer:"Night Drive",
-    featured:false,
-    added:2
+    rating:"4.4",
+    featured:false
   },
   {
     id:"galaxy-defender",
     title:"Galaxy Defender",
     console:"Arcade",
     description:"Proteja a galáxia em ondas cada vez mais difíceis.",
+    about:"Galaxy Defender é um jogo de nave com pontuação, chefes e dificuldade crescente.",
     icon:"🚀",
     colors:["#0e5d67","#251741"],
     year:"1989",
     genre:"Nave",
     developer:"Arcade Labs",
-    featured:true,
-    added:1
+    rating:"4.9",
+    featured:true
   }
 ];

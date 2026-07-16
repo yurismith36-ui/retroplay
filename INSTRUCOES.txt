@@ -1,26 +1,32 @@
-RETROPLAY V3 — INSTRUÇÕES
+RETROPLAY V4 — ESTILO STEAM
 
-1. Extraia o arquivo ZIP.
+COMO INSTALAR
+
+1. Extraia este ZIP.
 2. Abra seu repositório RetroPlay no GitHub.
 3. Clique em Adicionar arquivo.
 4. Clique em Carregar arquivos.
 5. Arraste:
    - index.html
    - README.md
+   - INSTRUCOES.txt
    - pasta css
    - pasta js
    - pasta jogos
 6. Clique em Confirmar alterações.
 7. Aguarde aproximadamente 1 minuto.
-8. Abra o site e pressione Ctrl + F5.
+8. Abra seu site.
+9. Pressione Ctrl + F5.
 
-O site possui:
-- banner automático;
-- favoritos;
-- pesquisa;
-- filtros;
-- detalhes dos jogos;
-- layout adaptado para celular.
+RECURSOS
 
-Para adicionar jogos futuramente, será necessário editar apenas:
-js/games.js
+- Visual inspirado na Steam
+- Imagem grande do jogo
+- Informações ao lado
+- Avaliação por estrelas
+- Favoritos
+- Pesquisa
+- Filtros
+- Janela de detalhes
+- Galeria
+- Jogos relacionados
