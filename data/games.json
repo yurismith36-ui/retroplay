@@ -1,19 +1,17 @@
 [
   {
-    "id": "meu-jogo-snes",
-    "nome": "Meu Jogo SNES",
+    "id": "super-star-quest",
+    "nome": "Super Star Quest",
     "console": "SNES",
     "core": "snes",
     "ano": 2026,
-    "genero": "Aventura",
-    "desenvolvedora": "Meu Estúdio",
-    "descricao": "Jogo criado por mim para testar o RetroPlay V5.",
-    "rom": "jogos/snes/meu-jogo/rom/jogo.sfc",
-    "icone": "🕹️",
-    "cores": [
-      "#174b35",
-      "#101e46"
-    ],
+    "genero": "Plataforma",
+    "desenvolvedora": "Seu Projeto",
+    "descricao": "Jogo em estilo retrô com arte personalizada para o RetroPlay.",
+    "capa": "jogos/snes/super-star-quest/imagens/capa.png",
+    "banner": "jogos/snes/super-star-quest/imagens/banner.png",
+    "logo": "jogos/snes/super-star-quest/imagens/logo.png",
+    "rom": "jogos/snes/super-star-quest/rom/jogo.sfc",
     "destaque": true
   }
 ]

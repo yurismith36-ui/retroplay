@@ -1,0 +1,6 @@
+Coloque aqui o arquivo da sua ROM.
+
+Exemplo de nome:
+jogo.sfc
+
+Depois ajuste o caminho no data/games.json se o nome do arquivo for diferente.
