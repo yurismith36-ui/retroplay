@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>RetroPlay</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+background:#111;
+color:white;
+}
+
+header{
+background:#181818;
+padding:20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+position:sticky;
+top:0;
+}
+
+.logo{
+font-size:32px;
+font-weight:bold;
+color:#00ff66;
+}
+
+input{
+width:300px;
+padding:12px;
+border:none;
+border-radius:30px;
+font-size:16px;
+}
+
+.banner{
+
+height:350px;
+
+background:linear-gradient(90deg,#00aa55,#003322);
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-size:55px;
+
+font-weight:bold;
+
+}
+
+section{
+
+padding:40px;
+
+}
+
+h2{
+
+margin-bottom:20px;
+
+}
+
+.grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+
+gap:20px;
+
+}
+
+.card{
+
+background:#202020;
+
+border-radius:15px;
+
+overflow:hidden;
+
+transition:.3s;
+
+cursor:pointer;
+
+}
+
+.card:hover{
+
+transform:scale(1.05);
+
+}
+
+.card img{
+
+width:100%;
+
+height:220px;
+
+object-fit:cover;
+
+}
+
+.card h3{
+
+padding:15px;
+
+text-align:center;
+
+}
+
+footer{
+
+text-align:center;
+
+padding:40px;
+
+color:#888;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">🎮 RetroPlay</div>
+
+<input placeholder="Pesquisar jogo...">
+
+</header>
+
+<div class="banner">
+
+SEU PORTAL RETRÔ
+
+</div>
+
+<section>
+
+<h2>Jogos em destaque</h2>
+
+<div class="grid">
+
+<div class="card">
+<img src="https://picsum.photos/300/400?1">
+<h3>Super Mario</h3>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/300/400?2">
+<h3>Donkey Kong</h3>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/300/400?3">
+<h3>Zelda</h3>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/300/400?4">
+<h3>Top Gear</h3>
+</div>
+
+</div>
+
+</section>
+
+<footer>
+
+RetroPlay © 2026
+
+</footer>
+
+</body>
+
+</html>
