@@ -1,1 +1,289 @@
-const s={games:[],console:'Todos',query:'',fav:new Set(JSON.parse(localStorage.getItem('retroplay-favorites')||'[]'))};const $=id=>document.getElementById(id);function save(){localStorage.setItem('retroplay-favorites',JSON.stringify([...s.fav]))}function toggle(id){s.fav.has(id)?s.fav.delete(id):s.fav.add(id);save();render();hero()}function card(g){return `<article class="card"><div class="cover" style="--a:${g.cores?.[0]||'#174b35'};--b:${g.cores?.[1]||'#101e46'}">${g.icone||'🎮'}</div><h3>${g.nome}</h3><p>${g.descricao}</p><div class="meta">${g.console} • ${g.ano||''}</div><button data-fav="${g.id}">${s.fav.has(g.id)?'♥':'♡'} Favoritar</button><a class="play" href="player.html?id=${encodeURIComponent(g.id)}">▶ Jogar</a></article>`}function bind(el){el.querySelectorAll('[data-fav]').forEach(b=>b.onclick=()=>toggle(b.dataset.fav))}function filtered(){return s.games.filter(g=>(s.console==='Todos'||g.console===s.console)&&`${g.nome} ${g.console} ${g.genero} ${g.descricao}`.toLowerCase().includes(s.query.toLowerCase()))}function render(){const list=filtered();$('gamesGrid').innerHTML=list.map(card).join('');bind($('gamesGrid'));$('resultCount').textContent=`${list.length} jogos`;const fav=s.games.filter(g=>s.fav.has(g.id));$('favoritesGrid').innerHTML=fav.map(card).join('');bind($('favoritesGrid'));$('favoritesEmpty').hidden=fav.length>0;const consoles=['Todos',...new Set(s.games.map(g=>g.console))];$('consoleList').innerHTML=consoles.map(c=>`<button class="console ${c===s.console?'active':''}" data-c="${c}">${c}</button>`).join('');document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{s.console=b.dataset.c;render()})}function hero(){const g=s.games.find(x=>x.destaque)||s.games[0];if(!g)return;$('heroConsole').textContent=g.console;$('heroTitle').textContent=g.nome;$('heroDescription').textContent=g.descricao;$('heroMeta').textContent=`${g.ano||''} • ${g.genero||''} • ${g.desenvolvedora||''}`;$('heroPlay').onclick=()=>location.href=`player.html?id=${encodeURIComponent(g.id)}`;$('heroFavorite').onclick=()=>toggle(g.id);$('heroFavorite').textContent=s.fav.has(g.id)?'♥ Favoritado':'♡ Favoritar'}$('searchInput').oninput=e=>{s.query=e.target.value;render()};fetch('data/games.json',{cache:'no-store'}).then(r=>r.json()).then(g=>{s.games=g;render();hero()}).catch(e=>{$('gamesGrid').innerHTML='<p>Erro ao carregar data/games.json</p>';console.error(e)});
+const state = {
+  games: [],
+  console: "Todos",
+  query: "",
+  favorites: new Set(
+    JSON.parse(localStorage.getItem("retroplay-favorites") || "[]")
+  ),
+  featuredId: null
+};
+
+const $ = id => document.getElementById(id);
+
+function saveFavorites() {
+  localStorage.setItem(
+    "retroplay-favorites",
+    JSON.stringify([...state.favorites])
+  );
+}
+
+function toggleFavorite(id) {
+  state.favorites.has(id)
+    ? state.favorites.delete(id)
+    : state.favorites.add(id);
+
+  saveFavorites();
+  renderCatalog();
+  renderFavorites();
+  renderHero();
+}
+
+function imageFallback(icon = "🎮") {
+  return `
+    <div class="cover-fallback">
+      <span>${icon}</span>
+    </div>
+  `;
+}
+
+function coverHtml(game) {
+  if (!game.capa) {
+    return imageFallback(game.icone || "🎮");
+  }
+
+  return `
+    <img
+      class="cover-image"
+      src="${game.capa}"
+      alt="Capa de ${game.nome}"
+      loading="lazy"
+      onerror="this.outerHTML=\`${imageFallback(game.icone || "🎮")}\`"
+    >
+  `;
+}
+
+function card(game) {
+  const favorite = state.favorites.has(game.id);
+
+  return `
+    <article
+      class="game-card"
+      data-game="${game.id}"
+      tabindex="0"
+      aria-label="${game.nome}"
+    >
+      <div class="cover">
+        ${coverHtml(game)}
+
+        <div class="cover-overlay">
+          <a
+            class="round-play"
+            href="player.html?id=${encodeURIComponent(game.id)}"
+            aria-label="Jogar ${game.nome}"
+          >▶</a>
+
+          <button
+            class="favorite-button ${favorite ? "active" : ""}"
+            data-favorite="${game.id}"
+            type="button"
+            aria-label="Favoritar ${game.nome}"
+          >${favorite ? "♥" : "♡"}</button>
+        </div>
+      </div>
+
+      <div class="card-content">
+        <h3>${game.nome}</h3>
+        <div class="card-meta">
+          <span>${game.console}</span>
+          <span>${game.ano || ""}</span>
+        </div>
+
+        <p>${game.descricao || ""}</p>
+
+        <div class="card-actions">
+          <a
+            class="play"
+            href="player.html?id=${encodeURIComponent(game.id)}"
+          >▶ Jogar</a>
+
+          <button
+            class="favorite-text ${favorite ? "active" : ""}"
+            data-favorite="${game.id}"
+            type="button"
+          >${favorite ? "♥ Favoritado" : "♡ Favoritar"}</button>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function bindCards(container) {
+  container.querySelectorAll("[data-favorite]").forEach(button => {
+    button.addEventListener("click", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      toggleFavorite(button.dataset.favorite);
+    });
+  });
+
+  container.querySelectorAll("[data-game]").forEach(cardElement => {
+    const show = () => {
+      state.featuredId = cardElement.dataset.game;
+      renderHero();
+    };
+
+    cardElement.addEventListener("mouseenter", show);
+    cardElement.addEventListener("focusin", show);
+  });
+}
+
+function filteredGames() {
+  const query = state.query.toLocaleLowerCase("pt-BR");
+
+  return state.games.filter(game => {
+    const matchesConsole =
+      state.console === "Todos" || game.console === state.console;
+
+    const searchable = `
+      ${game.nome}
+      ${game.console}
+      ${game.genero || ""}
+      ${game.descricao || ""}
+    `.toLocaleLowerCase("pt-BR");
+
+    return matchesConsole && searchable.includes(query);
+  });
+}
+
+function renderCatalog() {
+  const list = filteredGames();
+  $("gamesGrid").innerHTML = list.map(card).join("");
+  bindCards($("gamesGrid"));
+
+  $("resultCount").textContent =
+    `${list.length} jogo${list.length === 1 ? "" : "s"}`;
+
+  $("emptyState").hidden = list.length > 0;
+}
+
+function renderFavorites() {
+  const list = state.games.filter(game => state.favorites.has(game.id));
+
+  $("favoritesGrid").innerHTML = list.map(card).join("");
+  bindCards($("favoritesGrid"));
+
+  $("favoritesEmpty").hidden = list.length > 0;
+}
+
+function renderConsoles() {
+  const consoles = ["Todos", ...new Set(state.games.map(game => game.console))];
+
+  $("consoleList").innerHTML = consoles.map(console => `
+    <button
+      class="console ${console === state.console ? "active" : ""}"
+      data-console="${console}"
+      type="button"
+    >${console}</button>
+  `).join("");
+
+  document.querySelectorAll("[data-console]").forEach(button => {
+    button.addEventListener("click", () => {
+      state.console = button.dataset.console;
+      renderConsoles();
+      renderCatalog();
+    });
+  });
+}
+
+function featuredGame() {
+  return (
+    state.games.find(game => game.id === state.featuredId) ||
+    state.games.find(game => game.destaque) ||
+    state.games[0]
+  );
+}
+
+function renderHero() {
+  const game = featuredGame();
+  if (!game) return;
+
+  const hero = $("hero");
+  const title = $("heroTitle");
+  const favorite = state.favorites.has(game.id);
+
+  if (game.banner) {
+    hero.style.backgroundImage = `
+      linear-gradient(
+        90deg,
+        rgba(8, 13, 20, .98) 0%,
+        rgba(8, 13, 20, .84) 38%,
+        rgba(8, 13, 20, .28) 72%,
+        rgba(8, 13, 20, .12) 100%
+      ),
+      linear-gradient(
+        0deg,
+        rgba(15, 20, 28, 1) 0%,
+        rgba(15, 20, 28, 0) 38%
+      ),
+      url("${game.banner}")
+    `;
+    hero.classList.add("has-banner");
+  } else {
+    hero.style.backgroundImage =
+      "linear-gradient(135deg,#174b35,#101e46)";
+    hero.classList.remove("has-banner");
+  }
+
+  $("heroConsole").textContent = game.console;
+  $("heroDescription").textContent = game.descricao || "";
+
+  if (game.logo) {
+    title.innerHTML = `
+      <img
+        class="hero-logo"
+        src="${game.logo}"
+        alt="${game.nome}"
+        onerror="this.outerHTML='<span>${game.nome}</span>'"
+      >
+    `;
+  } else {
+    title.textContent = game.nome;
+  }
+
+  $("heroMeta").innerHTML = `
+    <span>${game.ano || "Ano não informado"}</span>
+    <span>${game.genero || "Gênero não informado"}</span>
+    <span>${game.desenvolvedora || "Desenvolvedora não informada"}</span>
+  `;
+
+  $("heroPlay").onclick = () => {
+    location.href = `player.html?id=${encodeURIComponent(game.id)}`;
+  };
+
+  $("heroFavorite").textContent =
+    favorite ? "♥ Favoritado" : "♡ Favoritar";
+
+  $("heroFavorite").onclick = () => toggleFavorite(game.id);
+}
+
+function renderAll() {
+  renderConsoles();
+  renderCatalog();
+  renderFavorites();
+  renderHero();
+}
+
+$("searchInput").addEventListener("input", event => {
+  state.query = event.target.value;
+  renderCatalog();
+});
+
+fetch("data/games.json", { cache: "no-store" })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    return response.json();
+  })
+  .then(games => {
+    state.games = games;
+    renderAll();
+  })
+  .catch(error => {
+    console.error(error);
+    $("gamesGrid").innerHTML = `
+      <div class="empty">
+        Não foi possível carregar <strong>data/games.json</strong>.
+      </div>
+    `;
+  });
