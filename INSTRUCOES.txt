@@ -1,8 +1,28 @@
-1. Extraia o ZIP.
-2. Envie todo o conteúdo para a raiz do repositório.
-3. Coloque sua ROM autorizada em jogos/snes/meu-jogo/rom/jogo.sfc
-4. Confirme as alterações.
-5. Aguarde o GitHub Pages.
-6. Abra o site e clique em Jogar.
+CORREÇÃO DE TELA CHEIA NO IPHONE — RETROPLAY V5
 
-O EmulatorJS é carregado pelo CDN oficial, então não é necessário enviar os 289 MB ao GitHub.
+Substitua somente estes arquivos no GitHub:
+
+1. player.html
+2. css/player.css
+3. js/player.js
+
+O que foi alterado:
+- tenta usar a Fullscreen API normal;
+- tenta a versão WebKit da API;
+- quando o iPhone não permite, ativa automaticamente uma tela cheia alternativa;
+- o botão passa a mostrar “Sair da tela cheia”;
+- corrige o tamanho após girar o celular;
+- adiciona configuração para abrir como aplicativo pela Tela de Início.
+
+Depois de publicar:
+1. Aguarde o GitHub Pages atualizar.
+2. No iPhone, feche a aba antiga.
+3. Abra novamente o RetroPlay.
+4. Entre no jogo.
+5. Toque em “Tela cheia”.
+
+Para esconder também as barras do Safari:
+- abra o RetroPlay no Safari;
+- toque no botão Compartilhar;
+- escolha “Adicionar à Tela de Início”;
+- abra o RetroPlay pelo novo ícone.
