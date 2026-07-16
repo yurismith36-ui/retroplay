@@ -1,0 +1,13 @@
+[
+  {
+    "id": "super-mario-world",
+    "nome": "Super Mario World",
+    "console": "SNES",
+    "ano": 1990,
+    "genero": "Plataforma",
+    "descricao": "Projeto de teste do RetroPlay.",
+    "capa": "jogos/snes/super-mario-world/capa.jpg",
+    "banner": "jogos/snes/super-mario-world/banner.jpg",
+    "rom": "jogos/snes/super-mario-world/rom/jogo.sfc"
+  }
+]
