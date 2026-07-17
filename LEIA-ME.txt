@@ -1,20 +1,9 @@
-PACOTE PRONTO PARA O RETROPLAY
+CORREÇÃO ESSENCIAL
 
-Este pacote já vem organizado para facilitar a adição no seu site.
+Envie estes quatro itens para o repositório:
+- index.html na raiz
+- css/style.css dentro de css
+- js/app.js dentro de js
+- data/games.json dentro de data
 
-ESTRUTURA:
-- jogos/snes/super-star-quest/imagens/capa.png
-- jogos/snes/super-star-quest/imagens/banner.png
-- jogos/snes/super-star-quest/imagens/logo.png
-- jogos/snes/super-star-quest/rom/COLOQUE_SUA_ROM_AQUI.txt
-- data/games.json
-
-O QUE FAZER:
-1. Envie a pasta jogos para o seu repositório.
-2. Envie o arquivo data/games.json para a pasta data do seu site.
-3. Coloque sua ROM dentro da pasta rom.
-4. Renomeie a ROM para jogo.sfc ou altere o caminho no data/games.json.
-
-OBSERVAÇÃO:
-Este pacote usa o nome Super Star Quest e arte original inspirada em jogos retrô.
-Se quiser, depois eu posso gerar outro pacote com outro nome e outro visual.
+Confirme as alterações e aguarde o GitHub Pages atualizar.
