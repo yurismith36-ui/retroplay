@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Editor de Jogos RetroPlay</title>
+<style>
+body{margin:0;background:#0b1017;color:#fff;font-family:Arial}
+main{width:min(1100px,94%);margin:30px auto}
+h1{margin-bottom:6px}.info{color:#b4c0cc;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:24px 0}
+.card{padding:16px;background:#131c27;border:1px solid #2d4053}
+label{display:block;margin:10px 0 5px;color:#cbd8e4;font-size:13px}
+input,textarea{width:100%;padding:9px;background:#0e151e;color:#fff;border:1px solid #38516a}
+textarea{min-height:70px;resize:vertical}
+button{padding:13px 18px;border:0;background:#75b022;color:#fff;font-weight:bold;cursor:pointer}
+code{color:#79caf7}
+</style>
+</head>
+<body>
+<main>
+<h1>Editor dos 20 jogos</h1>
+<p class="info">
+Preencha os nomes e clique em <strong>Baixar games.json</strong>.
+Depois envie o arquivo baixado para a pasta <code>data</code> do GitHub.
+Não altere os IDs nem os nomes das pastas.
+</p>
+<div id="grid" class="grid"></div>
+<button id="download">Baixar games.json</button>
+</main>
+<script>
+const grid=document.getElementById("grid");
+const games=Array.from({length:20},(_,index)=>{
+ const n=String(index+1).padStart(2,"0");
+ return {
+  id:`jogo-${n}`,nome:`Jogo ${n}`,console:"SNES",core:"snes",ano:"",
+  genero:"Não informado",desenvolvedora:"",
+  descricao:`Espaço preparado para o jogo número ${n}.`,
+  capa:`jogos/snes/jogo-${n}/imagens/capa.jpg`,
+  banner:`jogos/snes/jogo-${n}/imagens/banner.jpg`,
+  logo:`jogos/snes/jogo-${n}/imagens/logo.png`,
+  rom:`jogos/snes/jogo-${n}/rom/jogo.sfc`,
+  destaque:index===0
+ };
+});
+grid.innerHTML=games.map((g,i)=>`
+ <section class="card">
+  <strong>Espaço ${String(i+1).padStart(2,"0")}</strong>
+  <label>Nome do jogo</label><input data-i="${i}" data-k="nome" value="${g.nome}">
+  <label>Ano</label><input data-i="${i}" data-k="ano" value="">
+  <label>Gênero</label><input data-i="${i}" data-k="genero" value="${g.genero}">
+  <label>Desenvolvedora</label><input data-i="${i}" data-k="desenvolvedora" value="">
+  <label>Descrição</label><textarea data-i="${i}" data-k="descricao">${g.descricao}</textarea>
+ </section>`).join("");
+document.querySelectorAll("input,textarea").forEach(field=>{
+ field.oninput=()=>games[Number(field.dataset.i)][field.dataset.k]=field.value;
+});
+document.getElementById("download").onclick=()=>{
+ const blob=new Blob([JSON.stringify(games,null,2)],{type:"application/json"});
+ const link=document.createElement("a");
+ link.href=URL.createObjectURL(blob);
+ link.download="games.json";
+ link.click();
+ URL.revokeObjectURL(link.href);
+};
+</script>
+</body>
+</html>
