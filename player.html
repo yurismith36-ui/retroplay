@@ -1,15 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#000000">
-
-  <!-- Permite aparência de aplicativo quando aberto pela Tela de Início do iPhone. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#000">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
   <title>Jogando — RetroPlay</title>
   <link rel="stylesheet" href="css/player.css">
 </head>
@@ -17,41 +14,31 @@
   <header class="player-header">
     <a href="index.html">← Voltar</a>
     <strong id="gameTitle">Carregando...</strong>
-    <button id="fullscreenButton" type="button" aria-pressed="false">
-      ⛶ Tela cheia
-    </button>
+    <button id="fullscreenButton" type="button">⛶ Tela cheia</button>
   </header>
 
   <main class="player-page">
     <section id="playerShell" class="player-shell">
       <div id="game" class="game-frame"></div>
-
-      <div id="loadingBox" class="loading-overlay">
+      <div id="loadingBox" class="overlay">
         <div class="spinner"></div>
         <h1>Preparando o jogo...</h1>
-        <p id="loadingText">Lendo as informações do catálogo.</p>
+        <p id="loadingText">Lendo o catálogo.</p>
       </div>
-
-      <div id="errorBox" class="error-overlay" hidden>
-        <h1>Não foi possível abrir o jogo</h1>
+      <div id="errorBox" class="overlay" hidden>
+        <h1>Não foi possível abrir</h1>
         <p id="errorText"></p>
         <a href="index.html">Voltar ao catálogo</a>
       </div>
     </section>
 
-    <aside class="game-sidebar">
-      <p class="eyebrow" id="gameConsole"></p>
+    <aside class="sidebar">
+      <p id="gameConsole" class="eyebrow"></p>
       <h2 id="sidebarTitle">Jogo</h2>
       <p id="gameDescription"></p>
       <div id="gameMeta" class="meta"></div>
-
       <div class="notice">
-        <strong>Tela cheia no iPhone</strong>
-        <p>
-          O botão agora usa um modo de tela cheia alternativo quando o Safari
-          não permite a tela cheia normal. Para esconder também as barras do
-          Safari, adicione o RetroPlay à Tela de Início do iPhone.
-        </p>
+        No iPhone, o botão usa automaticamente um modo alternativo quando o Safari não permite a tela cheia normal.
       </div>
     </aside>
   </main>

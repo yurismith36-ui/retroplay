@@ -1,9 +1,11 @@
-CORREÇÃO ESSENCIAL
+PACOTE DE ARQUIVOS FALTANTES
 
-Envie estes quatro itens para o repositório:
-- index.html na raiz
-- css/style.css dentro de css
-- js/app.js dentro de js
-- data/games.json dentro de data
+Envie todo o conteúdo deste pacote para a RAIZ do repositório RetroPlay.
 
-Confirme as alterações e aguarde o GitHub Pages atualizar.
+Este pacote adiciona:
+- player.html
+- css/player.css
+- js/player.js
+- pasta jogos com as imagens provisórias dos 20 espaços
+
+NÃO contém data/games.json, portanto não apaga os nomes personalizados feitos no editor.
