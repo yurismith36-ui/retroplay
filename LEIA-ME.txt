@@ -1,11 +1,3 @@
-PACOTE DE ARQUIVOS FALTANTES
-
-Envie todo o conteúdo deste pacote para a RAIZ do repositório RetroPlay.
-
-Este pacote adiciona:
-- player.html
-- css/player.css
-- js/player.js
-- pasta jogos com as imagens provisórias dos 20 espaços
-
-NÃO contém data/games.json, portanto não apaga os nomes personalizados feitos no editor.
+PACOTE 01
+Contém apenas os jogos 01-05.
+Copie a pasta 'jogos' e o arquivo data/games.json para o repositório.
