@@ -1,3 +1,20 @@
-PACOTE 01
-Contém apenas os jogos 01-05.
-Copie a pasta 'jogos' e o arquivo data/games.json para o repositório.
+RETROPLAY V6 — ATUALIZAÇÃO
+
+Este pacote contém somente os arquivos que estavam causando dúvida:
+
+dados/games.json
+js/app.js
+player.html
+
+COMO INSTALAR:
+1. Extraia o ZIP.
+2. No GitHub, envie as pastas 'dados' e 'js' para a raiz do repositório.
+3. Envie também o player.html para a raiz.
+4. Confirme a substituição dos arquivos com os mesmos nomes.
+5. Não apague as pastas dos jogos.
+6. Aguarde a publicação do GitHub Pages e atualize com Ctrl+F5.
+
+IMPORTANTE:
+- O catálogo procura: dados/games.json
+- O player também procura: dados/games.json
+- As ROMs devem continuar em jogos/snes/jogo-XX/rom/jogo.sfc
