@@ -3,74 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#090d13">
-  <title>RetroPlay — 20 Jogos SNES</title>
+  <meta name="theme-color" content="#090d14">
+  <title>RetroPlay V7</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="./">🎮 RETRO<span>PLAY</span></a>
-    <nav>
-      <a href="#inicio">Início</a>
-      <a href="#biblioteca">Biblioteca</a>
-      <a href="#favoritos">Favoritos</a>
-    </nav>
-    <input id="searchInput" type="search" placeholder="Pesquisar jogo...">
+    <a class="brand" href="index.html"><span>R</span> RetroPlay <small>V7</small></a>
+    <input id="searchInput" class="search" type="search" placeholder="Pesquisar jogo..." autocomplete="off">
   </header>
 
   <main>
-    <section id="inicio" class="hero">
+    <section id="hero" class="hero">
       <div class="hero-content">
-        <p id="heroConsole" class="eyebrow">SNES</p>
-        <div id="heroTitle" class="hero-title">RetroPlay</div>
-        <p id="heroDescription">Catálogo preparado para vinte jogos de SNES.</p>
+        <div id="heroConsole" class="eyebrow">SNES</div>
+        <div id="heroTitle" class="hero-title">RetroPlay V7</div>
+        <p id="heroDescription">Sua biblioteca de jogos retrô.</p>
         <div id="heroMeta" class="hero-meta"></div>
         <div class="hero-actions">
-          <button id="heroPlay" class="primary">▶ Jogar</button>
+          <button id="heroPlay" class="primary">▶ Jogar agora</button>
           <button id="heroFavorite" class="secondary">♡ Favoritar</button>
         </div>
       </div>
     </section>
 
-    <section class="section">
-      <div class="section-heading">
+    <section class="library">
+      <div class="library-head">
         <div>
-          <p class="eyebrow">CATEGORIAS</p>
-          <h2>Consoles</h2>
-        </div>
-      </div>
-      <div id="consoleList" class="console-list"></div>
-    </section>
-
-    <section id="biblioteca" class="section">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">BIBLIOTECA</p>
-          <h2>Jogos SNES</h2>
+          <span class="eyebrow">BIBLIOTECA</span>
+          <h1>Jogos SNES</h1>
         </div>
         <span id="resultCount"></span>
       </div>
-      <div id="gamesGrid" class="games-grid"></div>
+
+      <div id="consoleList" class="filters"></div>
+      <div id="gamesGrid" class="grid"></div>
       <div id="emptyState" class="empty" hidden>Nenhum jogo encontrado.</div>
     </section>
 
-    <section id="favoritos" class="section">
-      <div class="section-heading">
+    <section class="library">
+      <div class="library-head">
         <div>
-          <p class="eyebrow">SUA LISTA</p>
+          <span class="eyebrow">SUA LISTA</span>
           <h2>Favoritos</h2>
         </div>
       </div>
-      <div id="favoritesGrid" class="games-grid"></div>
-      <div id="favoritesEmpty" class="empty">Nenhum favorito ainda.</div>
+      <div id="favoritesGrid" class="grid"></div>
+      <div id="favoritesEmpty" class="empty">Você ainda não adicionou favoritos.</div>
     </section>
   </main>
 
-  <footer>
-    <strong>RetroPlay</strong>
-    <p>Use somente jogos próprios, homebrews, domínio público ou conteúdos autorizados.</p>
-  </footer>
-
+  <footer>RetroPlay V7 • Catálogo pessoal para jogos autorizados</footer>
   <script src="js/app.js"></script>
 </body>
 </html>

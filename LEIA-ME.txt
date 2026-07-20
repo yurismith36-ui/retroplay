@@ -1,20 +1,30 @@
-RETROPLAY V6 — ATUALIZAÇÃO
+RETROPLAY V7 — COMPLETO DO ZERO
 
-Este pacote contém somente os arquivos que estavam causando dúvida:
+CONTEÚDO
+- Site completo
+- Catálogo com 5 jogos
+- Player EmulatorJS configurado
+- 5 ROMs enviadas por você
+- Capas, banners e logos originais de identificação
+- Estrutura pronta para futuras atualizações
 
+INSTALAÇÃO NO GITHUB
+1. Extraia este ZIP no computador.
+2. Abra seu repositório retroplay.
+3. Para instalar somente o V7, remova o conteúdo antigo do repositório.
+4. Envie TODO o conteúdo que está dentro da pasta RetroPlay-V7-Completo.
+5. index.html precisa ficar na raiz do repositório.
+6. Confirme as alterações.
+7. Aguarde o GitHub Pages concluir a implantação.
+8. Abra o site e pressione Ctrl+F5.
+
+CAMINHOS IMPORTANTES
 dados/games.json
 js/app.js
 player.html
+jogos/snes/jogo-01/rom/jogo.sfc
+...
+jogos/snes/jogo-05/rom/jogo.sfc
 
-COMO INSTALAR:
-1. Extraia o ZIP.
-2. No GitHub, envie as pastas 'dados' e 'js' para a raiz do repositório.
-3. Envie também o player.html para a raiz.
-4. Confirme a substituição dos arquivos com os mesmos nomes.
-5. Não apague as pastas dos jogos.
-6. Aguarde a publicação do GitHub Pages e atualize com Ctrl+F5.
-
-IMPORTANTE:
-- O catálogo procura: dados/games.json
-- O player também procura: dados/games.json
-- As ROMs devem continuar em jogos/snes/jogo-XX/rom/jogo.sfc
+ATUALIZAÇÕES FUTURAS
+O próximo pacote deverá começar em jogo-06 e nunca substituir jogo-01 a jogo-05.

@@ -6,12 +6,12 @@
     "ano": "1993",
     "genero": "Tiro",
     "desenvolvedora": "Video System",
-    "descricao": "Jogo de nave e ação em estilo arcade.",
+    "descricao": "Combates aéreos velozes em estilo arcade, com diferentes pilotos e aeronaves.",
     "destaque": true,
     "core": "snes",
     "rom": "jogos/snes/jogo-01/rom/jogo.sfc",
-    "capa": "jogos/snes/jogo-01/imagens/capa.png",
-    "banner": "jogos/snes/jogo-01/imagens/banner.png",
+    "capa": "jogos/snes/jogo-01/imagens/capa.jpg",
+    "banner": "jogos/snes/jogo-01/imagens/banner.jpg",
     "logo": "jogos/snes/jogo-01/imagens/logo.png"
   },
   {
@@ -21,12 +21,12 @@
     "ano": "1992",
     "genero": "Ação",
     "desenvolvedora": "Konami",
-    "descricao": "Ação intensa contra uma invasão alienígena.",
+    "descricao": "Ação intensa contra uma invasão alienígena em fases cheias de explosões.",
     "destaque": false,
     "core": "snes",
     "rom": "jogos/snes/jogo-02/rom/jogo.sfc",
-    "capa": "jogos/snes/jogo-02/imagens/capa.png",
-    "banner": "jogos/snes/jogo-02/imagens/banner.png",
+    "capa": "jogos/snes/jogo-02/imagens/capa.jpg",
+    "banner": "jogos/snes/jogo-02/imagens/banner.jpg",
     "logo": "jogos/snes/jogo-02/imagens/logo.png"
   },
   {
@@ -36,12 +36,12 @@
     "ano": "1995",
     "genero": "Plataforma",
     "desenvolvedora": "Shiny Entertainment",
-    "descricao": "Plataforma com humor, ação e fases variadas.",
+    "descricao": "Plataforma bem-humorada, com desafios variados e muita ação.",
     "destaque": false,
     "core": "snes",
     "rom": "jogos/snes/jogo-03/rom/jogo.sfc",
-    "capa": "jogos/snes/jogo-03/imagens/capa.png",
-    "banner": "jogos/snes/jogo-03/imagens/banner.png",
+    "capa": "jogos/snes/jogo-03/imagens/capa.jpg",
+    "banner": "jogos/snes/jogo-03/imagens/banner.jpg",
     "logo": "jogos/snes/jogo-03/imagens/logo.png"
   },
   {
@@ -55,8 +55,8 @@
     "destaque": false,
     "core": "snes",
     "rom": "jogos/snes/jogo-04/rom/jogo.sfc",
-    "capa": "jogos/snes/jogo-04/imagens/capa.png",
-    "banner": "jogos/snes/jogo-04/imagens/banner.png",
+    "capa": "jogos/snes/jogo-04/imagens/capa.jpg",
+    "banner": "jogos/snes/jogo-04/imagens/banner.jpg",
     "logo": "jogos/snes/jogo-04/imagens/logo.png"
   },
   {
@@ -66,12 +66,12 @@
     "ano": "1993",
     "genero": "Luta",
     "desenvolvedora": "Midway",
-    "descricao": "Lutas clássicas com personagens e golpes especiais.",
+    "descricao": "Lutas clássicas com personagens marcantes e golpes especiais.",
     "destaque": false,
     "core": "snes",
     "rom": "jogos/snes/jogo-05/rom/jogo.sfc",
-    "capa": "jogos/snes/jogo-05/imagens/capa.png",
-    "banner": "jogos/snes/jogo-05/imagens/banner.png",
+    "capa": "jogos/snes/jogo-05/imagens/capa.jpg",
+    "banner": "jogos/snes/jogo-05/imagens/banner.jpg",
     "logo": "jogos/snes/jogo-05/imagens/logo.png"
   }
 ]
