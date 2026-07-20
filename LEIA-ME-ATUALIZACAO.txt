@@ -1,24 +1,24 @@
-RETROPLAY — ATUALIZAÇÃO N64-001
-================================
+ATUALIZAÇÃO DE CAPAS — 5 JOGOS SNES
 
-Jogo adicionado: Super Mario 64
-Sistema: Nintendo 64
-Formato verificado: .z64
-Título interno detectado: SUPER MARIO 64
-Tamanho extraído: 8.00 MiB
-SHA-256: 17ce077343c6133f8c9f2d6d6d9a4ab62c8cd2aa57c40aea1f490b4c8bb21d91
+Este pacote adiciona apenas as imagens dos jogos abaixo:
+- Aero Fighters
+- Contra III: The Alien Wars
+- Earthworm Jim 2
+- The Mask
+- Mortal Kombat
 
-COMO COLOCAR NO REPOSITÓRIO CLONADO PELO GITKRAKEN
-1. Extraia este ZIP.
-2. Abra a pasta retroplay que o GitKraken criou no computador.
-3. Copie as pastas "jogos" e "dados" deste pacote para dentro da pasta retroplay.
-4. Quando o Windows perguntar, escolha substituir o arquivo dados/games.json.
-5. Volte ao GitKraken.
-6. Os arquivos aparecerão como alterações.
-7. Faça o Commit e depois o Push.
+COMO USAR:
+1) Extraia o ZIP.
+2) Abra a pasta jogos/.
+3) Envie a pasta jogos para o seu repositório retroplay, mantendo a mesma estrutura.
+4) Quando o GitHub perguntar, escolha substituir/sobrescrever os arquivos com o mesmo nome.
 
-LINK DO JOGO DEPOIS DE PUBLICADO
-https://yurismith36-ui.github.io/retroplay/player.html?id=n64-001
-
-OBSERVAÇÃO
-Use apenas ROMs que você tenha autorização para hospedar.
+OBSERVAÇÃO:
+- Estas imagens são placeholders leves para o site não ficar sem capa.
+- Depois você pode trocar cada arquivo por sua própria capa, banner e logo.
+- Caminhos usados:
+  jogos/snes/jogo-01/imagens/
+  jogos/snes/jogo-02/imagens/
+  jogos/snes/jogo-03/imagens/
+  jogos/snes/jogo-04/imagens/
+  jogos/snes/jogo-05/imagens/
