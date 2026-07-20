@@ -2,58 +2,131 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#090d14">
-  <title>RetroPlay V7</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2f1d43">
+  <title>RetroPlay — Jogos clássicos</title>
+  <meta name="description" content="Biblioteca retrô com jogos organizados por console.">
+  <link rel="icon" href="assets/icone-controle.svg">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="index.html"><span>R</span> RetroPlay <small>V7</small></a>
-    <input id="searchInput" class="search" type="search" placeholder="Pesquisar jogo..." autocomplete="off">
-  </header>
-
-  <main>
-    <section id="hero" class="hero">
-      <div class="hero-content">
-        <div id="heroConsole" class="eyebrow">SNES</div>
-        <div id="heroTitle" class="hero-title">RetroPlay V7</div>
-        <p id="heroDescription">Sua biblioteca de jogos retrô.</p>
-        <div id="heroMeta" class="hero-meta"></div>
-        <div class="hero-actions">
-          <button id="heroPlay" class="primary">▶ Jogar agora</button>
-          <button id="heroFavorite" class="secondary">♡ Favoritar</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="library">
-      <div class="library-head">
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="logo-area" href="index.html" aria-label="Página inicial do RetroPlay">
+        <img src="assets/controle-retro.svg" alt="" class="logo-controller">
         <div>
-          <span class="eyebrow">BIBLIOTECA</span>
-          <h1>Jogos SNES</h1>
+          <div class="logo-title">RETROPLAY</div>
+          <div class="logo-subtitle">JOGOS CLÁSSICOS, DIVERSÃO ETERNA</div>
         </div>
-        <span id="resultCount"></span>
+      </a>
+
+      <div class="header-tools">
+        <button class="utility-btn" id="favorites-top" type="button">★ Favoritos</button>
+        <button class="utility-btn" id="refresh-site" type="button">↻ Atualizar</button>
+        <span class="welcome">Bem-vindo ao RetroPlay!</span>
       </div>
+    </header>
 
-      <div id="consoleList" class="filters"></div>
-      <div id="gamesGrid" class="grid"></div>
-      <div id="emptyState" class="empty" hidden>Nenhum jogo encontrado.</div>
-    </section>
+    <nav class="main-nav" aria-label="Menu principal">
+      <a class="nav-tab active" href="index.html">HOME</a>
+      <a class="nav-tab" href="#biblioteca">JOGOS</a>
+      <a class="nav-tab" href="#consoles">CONSOLES</a>
+      <a class="nav-tab" href="admin.html">ADICIONAR JOGO</a>
+    </nav>
 
-    <section class="library">
-      <div class="library-head">
-        <div>
-          <span class="eyebrow">SUA LISTA</span>
-          <h2>Favoritos</h2>
-        </div>
-      </div>
-      <div id="favoritesGrid" class="grid"></div>
-      <div id="favoritesEmpty" class="empty">Você ainda não adicionou favoritos.</div>
-    </section>
-  </main>
+    <main class="portal-grid">
+      <aside class="sidebar">
+        <section class="window">
+          <div class="window-title small-title">GAME VAULT</div>
+          <div id="vault-list" class="vault-list"></div>
+          <a href="#biblioteca" class="vault-more">
+            <img src="assets/icone-controle.svg" alt="">
+            <span>VER TODOS<br>OS JOGOS</span>
+            <b>▶</b>
+          </a>
+        </section>
 
-  <footer>RetroPlay V7 • Catálogo pessoal para jogos autorizados</footer>
+        <section class="window retro-tip">
+          <div class="tip-title">★ DICA RETRÔ</div>
+          <p>Use os favoritos para guardar seus jogos preferidos. O navegador também mantém seus saves quando o emulador permite.</p>
+          <span class="pixel-mascot" aria-hidden="true">👾</span>
+        </section>
+      </aside>
+
+      <section class="main-column">
+        <section class="window featured-window">
+          <div class="window-title">
+            <span>🎮 CONSOLE CORNER</span>
+            <span>🎮</span>
+          </div>
+
+          <div class="featured-label">Jogo em destaque: <strong id="featured-name">Carregando...</strong></div>
+
+          <div class="featured-layout">
+            <div id="featured-art" class="featured-art">
+              <img id="featured-banner" alt="">
+              <div class="console-placeholder">
+                <img src="assets/console-retro.svg" alt="Console retrô ilustrado">
+              </div>
+            </div>
+
+            <div class="feature-copy">
+              <h2 id="featured-title">RetroPlay</h2>
+              <ul id="featured-details">
+                <li>Catálogo organizado por console.</li>
+                <li>Jogos com links próprios para QR Code.</li>
+                <li>Player no navegador com tela cheia.</li>
+                <li>Painel que gera o cadastro do games.json.</li>
+              </ul>
+              <a id="featured-play" class="purple-button disabled" href="#">JOGAR AGORA ▶</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="window" id="consoles">
+          <div class="window-title">
+            <span>🕹 CONSOLES</span>
+            <span id="console-total">0 SISTEMAS</span>
+          </div>
+          <div id="console-buttons" class="console-buttons"></div>
+        </section>
+
+        <section class="window library-window" id="biblioteca">
+          <div class="window-title">
+            <span>★ BIBLIOTECA DE JOGOS</span>
+            <span id="games-count">0 JOGOS</span>
+          </div>
+
+          <div class="library-tools">
+            <label class="search-field">
+              <span>⌕</span>
+              <input id="search-input" type="search" placeholder="Pesquisar por nome, gênero ou console">
+            </label>
+
+            <select id="sort-select" aria-label="Ordenação">
+              <option value="recentes">Mais recentes</option>
+              <option value="nome">Nome A–Z</option>
+              <option value="ano">Ano</option>
+            </select>
+          </div>
+
+          <div id="games-grid" class="games-grid"></div>
+
+          <div id="empty-state" class="empty-state hidden">
+            <span>👾</span>
+            <strong>Nenhum jogo encontrado</strong>
+            <p>Escolha outro console ou faça uma nova pesquisa.</p>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>♥ Feito para organizar uma coleção de jogos clássicos.</span>
+      <span>RetroPlay 1.0</span>
+    </footer>
+  </div>
+
   <script src="js/app.js"></script>
 </body>
 </html>

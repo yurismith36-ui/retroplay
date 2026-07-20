@@ -1,52 +1,46 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>RetroPlay V7 — Player</title>
-<style>
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#05080d;color:#fff;font-family:Arial,sans-serif}
-header{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:#0c121b;border-bottom:1px solid #243248}
-header a{color:#72b9ff;text-decoration:none;font-weight:700}main{max-width:1280px;margin:auto;padding:18px}.meta{margin-bottom:14px}.meta h1{margin:0 0 5px;font-size:25px}.meta p{margin:0;color:#aebdd0}
-#game{width:100%;height:min(76vh,820px);background:#000;border:1px solid #22324a;border-radius:14px;overflow:hidden}
-#error{display:none;padding:25px;border:1px solid #78404b;background:#27151b;color:#ffc4cd;border-radius:12px;line-height:1.5}
-@media(max-width:700px){header{height:55px}main{padding:8px}.meta h1{font-size:18px}#game{height:calc(100vh - 125px);border-radius:8px}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111017">
+  <title>RetroPlay — Jogando</title>
+  <link rel="icon" href="assets/icone-controle.svg">
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-<header><strong>RetroPlay V7</strong><a href="index.html">← Biblioteca</a></header>
-<main>
-<div class="meta"><h1 id="title">Carregando...</h1><p id="details"></p></div>
-<div id="game"></div><div id="error"></div>
-</main>
-<script>
-const id=new URLSearchParams(location.search).get("id");
-const title=document.getElementById("title"),details=document.getElementById("details"),errorBox=document.getElementById("error"),gameBox=document.getElementById("game");
-function fail(message){gameBox.style.display="none";errorBox.style.display="block";errorBox.textContent=message;title.textContent="Erro ao abrir o jogo";}
-if(!id){fail("Jogo não informado no endereço.");}
-else{
- fetch("./dados/games.json",{cache:"no-store"})
- .then(r=>{if(!r.ok)throw new Error("Catálogo não encontrado");return r.json();})
- .then(games=>{
-   const game=games.find(g=>g.id===id);
-   if(!game)throw new Error("Jogo não encontrado no catálogo.");
-   title.textContent=game.nome;
-   details.textContent=`${game.console||"SNES"}${game.ano?" • "+game.ano:""}`;
-   window.EJS_player="#game";
-   window.EJS_core=game.core||"snes";
-   window.EJS_gameName=game.nome;
-   window.EJS_color="#2d90ff";
-   window.EJS_startOnLoaded=false;
-   window.EJS_language="pt-BR";
-   window.EJS_pathtodata="https://cdn.emulatorjs.org/stable/data/";
-   window.EJS_gameUrl="./"+game.rom;
-   const script=document.createElement("script");
-   script.src="https://cdn.emulatorjs.org/stable/data/loader.js";
-   script.onerror=()=>fail("Não foi possível carregar o EmulatorJS. Verifique sua conexão com a internet.");
-   document.body.appendChild(script);
- })
- .catch(e=>{console.error(e);fail(e.message);});
-}
-</script>
+<body class="player-page">
+  <header class="player-topbar">
+    <a href="index.html" class="player-back">← VOLTAR</a>
+    <div class="player-game-title">
+      <strong id="player-title">Carregando...</strong>
+      <span id="player-console"></span>
+    </div>
+    <button id="fullscreen-button" type="button">TELA CHEIA</button>
+  </header>
+
+  <main>
+    <section class="emulator-stage" id="emulator-stage">
+      <div id="player-status" class="player-status">
+        <div class="loading-pixel"></div>
+        <p>Preparando o emulador...</p>
+      </div>
+      <div id="game"></div>
+    </section>
+
+    <section class="player-info">
+      <img id="player-cover" alt="" class="player-cover">
+      <div>
+        <span id="player-genre" class="genre-badge"></span>
+        <h1 id="player-info-title"></h1>
+        <p id="player-description"></p>
+        <div class="info-list">
+          <div><small>ANO</small><strong id="player-year">—</strong></div>
+          <div><small>DESENVOLVEDORA</small><strong id="player-developer">—</strong></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/player.js"></script>
 </body>
 </html>

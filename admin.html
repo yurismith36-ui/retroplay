@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2f1d43">
+  <title>RetroPlay — Adicionar jogo</title>
+  <link rel="icon" href="assets/icone-controle.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header compact-header">
+      <a class="logo-area" href="index.html">
+        <img src="assets/controle-retro.svg" alt="" class="logo-controller">
+        <div>
+          <div class="logo-title">RETROPLAY</div>
+          <div class="logo-subtitle">GERADOR DO GAMES.JSON</div>
+        </div>
+      </a>
+      <a href="index.html" class="utility-btn">← Voltar ao site</a>
+    </header>
+
+    <nav class="main-nav">
+      <a class="nav-tab" href="index.html">HOME</a>
+      <a class="nav-tab active" href="admin.html">ADICIONAR JOGO</a>
+    </nav>
+
+    <main class="admin-page">
+      <section class="admin-intro window">
+        <div class="window-title">🛠 PAINEL DE CADASTRO</div>
+        <div class="admin-intro-content">
+          <h1>Gere o bloco do seu novo jogo</h1>
+          <p>Você preenche os campos e o RetroPlay cria o trecho certo para colocar no arquivo <code>dados/games.json</code>.</p>
+        </div>
+      </section>
+
+      <section class="admin-columns">
+        <form id="game-form" class="window admin-form">
+          <div class="window-title">1. PREENCHA OS DADOS</div>
+          <div class="form-body">
+            <label>Nome do jogo
+              <input id="game-name" required placeholder="Ex.: The King of Fighters 2002">
+            </label>
+
+            <div class="form-row">
+              <label>Console
+                <select id="game-console">
+                  <option value="SNES|snes|sfc">SNES</option>
+                  <option value="Game Boy|gb|gb">Game Boy</option>
+                  <option value="Game Boy Color|gb|gbc">Game Boy Color</option>
+                  <option value="Game Boy Advance|gba|gba">Game Boy Advance</option>
+                  <option value="Nintendo 64|n64|z64">Nintendo 64</option>
+                  <option value="Arcade|arcade|zip">Arcade — FBNeo</option>
+                  <option value="Neo Geo|arcade|zip">Neo Geo — FBNeo</option>
+                </select>
+              </label>
+
+              <label>Número do jogo
+                <input id="game-number" type="number" min="1" value="1">
+              </label>
+            </div>
+
+            <div class="form-row">
+              <label>Ano
+                <input id="game-year" inputmode="numeric" placeholder="2002">
+              </label>
+              <label>Gênero
+                <input id="game-genre" placeholder="Luta">
+              </label>
+            </div>
+
+            <label>Desenvolvedora
+              <input id="game-developer" placeholder="SNK">
+            </label>
+
+            <label>Descrição
+              <textarea id="game-description" rows="4" placeholder="Escreva uma descrição curta."></textarea>
+            </label>
+
+            <label>Nome exato do arquivo da ROM
+              <input id="game-rom" placeholder="kof2002.zip">
+              <small>Em Arcade e Neo Geo, normalmente a ROM permanece em ZIP.</small>
+            </label>
+
+            <label class="checkbox-label">
+              <input id="game-featured" type="checkbox">
+              Mostrar como destaque na página inicial
+            </label>
+
+            <button class="purple-button form-submit" type="submit">GERAR CADASTRO</button>
+          </div>
+        </form>
+
+        <section class="window result-panel">
+          <div class="window-title">2. COPIE O RESULTADO</div>
+          <div class="result-body">
+            <div id="folder-guide" class="folder-guide">Preencha o formulário para ver a pasta correta.</div>
+
+            <label>Bloco para o games.json
+              <textarea id="json-output" rows="22" readonly></textarea>
+            </label>
+
+            <div class="result-actions">
+              <button id="copy-button" class="purple-button" type="button">COPIAR BLOCO</button>
+              <button id="download-button" class="gray-button" type="button">BAIXAR BLOCO</button>
+            </div>
+
+            <div class="notice">
+              <strong>Atenção:</strong> esta página gera o cadastro, mas não modifica o GitHub automaticamente.
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="window tutorial-window">
+        <div class="window-title">3. PASSO A PASSO PARA PUBLICAR</div>
+        <ol>
+          <li>Crie a pasta que aparece no quadro acima.</li>
+          <li>Dentro dela, crie as pastas <code>rom</code> e <code>imagens</code>.</li>
+          <li>Coloque a ROM na pasta <code>rom</code>.</li>
+          <li>Coloque <code>capa.jpg</code>, <code>banner.jpg</code> e <code>logo.png</code> em <code>imagens</code>.</li>
+          <li>No GitHub, abra <code>dados/games.json</code> e clique no lápis para editar.</li>
+          <li>Depois do último jogo, coloque uma vírgula e cole o novo bloco.</li>
+          <li>Salve em <strong>Commit changes</strong>.</li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>Use apenas arquivos que você tenha autorização para hospedar.</span>
+      <span>RetroPlay 1.0</span>
+    </footer>
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

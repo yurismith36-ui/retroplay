@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 260">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f1f1f4"/>
+      <stop offset="1" stop-color="#bfc0c8"/>
+    </linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="8" flood-opacity=".28"/></filter>
+  </defs>
+  <path filter="url(#shadow)" fill="url(#body)" stroke="#33313c" stroke-width="8"
+    d="M90 48h340c35 0 58 22 66 53l19 79c10 42-34 73-68 45l-51-42H124l-51 42c-34 28-78-3-68-45l19-79c8-31 31-53 66-53z"/>
+  <rect x="91" y="105" width="92" height="30" rx="7" fill="#44424c"/>
+  <rect x="122" y="74" width="30" height="92" rx="7" fill="#44424c"/>
+  <circle cx="381" cy="107" r="19" fill="#7a3fa7" stroke="#352842" stroke-width="5"/>
+  <circle cx="428" cy="91" r="19" fill="#9b71c2" stroke="#352842" stroke-width="5"/>
+  <circle cx="405" cy="143" r="19" fill="#5c2c84" stroke="#352842" stroke-width="5"/>
+  <circle cx="452" cy="128" r="19" fill="#b590d4" stroke="#352842" stroke-width="5"/>
+  <rect x="231" y="113" width="42" height="13" rx="6" fill="#73727a" transform="rotate(-12 231 113)"/>
+  <rect x="292" y="113" width="42" height="13" rx="6" fill="#73727a" transform="rotate(12 292 113)"/>
+  <text x="260" y="75" font-family="monospace" font-weight="700" text-anchor="middle" fill="#514064">RETROPLAY</text>
+</svg>

@@ -1,0 +1,45 @@
+RETROPLAY 1.0 — TEMA 16 BITS
+================================
+
+CONTEÚDO
+- Site completo para GitHub Pages.
+- Tema retrô cinza e roxo inspirado na imagem de referência.
+- Player com EmulatorJS.
+- Busca, filtros por console e favoritos.
+- Página admin.html que gera o cadastro para o games.json.
+- Pastas preparadas para:
+  SNES, Game Boy, Game Boy Color, Game Boy Advance,
+  Nintendo 64, Arcade e Neo Geo.
+- Os 5 jogos SNES da versão anterior foram mantidos.
+
+COMO INSTALAR NO GITHUB
+1. Extraia este ZIP.
+2. Abra o repositório retroplay no GitHub.
+3. Envie TODO o conteúdo de dentro da pasta RetroPlay-1.0-Tema-16Bits.
+4. Substitua index.html, player.html, css, js e dados quando o GitHub perguntar.
+5. Mantenha as pastas de jogos incluídas.
+6. Aguarde alguns minutos e atualize o GitHub Pages.
+
+LINKS
+Página inicial:
+https://yurismith36-ui.github.io/retroplay/
+
+Gerador de jogos:
+https://yurismith36-ui.github.io/retroplay/admin.html
+
+Link individual de um jogo:
+https://yurismith36-ui.github.io/retroplay/player.html?id=snes-001
+
+NÚCLEOS CONFIGURADOS
+SNES: core snes
+GB e GBC: core gb
+GBA: core gba
+Nintendo 64: core n64
+Arcade e Neo Geo: core arcade (FBNeo padrão)
+
+NEO GEO
+O site está preparado, mas não inclui KOF 2002, ROM ou BIOS.
+Para usar Neo Geo, coloque uma BIOS compatível e legalmente obtida em:
+jogos/neogeo/bios/neogeo.zip
+
+Use apenas ROMs e BIOS que você tenha autorização para hospedar.

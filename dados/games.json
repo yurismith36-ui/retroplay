@@ -1,6 +1,6 @@
 [
   {
-    "id": "jogo-01",
+    "id": "snes-001",
     "nome": "Aero Fighters",
     "console": "SNES",
     "ano": "1993",
@@ -12,10 +12,12 @@
     "rom": "jogos/snes/jogo-01/rom/jogo.sfc",
     "capa": "jogos/snes/jogo-01/imagens/capa.jpg",
     "banner": "jogos/snes/jogo-01/imagens/banner.jpg",
-    "logo": "jogos/snes/jogo-01/imagens/logo.png"
+    "logo": "jogos/snes/jogo-01/imagens/logo.png",
+    "ordem": 1,
+    "adicionadoEm": "2026-07-20"
   },
   {
-    "id": "jogo-02",
+    "id": "snes-002",
     "nome": "Contra III: The Alien Wars",
     "console": "SNES",
     "ano": "1992",
@@ -27,10 +29,12 @@
     "rom": "jogos/snes/jogo-02/rom/jogo.sfc",
     "capa": "jogos/snes/jogo-02/imagens/capa.jpg",
     "banner": "jogos/snes/jogo-02/imagens/banner.jpg",
-    "logo": "jogos/snes/jogo-02/imagens/logo.png"
+    "logo": "jogos/snes/jogo-02/imagens/logo.png",
+    "ordem": 2,
+    "adicionadoEm": "2026-07-20"
   },
   {
-    "id": "jogo-03",
+    "id": "snes-003",
     "nome": "Earthworm Jim 2",
     "console": "SNES",
     "ano": "1995",
@@ -42,10 +46,12 @@
     "rom": "jogos/snes/jogo-03/rom/jogo.sfc",
     "capa": "jogos/snes/jogo-03/imagens/capa.jpg",
     "banner": "jogos/snes/jogo-03/imagens/banner.jpg",
-    "logo": "jogos/snes/jogo-03/imagens/logo.png"
+    "logo": "jogos/snes/jogo-03/imagens/logo.png",
+    "ordem": 3,
+    "adicionadoEm": "2026-07-20"
   },
   {
-    "id": "jogo-04",
+    "id": "snes-004",
     "nome": "The Mask",
     "console": "SNES",
     "ano": "1995",
@@ -57,10 +63,12 @@
     "rom": "jogos/snes/jogo-04/rom/jogo.sfc",
     "capa": "jogos/snes/jogo-04/imagens/capa.jpg",
     "banner": "jogos/snes/jogo-04/imagens/banner.jpg",
-    "logo": "jogos/snes/jogo-04/imagens/logo.png"
+    "logo": "jogos/snes/jogo-04/imagens/logo.png",
+    "ordem": 4,
+    "adicionadoEm": "2026-07-20"
   },
   {
-    "id": "jogo-05",
+    "id": "snes-005",
     "nome": "Mortal Kombat",
     "console": "SNES",
     "ano": "1993",
@@ -72,6 +80,8 @@
     "rom": "jogos/snes/jogo-05/rom/jogo.sfc",
     "capa": "jogos/snes/jogo-05/imagens/capa.jpg",
     "banner": "jogos/snes/jogo-05/imagens/banner.jpg",
-    "logo": "jogos/snes/jogo-05/imagens/logo.png"
+    "logo": "jogos/snes/jogo-05/imagens/logo.png",
+    "ordem": 5,
+    "adicionadoEm": "2026-07-20"
   }
 ]

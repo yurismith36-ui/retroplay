@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 470">
+  <defs>
+    <linearGradient id="top" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ededf1"/>
+      <stop offset="1" stop-color="#babac4"/>
+    </linearGradient>
+    <linearGradient id="front" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b7b7c1"/>
+      <stop offset="1" stop-color="#8d8e99"/>
+    </linearGradient>
+    <filter id="s"><feDropShadow dx="0" dy="18" stdDeviation="12" flood-opacity=".35"/></filter>
+  </defs>
+  <g filter="url(#s)">
+    <path d="M155 115l435-55 125 120-65 210-455-5-95-125z" fill="url(#top)" stroke="#33323d" stroke-width="10"/>
+    <path d="M195 385l455 5 65-210-12 208-58 46-430-4z" fill="url(#front)" stroke="#33323d" stroke-width="10"/>
+    <path d="M280 125l275-30 55 50-290 34z" fill="#4a3a5e"/>
+    <rect x="335" y="103" width="166" height="40" rx="8" fill="#6f4895"/>
+    <rect x="180" y="230" width="180" height="38" rx="12" fill="#d7d7dc" stroke="#595762" stroke-width="7"/>
+    <rect x="390" y="232" width="170" height="20" rx="8" fill="#63616b"/>
+    <circle cx="605" cy="246" r="17" fill="#6f4895"/>
+    <circle cx="654" cy="246" r="12" fill="#44434c"/>
+    <text x="390" y="318" font-family="monospace" font-size="34" font-weight="700" text-anchor="middle" fill="#55406c">RETROPLAY 16</text>
+  </g>
+</svg>
