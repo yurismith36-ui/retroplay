@@ -144,7 +144,7 @@ $("searchInput").oninput=event=>{
   renderCatalog();
 };
 
-fetch("data/games.json",{cache:"no-store"})
+fetch("dados/games.json",{cache:"no-store"})
   .then(response=>{
     if(!response.ok)throw new Error(`HTTP ${response.status}`);
     return response.json();
