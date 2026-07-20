@@ -1,0 +1,24 @@
+RETROPLAY — ATUALIZAÇÃO N64-001
+================================
+
+Jogo adicionado: Super Mario 64
+Sistema: Nintendo 64
+Formato verificado: .z64
+Título interno detectado: SUPER MARIO 64
+Tamanho extraído: 8.00 MiB
+SHA-256: 17ce077343c6133f8c9f2d6d6d9a4ab62c8cd2aa57c40aea1f490b4c8bb21d91
+
+COMO COLOCAR NO REPOSITÓRIO CLONADO PELO GITKRAKEN
+1. Extraia este ZIP.
+2. Abra a pasta retroplay que o GitKraken criou no computador.
+3. Copie as pastas "jogos" e "dados" deste pacote para dentro da pasta retroplay.
+4. Quando o Windows perguntar, escolha substituir o arquivo dados/games.json.
+5. Volte ao GitKraken.
+6. Os arquivos aparecerão como alterações.
+7. Faça o Commit e depois o Push.
+
+LINK DO JOGO DEPOIS DE PUBLICADO
+https://yurismith36-ui.github.io/retroplay/player.html?id=n64-001
+
+OBSERVAÇÃO
+Use apenas ROMs que você tenha autorização para hospedar.

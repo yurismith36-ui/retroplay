@@ -83,5 +83,22 @@
     "logo": "jogos/snes/jogo-05/imagens/logo.png",
     "ordem": 5,
     "adicionadoEm": "2026-07-20"
+  },
+  {
+    "id": "n64-001",
+    "nome": "Super Mario 64",
+    "console": "Nintendo 64",
+    "ano": "1996",
+    "genero": "Plataforma 3D",
+    "desenvolvedora": "Nintendo EAD",
+    "descricao": "Uma aventura de plataforma em mundos tridimensionais, com exploração, desafios e coleta de estrelas.",
+    "destaque": false,
+    "core": "n64",
+    "rom": "jogos/n64/jogo-001/rom/jogo.z64",
+    "capa": "jogos/n64/jogo-001/imagens/capa.jpg",
+    "banner": "jogos/n64/jogo-001/imagens/banner.jpg",
+    "logo": "jogos/n64/jogo-001/imagens/logo.png",
+    "ordem": 6,
+    "adicionadoEm": "2026-07-20"
   }
 ]
