@@ -154,41 +154,24 @@ function renderVault() {
   `).join("");
 }
 
-function localCalendarDayNumber(date = new Date()) {
-  return Math.floor(Date.UTC(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate()
-  ) / 86400000);
-}
-
-function dailyFeaturedGame() {
+function randomFeaturedGame() {
   if (!state.games.length) return null;
-  const index = Math.abs(localCalendarDayNumber()) % state.games.length;
-  return state.games[index];
-}
 
-function millisecondsUntilNextDay() {
-  const now = new Date();
-  const nextDay = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate() + 1,
-    0, 0, 1, 0
-  );
-  return Math.max(1000, nextDay.getTime() - now.getTime());
+  const previousId = sessionStorage.getItem("retroplay-last-featured-game");
+  const available = state.games.filter(game => game.id !== previousId);
+  const pool = available.length ? available : state.games;
+  const game = pool[Math.floor(Math.random() * pool.length)];
+
+  sessionStorage.setItem("retroplay-last-featured-game", game.id);
+  return game;
 }
 
 function scheduleFeaturedRotation() {
   clearTimeout(featuredRotationTimer);
-  featuredRotationTimer = setTimeout(() => {
-    renderFeatured();
-    scheduleFeaturedRotation();
-  }, millisecondsUntilNextDay());
 }
 
 function renderFeatured() {
-  const game = dailyFeaturedGame();
+  const game = randomFeaturedGame();
   if (!game) return;
 
   elements.featuredName.textContent = game.nome;

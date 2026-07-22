@@ -2341,3 +2341,221 @@ body.retro-pseudo-fullscreen .player-info {
     border-width: 3px;
   }
 }
+
+/* =========================================================
+   RETROPLAY — TEMA PRETO COMPLETO
+   ========================================================= */
+
+:root {
+  --outer: #000000;
+  --paper: #070708;
+  --paper-2: #0d0d10;
+  --paper-3: #121216;
+  --ink: #f3eff6;
+  --muted: #b7afbd;
+  --border: #4e3b58;
+  --soft-border: #312936;
+  --white: #ffffff;
+}
+
+html,
+body {
+  background: #000 !important;
+  color: #f3eff6;
+}
+
+body {
+  background-image: none !important;
+}
+
+.page-shell {
+  background: #050506 !important;
+  border-color: #2c2032;
+  outline-color: #120d16;
+  box-shadow:
+    0 18px 55px rgba(0,0,0,.95),
+    inset 0 0 0 2px #1b1220;
+}
+
+.site-header,
+.compact-header {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(116,55,151,.16), transparent 35%),
+    linear-gradient(#0d0c10, #030304) !important;
+  border-bottom-color: #4c285e;
+}
+
+.logo-title,
+.logo-subtitle,
+.welcome {
+  color: #f5edf9;
+}
+
+.logo-title {
+  text-shadow:
+    2px 2px 0 #5b2c73,
+    4px 4px 0 #000;
+}
+
+.utility-btn,
+.nav-tab,
+.console-filter,
+.sort-select,
+.search-box,
+.arena-form-panel input,
+.room-create-form select {
+  color: #eee9f1;
+  border-color: #594363;
+  background: linear-gradient(#17151b, #08080a) !important;
+  box-shadow:
+    inset 0 0 0 2px #211b25,
+    3px 3px 0 #000;
+}
+
+.main-nav,
+.library-toolbar,
+.site-footer {
+  background: #050506 !important;
+}
+
+.main-nav {
+  border-color: #38243f;
+}
+
+.window,
+.sidebar-card,
+.library-window,
+.featured-window,
+.console-window,
+.arena-room-card,
+.arena-roadmap,
+.active-room-window {
+  color: #f4eff6;
+  background: #070708 !important;
+  border-color: #46334f;
+}
+
+.window-title {
+  color: #fff;
+  background: linear-gradient(#5e3178, #25102f) !important;
+  border-bottom-color: #0b080d;
+}
+
+.sidebar-title,
+.vault-list,
+.vault-game,
+.tip-card,
+.featured-label,
+.feature-copy,
+.console-grid,
+.library-toolbar,
+.games-grid,
+.arena-form-panel,
+.room-card-body,
+.active-room-layout,
+.roadmap-grid,
+.arena-hero-body {
+  background-color: #070708 !important;
+  color: #f4eff6;
+}
+
+.vault-game,
+.console-filter,
+.game-card,
+.sidebar-card,
+.tip-card {
+  border-color: #3d2e45;
+}
+
+.vault-game:hover,
+.console-filter:hover {
+  background: #17101d !important;
+}
+
+.tip-card p,
+.feature-copy li,
+.room-game-preview small,
+.room-game-preview span,
+.roadmap-step small,
+.arena-start-box p,
+.arena-hero p {
+  color: #c9c1cd;
+}
+
+.search-box input,
+.arena-form-panel input {
+  color: #fff;
+  background: #020203 !important;
+}
+
+.search-box input::placeholder,
+.arena-form-panel input::placeholder {
+  color: #8d8492;
+}
+
+.game-card {
+  background: #050506;
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.75),
+    inset 0 0 0 1px rgba(174,86,221,.12);
+}
+
+.card-cover {
+  background: #030304;
+}
+
+.feature-copy,
+.arena-room-card,
+.player-slot,
+.roadmap-step,
+.server-status {
+  background:
+    radial-gradient(circle at 75% 15%, rgba(100,42,127,.13), transparent 35%),
+    linear-gradient(145deg, #0c0b0f, #030304) !important;
+}
+
+.feature-copy h2,
+.active-room-game h2,
+.room-game-preview strong,
+.arena-hero h1,
+.roadmap-step b {
+  color: #b35de8;
+}
+
+.featured-layout,
+.site-main,
+.home-layout,
+.library-section {
+  background: #000 !important;
+}
+
+/* O cenário deve ficar visível atrás da capa. */
+.featured-art {
+  background-image:
+    linear-gradient(rgba(0,0,0,.12), rgba(0,0,0,.34)),
+    var(--console-corner-background, linear-gradient(145deg, #170b20, #020203)) !important;
+}
+
+/* Garante capa com contorno preto, sem branco. */
+.featured-art > #featured-banner {
+  border-color: #000 !important;
+  outline-color: rgba(132,55,172,.72) !important;
+  box-shadow:
+    0 17px 36px rgba(0,0,0,.86),
+    0 0 0 3px #000 !important;
+}
+
+.site-footer {
+  color: #cfc6d3;
+  border-top-color: #41244d;
+}
+
+@media (max-width: 820px) {
+  .page-shell {
+    width: 100%;
+    margin: 0;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-radius: 0;
+  }
+}
