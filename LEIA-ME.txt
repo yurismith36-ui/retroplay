@@ -1,53 +1,21 @@
-RETROPLAY ARENA — FASE 1: SALAS
+RETROPLAY ARENA — CORREÇÃO DO CONVITE
 
-O QUE ESTA ATUALIZAÇÃO ADICIONA
-- Nova aba SALAS ONLINE no menu.
-- Página salas.html.
-- Sala 1, Sala 2 e Sala 3.
-- Escolha de jogo diretamente do dados/games.json.
-- Nome do Jogador 1 e Jogador 2.
-- Código de sala com 6 caracteres.
-- Link de convite para copiar.
-- Estado LIVRE, AGUARDANDO, PREPARANDO e PRONTOS.
-- Botão FICAR PRONTO.
-- Simulação de Jogador 2.
-- Teste real entre duas abas do mesmo navegador.
-- Botão para abrir o jogo local depois que os dois estiverem prontos.
+PROBLEMA CORRIGIDO
+Antes, o botão COPIAR CONVITE copiava uma frase junto com o endereço.
+Ao colar tudo na barra do navegador, o Google fazia uma pesquisa.
 
-IMPORTANTE
-Esta é a FASE 1. As salas funcionam entre abas do mesmo navegador porque usam
-o armazenamento local do site. Seu amigo em outro celular ou computador ainda
-não aparecerá em tempo real. Para isso, a FASE 2 conectará um servidor online.
+AGORA
+O botão copia SOMENTE o link da sala.
+Você pode colar diretamente na barra de endereço e pressionar Enter.
 
-COMO TESTAR
-1. Abra salas.html.
-2. Digite seu nome.
-3. Crie uma sala e escolha Mortal Kombat.
-4. Copie o convite.
-5. Abra o link em outra aba do mesmo navegador.
-6. Na segunda aba, troque o nome e entre como Jogador 2.
-7. Marque PRONTO nas duas abas.
-8. O botão ABRIR JOGO LOCAL será liberado.
-
-COMO INSTALAR PELO GITHUB
+COMO INSTALAR
 1. Extraia este ZIP.
-2. Abra o repositório RetroPlay.
-3. Clique em Add file > Upload files.
-4. Envie:
-   - index.html
-   - salas.html
-   - css/style.css
-   - js/salas.js
-5. Confirme em Commit changes.
+2. No repositório RetroPlay, abra a pasta js.
+3. Envie o arquivo salas.js.
+4. Substitua o arquivo antigo.
+5. Clique em Commit changes.
 6. Aguarde alguns minutos.
 7. Atualize o site com Ctrl + F5.
 
-ARQUIVOS ALTERADOS
-- index.html
-- css/style.css
-
-ARQUIVOS NOVOS
-- salas.html
-- js/salas.js
-
-Esta atualização não altera ROMs, capas, player.html, player.js ou games.json.
+IMPORTANTE
+Na Fase 1, a sala ainda funciona apenas em outra aba do mesmo navegador.

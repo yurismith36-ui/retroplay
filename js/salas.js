@@ -323,15 +323,18 @@ function leaveRoom() {
 async function copyInvite() {
   const room = currentRoom();
   if (!room?.host) return;
-  const text = `Entre na minha sala do RetroPlay Arena!\nSala ${room.number} — Código ${room.code}\n${roomInviteUrl(room)}`;
+
+  // Copia somente o link para que ele possa ser colado
+  // diretamente na barra de endereço, sem virar pesquisa no Google.
+  const inviteLink = roomInviteUrl(room);
 
   try {
-    await navigator.clipboard.writeText(text);
+    await navigator.clipboard.writeText(inviteLink);
     const original = arenaElements.copyInvite.textContent;
-    arenaElements.copyInvite.textContent = "CONVITE COPIADO!";
+    arenaElements.copyInvite.textContent = "LINK COPIADO!";
     setTimeout(() => arenaElements.copyInvite.textContent = original, 1600);
   } catch (error) {
-    prompt("Copie o convite:", text);
+    prompt("Copie somente este link:", inviteLink);
   }
 }
 
