@@ -1,28 +1,22 @@
-RETROPLAY — CORREÇÃO DO BACKGROUND DO DESTAQUE
+RETROPLAY — CORREÇÃO FINAL DO BACKGROUND
 
-PROBLEMA
-O iPhone não estava encontrando ou carregando os arquivos da pasta de backgrounds.
-Por isso, aparecia apenas o fundo preto atrás da capa.
+O problema era uma regra do CSS com !important que estava cobrindo a imagem
+definida pelo JavaScript. Por isso aparecia apenas o fundo preto.
 
-CORREÇÃO
-- Os três backgrounds agora estão embutidos dentro do arquivo js/console-corner.js.
-- Não dependem mais da pasta imagens/backgrounds.
-- O fundo aparece mesmo quando o navegador mantém arquivos antigos em cache.
-- Continua escolhendo um dos três fundos ao abrir ou atualizar a página.
-- Evita repetir imediatamente o mesmo fundo.
-- Mantém o tema preto completo e a troca aleatória do jogo em destaque.
+Nesta correção:
+- o JavaScript aplica a imagem com prioridade máxima;
+- a regra antiga que forçava o preto foi removida;
+- os três fundos continuam embutidos no JavaScript;
+- o jogo e o cenário continuam mudando ao atualizar a página.
 
-ARQUIVOS PARA SUBSTITUIR
+SUBSTITUA:
 - index.html
 - css/style.css
 - js/app.js
 - js/console-corner.js
 
-COMO INSTALAR
-1. Extraia este ZIP.
-2. No GitHub, envie index.html e as pastas css e js.
-3. Aceite substituir os arquivos antigos.
-4. Clique em Commit changes.
-5. Aguarde de 1 a 3 minutos.
-6. No iPhone, feche completamente a aba.
-7. Abra novamente o endereço do RetroPlay.
+Depois do commit:
+1. Aguarde alguns minutos.
+2. No iPhone, feche completamente a aba.
+3. Abra novamente o site.
+4. Atualize uma vez.

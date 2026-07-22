@@ -20,11 +20,14 @@
 
     const theme = chooseTheme();
 
-    featuredArt.style.backgroundImage =
-      `linear-gradient(rgba(0,0,0,.10), rgba(0,0,0,.30)), url("${theme.imagem}")`;
-    featuredArt.style.backgroundSize = "cover";
-    featuredArt.style.backgroundPosition = "center";
-    featuredArt.style.backgroundRepeat = "no-repeat";
+    featuredArt.style.setProperty(
+      "background-image",
+      `linear-gradient(rgba(0,0,0,.10), rgba(0,0,0,.30)), url("${theme.imagem}")`,
+      "important"
+    );
+    featuredArt.style.setProperty("background-size", "cover", "important");
+    featuredArt.style.setProperty("background-position", "center center", "important");
+    featuredArt.style.setProperty("background-repeat", "no-repeat", "important");
     featuredArt.dataset.backgroundTheme = theme.id;
     featuredArt.setAttribute(
       "aria-label",

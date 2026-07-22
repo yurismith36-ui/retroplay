@@ -2531,9 +2531,6 @@ body {
 
 /* O cenário deve ficar visível atrás da capa. */
 .featured-art {
-  background-image:
-    linear-gradient(rgba(0,0,0,.12), rgba(0,0,0,.34)),
-    var(--console-corner-background, linear-gradient(145deg, #170b20, #020203)) !important;
 }
 
 /* Garante capa com contorno preto, sem branco. */
@@ -2589,4 +2586,22 @@ body {
   #featured-art.featured-art {
     background-position: center center !important;
   }
+}
+
+
+/* CORREÇÃO FINAL DO FUNDO DO CONSOLE CORNER
+   O JavaScript define a imagem diretamente com prioridade máxima. */
+#featured-art.featured-art {
+  background-color: #050506 !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+}
+
+#featured-art.featured-art::before {
+  opacity: .72;
+}
+
+#featured-art.featured-art::after {
+  opacity: .55;
 }
