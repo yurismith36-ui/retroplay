@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2f1d43">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>RetroPlay Arena — Salas Online</title>
+  <meta name="description" content="Salas do RetroPlay Arena para partidas retrô em dupla.">
+  <link rel="icon" href="assets/icone-controle.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header compact-header">
+      <a class="logo-area" href="index.html" aria-label="Página inicial do RetroPlay">
+        <img src="assets/controle-retro.svg" alt="" class="logo-controller">
+        <div>
+          <div class="logo-title">RETROPLAY</div>
+          <div class="logo-subtitle">JOGOS CLÁSSICOS, DIVERSÃO ETERNA</div>
+        </div>
+      </a>
+
+      <div class="header-tools">
+        <a class="utility-btn" href="index.html#biblioteca">★ Biblioteca</a>
+        <button class="utility-btn" id="arena-refresh" type="button">↻ Atualizar</button>
+        <span class="welcome">Bem-vindo à RetroPlay Arena!</span>
+      </div>
+    </header>
+
+    <nav class="main-nav" aria-label="Menu principal">
+      <a class="nav-tab" href="index.html">HOME</a>
+      <a class="nav-tab" href="index.html#biblioteca">JOGOS</a>
+      <a class="nav-tab" href="index.html#consoles">CONSOLES</a>
+      <a class="nav-tab active arena-nav" href="salas.html">SALAS ONLINE</a>
+      <a class="nav-tab memory-nav" href="limpar.html">LIMPAR MEMÓRIA</a>
+    </nav>
+
+    <main class="arena-main">
+      <section class="window arena-hero">
+        <div class="window-title">
+          <span>🌐 RETROPLAY ARENA</span>
+          <span class="arena-version">FASE 1</span>
+        </div>
+
+        <div class="arena-hero-body">
+          <div>
+            <span class="arena-kicker">MINI FIGHTCADE DO RETROPLAY</span>
+            <h1>Crie uma sala, escolha o jogo e convide seu amigo.</h1>
+            <p>A estrutura de salas já está pronta para receber o servidor online e o netplay na próxima fase.</p>
+          </div>
+
+          <div class="server-status local">
+            <span class="status-light"></span>
+            <div>
+              <strong>SERVIDOR DE INTERNET: AINDA NÃO CONECTADO</strong>
+              <small>Teste funcional entre duas abas do mesmo navegador.</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="invite-banner" class="arena-invite-banner hidden" role="status"></section>
+
+      <section class="arena-tools-grid">
+        <section class="window">
+          <div class="window-title small-arena-title">
+            <span>👤 SEU PERFIL</span>
+          </div>
+          <div class="arena-form-panel">
+            <label>
+              <span>SEU NOME NA ARENA</span>
+              <input id="arena-nickname" type="text" maxlength="18" placeholder="Ex.: Yuri">
+            </label>
+            <button id="save-nickname" class="purple-button arena-button" type="button">SALVAR NOME</button>
+          </div>
+        </section>
+
+        <section class="window">
+          <div class="window-title small-arena-title">
+            <span>🔑 ENTRAR POR CÓDIGO</span>
+          </div>
+          <div class="arena-form-panel arena-code-panel">
+            <label>
+              <span>CÓDIGO DA SALA</span>
+              <input id="room-code-input" type="text" maxlength="6" placeholder="ABC123" autocomplete="off">
+            </label>
+            <button id="open-room-code" class="purple-button arena-button" type="button">PROCURAR SALA</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="window arena-rooms-window">
+        <div class="window-title">
+          <span>🕹 SALAS DISPONÍVEIS</span>
+          <span id="arena-room-summary">3 SALAS</span>
+        </div>
+
+        <div class="arena-help-strip">
+          <strong>COMO TESTAR AGORA:</strong>
+          crie uma sala, copie o convite e abra o link em outra aba deste mesmo navegador.
+          Na outra aba, use outro nome e entre como Jogador 2.
+        </div>
+
+        <div id="arena-rooms" class="arena-rooms-grid"></div>
+      </section>
+
+      <section id="active-room-panel" class="window active-room-window hidden">
+        <div class="window-title">
+          <span id="active-room-heading">🎮 SALA</span>
+          <button id="close-room-panel" class="window-title-button" type="button">FECHAR PAINEL</button>
+        </div>
+
+        <div class="active-room-layout">
+          <div class="active-room-game">
+            <img id="active-game-cover" alt="Capa do jogo escolhido">
+            <div>
+              <span id="active-room-status" class="room-status-pill">AGUARDANDO</span>
+              <h2 id="active-game-name">Jogo</h2>
+              <p id="active-game-meta">Console</p>
+              <div class="room-code-box">
+                <small>CÓDIGO DA SALA</small>
+                <strong id="active-room-code">------</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="arena-versus">
+            <article class="player-slot" id="host-slot">
+              <span class="player-number">JOGADOR 1</span>
+              <strong id="host-name">Aguardando...</strong>
+              <small id="host-ready">NÃO PRONTO</small>
+            </article>
+
+            <div class="versus-badge">VS</div>
+
+            <article class="player-slot" id="guest-slot">
+              <span class="player-number">JOGADOR 2</span>
+              <strong id="guest-name">Aguardando amigo...</strong>
+              <small id="guest-ready">SEM JOGADOR</small>
+            </article>
+          </div>
+
+          <div class="active-room-actions">
+            <button id="toggle-ready" class="purple-button arena-button" type="button">FICAR PRONTO</button>
+            <button id="copy-invite" class="arena-secondary-button" type="button">COPIAR CONVITE</button>
+            <button id="simulate-player-two" class="arena-secondary-button" type="button">SIMULAR JOGADOR 2</button>
+            <button id="leave-room" class="arena-danger-button" type="button">SAIR DA SALA</button>
+          </div>
+
+          <div class="arena-start-box">
+            <button id="start-local-game" class="arena-start-button" type="button" disabled>
+              ABRIR JOGO LOCAL
+            </button>
+            <p>O jogo abre nos dois aparelhos somente na Fase 2. Nesta fase, o botão serve para testar o caminho até o player, sem sincronizar os controles.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="window arena-roadmap">
+        <div class="window-title">
+          <span>🚧 PRÓXIMAS ETAPAS</span>
+          <span>RUMO AO NETPLAY</span>
+        </div>
+        <div class="roadmap-grid">
+          <article class="roadmap-step done">
+            <strong>1</strong>
+            <div><b>SALAS E CONVITES</b><small>Interface, códigos, jogadores e estado “pronto”.</small></div>
+          </article>
+          <article class="roadmap-step">
+            <strong>2</strong>
+            <div><b>SERVIDOR ONLINE</b><small>Sincronizar as salas entre celulares e computadores diferentes.</small></div>
+          </article>
+          <article class="roadmap-step">
+            <strong>3</strong>
+            <div><b>NETPLAY DO EMULADOR</b><small>Conectar os controles do Jogador 1 e Jogador 2.</small></div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>♥ RetroPlay Arena — estrutura criada para partidas em dupla.</span>
+      <span>Fase 1</span>
+    </footer>
+  </div>
+
+  <script src="js/salas.js"></script>
+</body>
+</html>

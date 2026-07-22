@@ -1,33 +1,53 @@
-RETROPLAY — ATUALIZAÇÃO DE MEMÓRIA, DESTAQUE DIÁRIO E IPHONE
+RETROPLAY ARENA — FASE 1: SALAS
 
-ARQUIVOS INCLUÍDOS
-- index.html
-- player.html
-- limpar.html (novo)
-- css/style.css
-- js/app.js
-- js/player.js
+O QUE ESTA ATUALIZAÇÃO ADICIONA
+- Nova aba SALAS ONLINE no menu.
+- Página salas.html.
+- Sala 1, Sala 2 e Sala 3.
+- Escolha de jogo diretamente do dados/games.json.
+- Nome do Jogador 1 e Jogador 2.
+- Código de sala com 6 caracteres.
+- Link de convite para copiar.
+- Estado LIVRE, AGUARDANDO, PREPARANDO e PRONTOS.
+- Botão FICAR PRONTO.
+- Simulação de Jogador 2.
+- Teste real entre duas abas do mesmo navegador.
+- Botão para abrir o jogo local depois que os dois estiverem prontos.
 
-O QUE MUDA
-1. A aba ADICIONAR JOGO vira LIMPAR MEMÓRIA.
-2. Ao limpar, o site abre uma tela preta e descarrega as referências da ROM e do emulador.
-3. Ao sair do player pelo botão VOLTAR, a memória do emulador também é liberada.
-4. O jogo em destaque muda automaticamente uma vez por dia, usando a data do aparelho.
-5. A área de destaque mostra a CAPA do jogo, não o desenho do console.
-6. O botão TELA CHEIA tenta a tela cheia real e usa um modo alternativo no iPhone quando necessário.
-7. O tema de capas que você aprovou foi mantido.
+IMPORTANTE
+Esta é a FASE 1. As salas funcionam entre abas do mesmo navegador porque usam
+o armazenamento local do site. Seu amigo em outro celular ou computador ainda
+não aparecerá em tempo real. Para isso, a FASE 2 conectará um servidor online.
+
+COMO TESTAR
+1. Abra salas.html.
+2. Digite seu nome.
+3. Crie uma sala e escolha Mortal Kombat.
+4. Copie o convite.
+5. Abra o link em outra aba do mesmo navegador.
+6. Na segunda aba, troque o nome e entre como Jogador 2.
+7. Marque PRONTO nas duas abas.
+8. O botão ABRIR JOGO LOCAL será liberado.
 
 COMO INSTALAR PELO GITHUB
 1. Extraia este ZIP.
-2. Abra o seu repositório RetroPlay no GitHub.
+2. Abra o repositório RetroPlay.
 3. Clique em Add file > Upload files.
-4. Envie os arquivos e pastas extraídos, mantendo os nomes e pastas.
+4. Envie:
+   - index.html
+   - salas.html
+   - css/style.css
+   - js/salas.js
 5. Confirme em Commit changes.
-6. Aguarde de 1 a 3 minutos.
-7. Abra o site e pressione Ctrl + F5 no computador.
+6. Aguarde alguns minutos.
+7. Atualize o site com Ctrl + F5.
 
-IMPORTANTE
-- Não apaga ROMs, capas, jogos nem o arquivo dados/games.json.
-- Não apaga favoritos nem saves armazenados pelo navegador.
-- O antigo admin.html continua no site e pode ser aberto diretamente pelo endereço /admin.html.
-- No iPhone, o modo alternativo ocupa toda a área disponível. Para esconder também as barras do Safari em versões que limitam a tela cheia, abra o site pela opção Adicionar à Tela de Início.
+ARQUIVOS ALTERADOS
+- index.html
+- css/style.css
+
+ARQUIVOS NOVOS
+- salas.html
+- js/salas.js
+
+Esta atualização não altera ROMs, capas, player.html, player.js ou games.json.
