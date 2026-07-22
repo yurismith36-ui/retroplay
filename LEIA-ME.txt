@@ -1,40 +1,38 @@
-RETROPLAY — ATUALIZAÇÃO 003 — 6 JOGOS DE SNES COM AS CAPAS DO USUÁRIO
+RETROPLAY — CONSOLE CORNER COM 3 FUNDOS ALEATÓRIOS
 
-ESTE PACOTE JÁ VEM PRONTO COM:
-- as 6 ROMs;
-- as capas que você enviou no arquivo capas_snes_3d_fundo_preto.zip;
-- banner e logo para cada jogo;
-- dados/games.json atualizado.
+ALTERAÇÕES
+- Três cenários:
+  1. Locadora moderna
+  2. Galáxia
+  3. Locadora vintage
+- Um cenário diferente é escolhido sempre que a página inicial é carregada.
+- O script evita repetir imediatamente o mesmo cenário.
+- Borda branca da capa removida.
+- Nova borda preta com sombra.
+- Área de informações com fundo escuro, conforme as imagens aprovadas.
+- Mantém o jogo em destaque mudando diariamente.
+- Responsivo para computador e celular.
 
-JOGOS INCLUÍDOS
-1. Marvel Super Heroes: War of the Gems
-2. Secret of Evermore
-3. Sunset Riders
-4. Super Mario World
-5. Mortal Kombat II
-6. Ultimate Mortal Kombat 3
-
-ESTRUTURA
-- jogo-06 até jogo-11
-- cada jogo contém:
-  rom/
-  imagens/capa.png
-  imagens/banner.jpg
-  imagens/logo.png
+ARQUIVOS
+- index.html
+- css/style.css
+- js/app.js
+- js/console-corner.js
+- imagens/backgrounds/locadora-moderna.jpg
+- imagens/backgrounds/galaxia.jpg
+- imagens/backgrounds/locadora-vintage.jpg
 
 COMO INSTALAR
-1. Baixe e extraia este ZIP.
+1. Extraia este ZIP.
 2. Abra o repositório RetroPlay no GitHub.
 3. Clique em Add file > Upload files.
-4. Envie as pastas:
-   - dados
-   - jogos
-5. Aceite substituir dados/games.json.
+4. Envie index.html e as pastas css, js e imagens.
+5. Aceite substituir os arquivos existentes.
 6. Clique em Commit changes.
-7. Aguarde alguns minutos.
-8. Atualize o site com Ctrl + F5.
+7. Aguarde de 1 a 3 minutos.
+8. Abra a página inicial e pressione Ctrl + F5.
 
-IMPORTANTE
-- Você disse que ainda não colocou esses 6 jogos no site.
-- Então este pacote já vem pronto para adicionar ROM + capa junto, tudo de uma vez.
-- Não precisa usar o pacote anterior dos 6 jogos.
+NÃO ALTERA
+- ROMs
+- dados/games.json
+- capas individuais dos jogos
