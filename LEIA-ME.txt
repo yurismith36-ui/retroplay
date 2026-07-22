@@ -1,38 +1,28 @@
-RETROPLAY — CORREÇÃO DO DESTAQUE + TEMA PRETO COMPLETO
+RETROPLAY — CORREÇÃO DO BACKGROUND DO DESTAQUE
 
-CORREÇÕES
-- O jogo em destaque agora muda sempre que a página inicial é carregada.
-- O sistema evita repetir imediatamente o mesmo jogo.
-- Os três fundos do Console Corner continuam mudando aleatoriamente.
-- O sistema também evita repetir imediatamente o mesmo fundo.
-- Todo o fundo do site agora é preto.
-- Caixas, cabeçalho, biblioteca e menus foram adaptados para o tema escuro.
-- Mantém os detalhes roxos do RetroPlay.
-- A capa continua com borda preta, sem contorno branco.
+PROBLEMA
+O iPhone não estava encontrando ou carregando os arquivos da pasta de backgrounds.
+Por isso, aparecia apenas o fundo preto atrás da capa.
 
-ARQUIVOS
+CORREÇÃO
+- Os três backgrounds agora estão embutidos dentro do arquivo js/console-corner.js.
+- Não dependem mais da pasta imagens/backgrounds.
+- O fundo aparece mesmo quando o navegador mantém arquivos antigos em cache.
+- Continua escolhendo um dos três fundos ao abrir ou atualizar a página.
+- Evita repetir imediatamente o mesmo fundo.
+- Mantém o tema preto completo e a troca aleatória do jogo em destaque.
+
+ARQUIVOS PARA SUBSTITUIR
 - index.html
 - css/style.css
 - js/app.js
 - js/console-corner.js
-- imagens/backgrounds/
 
 COMO INSTALAR
 1. Extraia este ZIP.
-2. Abra seu repositório RetroPlay no GitHub.
-3. Clique em Add file > Upload files.
-4. Envie index.html e as pastas css, js e imagens.
-5. Aceite substituir os arquivos existentes.
-6. Clique em Commit changes.
-7. Aguarde de 1 a 3 minutos.
-8. No iPhone, feche a aba e abra o site novamente.
-9. No computador, pressione Ctrl + F5.
-
-COMO TESTAR
-- Recarregue a página inicial.
-- A capa do jogo em destaque deve mudar.
-- O cenário atrás da capa também deve mudar.
-- O site inteiro deve aparecer com fundo preto.
-
-IMPORTANTE
-Esta atualização não altera ROMs, games.json ou capas individuais.
+2. No GitHub, envie index.html e as pastas css e js.
+3. Aceite substituir os arquivos antigos.
+4. Clique em Commit changes.
+5. Aguarde de 1 a 3 minutos.
+6. No iPhone, feche completamente a aba.
+7. Abra novamente o endereço do RetroPlay.
