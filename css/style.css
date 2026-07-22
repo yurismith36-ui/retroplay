@@ -2182,3 +2182,49 @@ body.retro-pseudo-fullscreen .player-info {
     width: 100%;
   }
 }
+
+/* Correção V2 do convite: mostra o endereço verdadeiro na tela. */
+.arena-invite-link-panel {
+  display: grid;
+  gap: 7px;
+  width: min(100%, 900px);
+  margin: 0 auto;
+  padding: 12px;
+  border: 2px solid #5b3a70;
+  background: #eee5f4;
+  box-shadow: inset 0 0 0 2px #fff;
+}
+
+.arena-invite-link-panel label {
+  color: #442956;
+  font-family: var(--pixel-font);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.arena-invite-link-panel > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.arena-invite-link-panel input {
+  min-width: 0;
+  min-height: 43px;
+  padding: 9px 10px;
+  border: 2px solid #443a4b;
+  color: #241d29;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+}
+
+@media (max-width: 650px) {
+  .arena-invite-link-panel > div {
+    grid-template-columns: 1fr;
+  }
+
+  .arena-invite-link-panel button {
+    width: 100%;
+  }
+}

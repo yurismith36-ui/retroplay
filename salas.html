@@ -143,9 +143,17 @@
             </article>
           </div>
 
+          <div class="arena-invite-link-panel">
+            <label for="active-invite-link">LINK DO CONVITE — COPIE SOMENTE ESTE ENDEREÇO</label>
+            <div>
+              <input id="active-invite-link" type="text" readonly aria-label="Link do convite da sala">
+              <button id="open-invite-link" class="arena-secondary-button" type="button">ABRIR LINK</button>
+            </div>
+          </div>
+
           <div class="active-room-actions">
             <button id="toggle-ready" class="purple-button arena-button" type="button">FICAR PRONTO</button>
-            <button id="copy-invite" class="arena-secondary-button" type="button">COPIAR CONVITE</button>
+            <button id="copy-invite" class="arena-secondary-button" type="button">COPIAR SOMENTE O LINK</button>
             <button id="simulate-player-two" class="arena-secondary-button" type="button">SIMULAR JOGADOR 2</button>
             <button id="leave-room" class="arena-danger-button" type="button">SAIR DA SALA</button>
           </div>
@@ -187,6 +195,6 @@
     </footer>
   </div>
 
-  <script src="js/salas.js"></script>
+  <script src="js/salas.js?v=20260722-2"></script>
 </body>
 </html>

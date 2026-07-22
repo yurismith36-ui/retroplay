@@ -1,21 +1,33 @@
-RETROPLAY ARENA — CORREÇÃO DO CONVITE
+RETROPLAY ARENA — CORREÇÃO DO CONVITE V2
 
-PROBLEMA CORRIGIDO
-Antes, o botão COPIAR CONVITE copiava uma frase junto com o endereço.
-Ao colar tudo na barra do navegador, o Google fazia uma pesquisa.
+O endereço que começa com:
+https://www.google.com/search?q=Entre+na+minha+sala...
 
-AGORA
-O botão copia SOMENTE o link da sala.
-Você pode colar diretamente na barra de endereço e pressionar Enter.
+é a página de pesquisa criada pelo código antigo. Ele não é o convite.
 
-COMO INSTALAR
-1. Extraia este ZIP.
-2. No repositório RetroPlay, abra a pasta js.
-3. Envie o arquivo salas.js.
-4. Substitua o arquivo antigo.
-5. Clique em Commit changes.
-6. Aguarde alguns minutos.
-7. Atualize o site com Ctrl + F5.
+ESTA CORREÇÃO:
+- força o navegador a carregar uma nova versão do salas.js;
+- muda o botão para COPIAR SOMENTE O LINK;
+- mostra o link verdadeiro dentro da própria sala;
+- adiciona o botão ABRIR LINK;
+- usa uma segunda forma de copiar caso o navegador bloqueie a área de transferência.
 
-IMPORTANTE
-Na Fase 1, a sala ainda funciona apenas em outra aba do mesmo navegador.
+ARQUIVOS QUE DEVEM SER SUBSTITUÍDOS:
+- salas.html
+- js/salas.js
+- css/style.css
+
+COMO INSTALAR:
+1. Extraia o ZIP.
+2. No GitHub, envie os três arquivos mantendo as pastas.
+3. Confirme em Commit changes.
+4. Aguarde de 1 a 3 minutos.
+5. Abra salas.html e pressione Ctrl + F5.
+6. Crie uma sala nova.
+7. O botão deve mostrar COPIAR SOMENTE O LINK.
+8. Ao clicar, ele deve mudar temporariamente para LINK COPIADO!
+
+O link correto sempre começa com:
+https://yurismith36-ui.github.io/retroplay/salas.html?
+
+Não copie o endereço da página do Google.

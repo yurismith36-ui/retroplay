@@ -49,7 +49,9 @@ const arenaElements = {
   leaveRoom: document.querySelector("#leave-room"),
   closePanel: document.querySelector("#close-room-panel"),
   startLocal: document.querySelector("#start-local-game"),
-  inviteBanner: document.querySelector("#invite-banner")
+  inviteBanner: document.querySelector("#invite-banner"),
+  inviteLink: document.querySelector("#active-invite-link"),
+  openInviteLink: document.querySelector("#open-invite-link")
 };
 
 function escapeHtml(value = "") {
@@ -324,18 +326,44 @@ async function copyInvite() {
   const room = currentRoom();
   if (!room?.host) return;
 
-  // Copia somente o link para que ele possa ser colado
-  // diretamente na barra de endereço, sem virar pesquisa no Google.
   const inviteLink = roomInviteUrl(room);
+
+  if (arenaElements.inviteLink) {
+    arenaElements.inviteLink.value = inviteLink;
+  }
+
+  let copied = false;
 
   try {
     await navigator.clipboard.writeText(inviteLink);
-    const original = arenaElements.copyInvite.textContent;
-    arenaElements.copyInvite.textContent = "LINK COPIADO!";
-    setTimeout(() => arenaElements.copyInvite.textContent = original, 1600);
+    copied = true;
   } catch (error) {
-    prompt("Copie somente este link:", inviteLink);
+    if (arenaElements.inviteLink) {
+      arenaElements.inviteLink.focus();
+      arenaElements.inviteLink.select();
+      arenaElements.inviteLink.setSelectionRange(0, inviteLink.length);
+
+      try {
+        copied = document.execCommand("copy");
+      } catch (fallbackError) {
+        copied = false;
+      }
+    }
   }
+
+  const original = arenaElements.copyInvite.textContent;
+
+  if (copied) {
+    arenaElements.copyInvite.textContent = "LINK COPIADO!";
+  } else {
+    arenaElements.copyInvite.textContent = "SELECIONE O LINK ACIMA";
+    arenaElements.inviteLink?.focus();
+    arenaElements.inviteLink?.select();
+  }
+
+  setTimeout(() => {
+    arenaElements.copyInvite.textContent = original;
+  }, 1900);
 }
 
 function openRoomByCode() {
@@ -472,6 +500,9 @@ function renderActiveRoom() {
   arenaElements.activeStatus.textContent = status.label;
   arenaElements.activeStatus.className = `room-status-pill ${status.key}`;
   arenaElements.activeCode.textContent = room.code;
+  if (arenaElements.inviteLink) {
+    arenaElements.inviteLink.value = roomInviteUrl(room);
+  }
   arenaElements.activeGameName.textContent = game?.nome || "Jogo não encontrado";
   arenaElements.activeGameMeta.textContent = `${game?.console || "Console"} • ${game?.ano || "Clássico"}`;
   arenaElements.activeCover.src = game?.capa || placeholderCover(game?.nome || "Jogo");
@@ -604,6 +635,17 @@ arenaElements.codeInput.addEventListener("keydown", event => {
 
 arenaElements.toggleReady.addEventListener("click", toggleReady);
 arenaElements.copyInvite.addEventListener("click", copyInvite);
+
+arenaElements.inviteLink?.addEventListener("click", event => {
+  event.currentTarget.select();
+});
+
+arenaElements.openInviteLink?.addEventListener("click", () => {
+  const room = currentRoom();
+  if (!room?.host) return;
+  window.open(roomInviteUrl(room), "_blank", "noopener");
+});
+
 arenaElements.simulatePlayerTwo.addEventListener("click", simulatePlayerTwo);
 arenaElements.leaveRoom.addEventListener("click", leaveRoom);
 arenaElements.closePanel.addEventListener("click", () => {
