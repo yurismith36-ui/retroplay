@@ -1,30 +1,29 @@
-RETROPLAY V7 — COMPLETO DO ZERO
+RETROPLAY — ATUALIZAÇÃO DO TEMA DAS CAPAS
 
-CONTEÚDO
-- Site completo
-- Catálogo com 5 jogos
-- Player EmulatorJS configurado
-- 5 ROMs enviadas por você
-- Capas, banners e logos originais de identificação
-- Estrutura pronta para futuras atualizações
+Esta atualização deixa a biblioteca parecida com a imagem enviada:
+- 4 capas por linha em telas grandes;
+- 3 capas em telas médias;
+- 2 capas no celular;
+- título branco sobre a imagem;
+- nome do console no topo;
+- data no canto inferior;
+- cartão inteiro clicável;
+- efeito ao passar o mouse;
+- estrela de favorito preservada.
 
-INSTALAÇÃO NO GITHUB
+COMO INSTALAR PELO SITE DO GITHUB
+
 1. Extraia este ZIP no computador.
-2. Abra seu repositório retroplay.
-3. Para instalar somente o V7, remova o conteúdo antigo do repositório.
-4. Envie TODO o conteúdo que está dentro da pasta RetroPlay-V7-Completo.
-5. index.html precisa ficar na raiz do repositório.
-6. Confirme as alterações.
-7. Aguarde o GitHub Pages concluir a implantação.
-8. Abra o site e pressione Ctrl+F5.
+2. Abra o repositório RetroPlay no GitHub.
+3. Envie a pasta "css" e substitua css/style.css.
+4. Envie a pasta "js" e substitua js/app.js.
+5. Confirme em "Commit changes".
+6. Aguarde de 1 a 3 minutos.
+7. Abra o site e pressione Ctrl + F5 para atualizar sem cache.
 
-CAMINHOS IMPORTANTES
-dados/games.json
-js/app.js
-player.html
-jogos/snes/jogo-01/rom/jogo.sfc
-...
-jogos/snes/jogo-05/rom/jogo.sfc
+ARQUIVOS ALTERADOS
+- css/style.css
+- js/app.js
 
-ATUALIZAÇÕES FUTURAS
-O próximo pacote deverá começar em jogo-06 e nunca substituir jogo-01 a jogo-05.
+IMPORTANTE
+A atualização não apaga jogos, ROMs, capas nem o games.json.

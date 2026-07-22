@@ -45,6 +45,30 @@ function escapeHtml(value = "") {
     .replaceAll("'", "&#039;");
 }
 
+
+function cardConsoleLabel(consoleName = "") {
+  const labels = {
+    "SNES": "Super Nintendo SNES",
+    "Game Boy": "Nintendo Game Boy",
+    "Game Boy Color": "Game Boy Color",
+    "Game Boy Advance": "Game Boy Advance",
+    "Nintendo 64": "Nintendo 64",
+    "Arcade": "Arcade",
+    "Neo Geo": "Neo Geo"
+  };
+
+  return labels[consoleName] || consoleName || "Jogo retrô";
+}
+
+function formatCardDate(value, fallbackYear = "") {
+  if (!value) return fallbackYear || "Clássico";
+
+  const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (match) return `${match[3]}/${match[2]}/${match[1]}`;
+
+  return String(value);
+}
+
 function placeholderCover(title) {
   const safeTitle = escapeHtml(title).slice(0, 22);
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
@@ -182,7 +206,7 @@ function renderGames() {
              alt="Capa de ${escapeHtml(game.nome)}"
              loading="lazy"
              onerror="this.onerror=null;this.src='${placeholderCover(game.nome)}'">
-        <span class="card-system">${escapeHtml(game.console)}</span>
+        <span class="card-system">${escapeHtml(cardConsoleLabel(game.console))}</span>
         <button class="card-favorite ${state.favorites.has(game.id) ? "active" : ""}"
                 data-favorite="${escapeHtml(game.id)}"
                 type="button"
@@ -191,10 +215,12 @@ function renderGames() {
       <div class="card-body">
         <h3>${escapeHtml(game.nome)}</h3>
         <div class="card-meta">
-          <span>${escapeHtml(game.ano || "Clássico")}</span>
+          <span>${escapeHtml(formatCardDate(game.adicionadoEm, game.ano))}</span>
           <span>${escapeHtml(game.genero || "Jogo")}</span>
         </div>
-        <a class="card-play" href="player.html?id=${encodeURIComponent(game.id)}">JOGAR ▶</a>
+        <a class="card-play"
+           aria-label="Jogar ${escapeHtml(game.nome)}"
+           href="player.html?id=${encodeURIComponent(game.id)}">JOGAR ▶</a>
       </div>
     </article>
   `).join("");
