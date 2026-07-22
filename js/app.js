@@ -10,6 +10,8 @@ const SYSTEMS = [
   { name: "Neo Geo", label: "NEO GEO" }
 ];
 
+let featuredRotationTimer = null;
+
 const state = {
   games: [],
   console: "Todos",
@@ -90,6 +92,7 @@ async function loadCatalog() {
     if (!Array.isArray(data)) throw new Error("games.json não contém uma lista.");
     state.games = data;
     renderAll();
+    scheduleFeaturedRotation();
   } catch (error) {
     console.error(error);
     elements.grid.innerHTML = `
@@ -151,16 +154,56 @@ function renderVault() {
   `).join("");
 }
 
+function localCalendarDayNumber(date = new Date()) {
+  return Math.floor(Date.UTC(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate()
+  ) / 86400000);
+}
+
+function dailyFeaturedGame() {
+  if (!state.games.length) return null;
+  const index = Math.abs(localCalendarDayNumber()) % state.games.length;
+  return state.games[index];
+}
+
+function millisecondsUntilNextDay() {
+  const now = new Date();
+  const nextDay = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1,
+    0, 0, 1, 0
+  );
+  return Math.max(1000, nextDay.getTime() - now.getTime());
+}
+
+function scheduleFeaturedRotation() {
+  clearTimeout(featuredRotationTimer);
+  featuredRotationTimer = setTimeout(() => {
+    renderFeatured();
+    scheduleFeaturedRotation();
+  }, millisecondsUntilNextDay());
+}
+
 function renderFeatured() {
-  const game = state.games.find(item => item.destaque) || state.games[0];
+  const game = dailyFeaturedGame();
   if (!game) return;
 
   elements.featuredName.textContent = game.nome;
   elements.featuredTitle.textContent = game.nome;
-  elements.featuredBanner.src = game.banner || "";
+  elements.featuredBanner.style.display = "block";
+  elements.featuredBanner.src = game.capa || game.banner || placeholderCover(game.nome);
+  elements.featuredBanner.alt = `Capa de ${game.nome}`;
   elements.featuredBanner.onerror = () => {
-    elements.featuredBanner.style.display = "none";
+    elements.featuredBanner.onerror = null;
+    elements.featuredBanner.src = placeholderCover(game.nome);
   };
+
+  const consoleDrawing = document.querySelector(".console-placeholder");
+  if (consoleDrawing) consoleDrawing.hidden = true;
+
   elements.featuredDetails.innerHTML = `
     <li>${escapeHtml(game.console)} • ${escapeHtml(game.ano || "Ano não informado")}</li>
     <li>Gênero: ${escapeHtml(game.genero || "Não informado")}</li>
@@ -257,5 +300,22 @@ elements.favoritesTop.addEventListener("click", () => {
 });
 
 document.querySelector("#refresh-site").addEventListener("click", () => location.reload());
+
+const clearMemoryButton = document.querySelector("#clear-memory");
+if (clearMemoryButton) {
+  clearMemoryButton.addEventListener("click", () => {
+    document.body.classList.add("memory-clearing");
+    try { sessionStorage.removeItem("retroplay-rom-em-memoria"); } catch (error) {}
+    requestAnimationFrame(() => location.assign("limpar.html"));
+  });
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && state.games.length) renderFeatured();
+});
+
+window.addEventListener("pageshow", event => {
+  if (event.persisted) renderFeatured();
+});
 
 loadCatalog();

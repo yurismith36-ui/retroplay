@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Memória limpa — RetroPlay</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; min-height: 100%; background: #000; }
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      color: #fff;
+      font-family: "Courier New", monospace;
+      text-align: center;
+    }
+    main { opacity: 0; transition: opacity .25s ease; padding: 24px; }
+    body.ready main { opacity: 1; }
+    h1 { margin: 0 0 10px; font-size: clamp(22px, 6vw, 42px); }
+    p { margin: 0 0 24px; color: #bbb; line-height: 1.5; }
+    a {
+      display: inline-block;
+      padding: 12px 18px;
+      border: 2px solid #fff;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 900;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>MEMÓRIA LIMPA</h1>
+    <p>A ROM e o emulador foram descarregados da memória de execução.</p>
+    <a href="index.html">VOLTAR AO RETROPLAY</a>
+  </main>
+  <script>
+    window.stop();
+    try { performance.clearResourceTimings(); } catch (error) {}
+    try { sessionStorage.removeItem("retroplay-rom-em-memoria"); } catch (error) {}
+    setTimeout(() => document.body.classList.add("ready"), 650);
+  </script>
+</body>
+</html>
