@@ -1,22 +1,14 @@
-RETROPLAY — CORREÇÃO FINAL DO BACKGROUND
+RETROPLAY — ATUALIZAÇÃO 004 — MACE: THE DARK AGE
 
-O problema era uma regra do CSS com !important que estava cobrindo a imagem
-definida pelo JavaScript. Por isso aparecia apenas o fundo preto.
+Inclui ROM, capa, banner, logo e games.json atualizado.
 
-Nesta correção:
-- o JavaScript aplica a imagem com prioridade máxima;
-- a regra antiga que forçava o preto foi removida;
-- os três fundos continuam embutidos no JavaScript;
-- o jogo e o cenário continuam mudando ao atualizar a página.
+COMO INSTALAR
+1. Extraia este ZIP.
+2. No GitHub, envie as pastas dados e jogos.
+3. Aceite substituir dados/games.json.
+4. Faça o Commit changes.
+5. Aguarde e atualize o site.
 
-SUBSTITUA:
-- index.html
-- css/style.css
-- js/app.js
-- js/console-corner.js
-
-Depois do commit:
-1. Aguarde alguns minutos.
-2. No iPhone, feche completamente a aba.
-3. Abra novamente o site.
-4. Atualize uma vez.
+ROM: Mace - The Dark Age (USA).n64
+Tamanho: 12.00 MB
+SHA-256: 4e41e4d0290352db8e71ed523a8c71926dc495c1e68f4eadc403155b31bee37d

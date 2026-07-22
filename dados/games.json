@@ -202,5 +202,22 @@
     "logo": "jogos/snes/jogo-11/imagens/logo.png",
     "ordem": 11,
     "adicionadoEm": "2026-07-22"
+  },
+  {
+    "id": "n64-002",
+    "nome": "Mace: The Dark Age",
+    "console": "Nintendo 64",
+    "ano": "1997",
+    "genero": "Luta",
+    "desenvolvedora": "Atari Games / Midway",
+    "descricao": "Combates medievais em arenas sombrias, com guerreiros, armas e golpes especiais.",
+    "destaque": false,
+    "core": "n64",
+    "rom": "jogos/n64/jogo-002/rom/jogo.n64",
+    "capa": "jogos/n64/jogo-002/imagens/capa.png",
+    "banner": "jogos/n64/jogo-002/imagens/banner.jpg",
+    "logo": "jogos/n64/jogo-002/imagens/logo.png",
+    "ordem": 13,
+    "adicionadoEm": "2026-07-22"
   }
 ]
