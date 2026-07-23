@@ -2686,3 +2686,25 @@ img {
     transition: none !important;
   }
 }
+
+/* =========================================================
+   RETROPLAY PERFORMANCE 2.1 — CORREÇÃO DO CONSOLE CORNER
+   ========================================================= */
+#featured-art.featured-art {
+  background-color: #09070b !important;
+  transition: filter .25s ease, opacity .25s ease;
+}
+
+#featured-art.console-corner-loading {
+  filter: brightness(.72);
+}
+
+#featured-art.console-corner-ready {
+  filter: none;
+}
+
+#featured-art.console-corner-error {
+  background-image:
+    radial-gradient(circle at center, rgba(126,81,165,.28), transparent 55%),
+    linear-gradient(145deg, #1a1221, #050506) !important;
+}

@@ -1,14 +1,14 @@
-const CACHE_VERSION = "retroplay-performance-2-v1";
+const CACHE_VERSION = "retroplay-performance-2-1-1-v1";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./css/style.css?v=performance-2",
-  "./js/boot.js?v=performance-2",
-  "./js/app.js?v=performance-2",
-  "./js/console-corner.js?v=performance-2",
+  "./css/style.css?v=performance-2-1",
+  "./js/boot.js?v=performance-2-1",
+  "./js/app.js?v=performance-2-1",
+  "./js/console-corner.js?v=performance-2-1",
   "./dados/games.json",
   "./assets/icone-controle.svg",
   "./assets/controle-retro.svg",

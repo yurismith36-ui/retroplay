@@ -1,0 +1,23 @@
+RETROPLAY — CORREÇÃO PERFORMANCE 2.1
+
+Esta atualização corrige o fundo preto do Console Corner.
+
+O QUE FOI CORRIGIDO
+- O caminho das imagens agora é absoluto.
+- O fundo é aplicado diretamente ao Console Corner.
+- Se WebP falhar, o site tenta automaticamente a versão JPG.
+- O cache foi atualizado para não continuar usando o JavaScript antigo.
+- A capa do jogo e o background continuam com carregamento suave.
+
+COMO INSTALAR
+1. Extraia este ZIP.
+2. No GitHub, abra o repositório RetroPlay.
+3. Clique em Add file > Upload files.
+4. Arraste todos os arquivos e pastas que estão dentro desta atualização.
+5. Confirme em Commit changes.
+6. Aguarde 2 a 5 minutos.
+7. Abra o site e use Ctrl + F5 no computador.
+8. No celular, feche a aba do RetroPlay e abra novamente.
+
+IMPORTANTE
+Envie as pastas js e css mantendo os nomes. O GitHub perguntará se deseja substituir os arquivos existentes; confirme.
