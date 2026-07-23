@@ -18,6 +18,7 @@ const state = {
   query: "",
   sort: "recentes",
   favoritesOnly: false,
+  featuredGame: null,
   favorites: new Set(JSON.parse(localStorage.getItem("retroplay-favorites") || "[]"))
 };
 
@@ -86,11 +87,12 @@ function placeholderCover(title) {
 
 async function loadCatalog() {
   try {
-    const response = await fetch("./dados/games.json", { cache: "no-store" });
+    const response = await fetch("./dados/games.json", { cache: "no-cache" });
     if (!response.ok) throw new Error(`Erro HTTP ${response.status}`);
     const data = await response.json();
     if (!Array.isArray(data)) throw new Error("games.json não contém uma lista.");
     state.games = data;
+    state.featuredGame = randomFeaturedGame();
     renderAll();
     scheduleFeaturedRotation();
   } catch (error) {
@@ -147,6 +149,7 @@ function renderVault() {
   elements.vault.innerHTML = list.map(game => `
     <a class="vault-item" href="player.html?id=${encodeURIComponent(game.id)}">
       <img src="${escapeHtml(game.capa || "")}" alt=""
+           loading="lazy" decoding="async" width="80" height="96"
            onerror="this.onerror=null;this.src='${placeholderCover(game.nome)}'">
       <strong>${escapeHtml(game.nome)}</strong>
       <span class="vault-arrow">▶</span>
@@ -171,17 +174,33 @@ function scheduleFeaturedRotation() {
 }
 
 function renderFeatured() {
-  const game = randomFeaturedGame();
+  const game = state.featuredGame || randomFeaturedGame();
   if (!game) return;
+  state.featuredGame = game;
 
   elements.featuredName.textContent = game.nome;
   elements.featuredTitle.textContent = game.nome;
-  elements.featuredBanner.style.display = "block";
-  elements.featuredBanner.src = game.capa || game.banner || placeholderCover(game.nome);
   elements.featuredBanner.alt = `Capa de ${game.nome}`;
-  elements.featuredBanner.onerror = () => {
-    elements.featuredBanner.onerror = null;
+  elements.featuredBanner.decoding = "async";
+  elements.featuredBanner.fetchPriority = "high";
+
+  const art = document.querySelector("#featured-art");
+  const source = game.capa || game.banner || placeholderCover(game.nome);
+  if (art) art.classList.add("featured-cover-loading");
+
+  const preloaded = new Image();
+  preloaded.decoding = "async";
+  preloaded.src = source;
+  preloaded.onload = async () => {
+    try { await preloaded.decode(); } catch (error) {}
+    elements.featuredBanner.src = source;
+    elements.featuredBanner.style.display = "block";
+    requestAnimationFrame(() => art?.classList.remove("featured-cover-loading"));
+  };
+  preloaded.onerror = () => {
     elements.featuredBanner.src = placeholderCover(game.nome);
+    elements.featuredBanner.style.display = "block";
+    art?.classList.remove("featured-cover-loading");
   };
 
   const consoleDrawing = document.querySelector(".console-placeholder");
@@ -230,7 +249,7 @@ function renderGames() {
       <div class="card-cover">
         <img src="${escapeHtml(game.capa || "")}"
              alt="Capa de ${escapeHtml(game.nome)}"
-             loading="lazy"
+             loading="lazy" decoding="async" width="640" height="480"
              onerror="this.onerror=null;this.src='${placeholderCover(game.nome)}'">
         <span class="card-system">${escapeHtml(cardConsoleLabel(game.console))}</span>
         <button class="card-favorite ${state.favorites.has(game.id) ? "active" : ""}"
@@ -293,12 +312,16 @@ if (clearMemoryButton) {
   });
 }
 
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden && state.games.length) renderFeatured();
-});
-
 window.addEventListener("pageshow", event => {
   if (event.persisted) renderFeatured();
 });
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js").catch(error => {
+      console.warn("Cache offline indisponível:", error);
+    });
+  }, { once: true });
+}
 
 loadCatalog();

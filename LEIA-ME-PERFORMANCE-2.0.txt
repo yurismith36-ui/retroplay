@@ -1,0 +1,30 @@
+RETROPLAY PERFORMANCE 2.0
+=========================
+
+COMO INSTALAR PELO GITHUB
+1. Abra o repositório RetroPlay.
+2. Entre na raiz do repositório.
+3. Clique em Add file > Upload files.
+4. Extraia este ZIP no computador.
+5. Arraste TODAS as pastas e arquivos extraídos para a área de upload.
+6. Confirme em Commit changes.
+7. Aguarde aproximadamente 2 minutos e abra o site.
+8. Na primeira abertura, pressione Ctrl + F5 no computador. No celular, feche a aba e abra novamente.
+
+IMPORTANTE
+- Este pacote NÃO contém ROMs.
+- Ele substitui somente os arquivos necessários.
+- Mantenha a estrutura das pastas exatamente como está.
+
+MELHORIAS
+- console-corner.js caiu de aproximadamente 1,1 MB para poucos KB;
+- fundos convertidos para WebP e pré-carregados;
+- capas grandes atuais convertidas para WebP;
+- capa do destaque só aparece depois de totalmente decodificada;
+- lazy loading e dimensões reservadas nas miniaturas;
+- cache inteligente com atualização de HTML e games.json pela internet;
+- base PWA para instalação como aplicativo;
+- animações respeitam a opção de reduzir movimento do aparelho.
+
+OBSERVAÇÃO SOBRE O CACHE
+A primeira visita baixa os arquivos. As próximas ficam mais rápidas. Quando você publicar futuras atualizações importantes, aumente a versão no service-worker.js para forçar um cache novo.
