@@ -39,7 +39,7 @@ function pseudoFullscreenActive() {
 
 function updateFullscreenButton() {
   const active = Boolean(fullscreenElement()) || pseudoFullscreenActive();
-  fullscreenButton.textContent = active ? "SAIR DA TELA CHEIA" : "TELA CHEIA";
+  fullscreenButton.textContent = active ? "SAIR" : "TELA CHEIA";
   fullscreenButton.setAttribute("aria-pressed", String(active));
 }
 
@@ -222,8 +222,8 @@ async function startPlayer() {
     window.EJS_disableAutoUnload = false;
     window.EJS_fixedSaveInterval = 10000;
 
-    const cloudStateUrl = await window.RetroPlayAutoSave?.prepare(game);
-    if (cloudStateUrl) window.EJS_loadStateURL = cloudStateUrl;
+    // Cloud 2.2: apenas baixa o estado agora. A restauração acontece depois do jogo iniciar.
+    await window.RetroPlayAutoSave?.prepare(game);
 
     window.EJS_ready = () => {
       statusBox.classList.add("hidden");

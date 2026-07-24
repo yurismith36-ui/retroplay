@@ -1,0 +1,35 @@
+RETROPLAY CLOUD 2.2 — TESTE DE RESTAURAÇÃO
+
+Objetivo:
+Corrigir o caso em que o estado volta com som, mas a imagem fica preta no iPhone.
+
+Arquivos para substituir no GitHub:
+1. player.html
+2. css/style.css
+3. js/player.js
+4. js/cloud-save-state.js
+
+O que mudou:
+- O estado não é mais entregue ao EmulatorJS antes da inicialização.
+- O save é baixado primeiro e fica aguardando na memória.
+- A restauração ocorre somente após EJS_onGameStart.
+- O código espera o GameManager e o canvas de vídeo ficarem prontos.
+- Há tentativas com atraso e atualização forçada do tamanho/canvas.
+- O botão de tela cheia passa a mostrar apenas “SAIR”.
+- No pseudo fullscreen do iPhone, o botão fica abaixo do status da nuvem.
+- Todos os arquivos receberam ?v=cloud-2-2 para reduzir problemas de cache.
+
+Teste recomendado:
+1. Publique os quatro arquivos.
+2. Aguarde 1 a 2 minutos.
+3. Limpe os dados/cache do RetroPlay ou abra em aba anônima.
+4. Faça login.
+5. Abra o mesmo Mario que já possui save.
+6. Aperte o botão de iniciar do emulador.
+7. Aguarde aparecer “Jogo restaurado”.
+8. Confira se imagem e som voltaram.
+
+IMPORTANTE:
+Esta é uma versão de teste. O método oficial EJS_loadStateURL já carregava o estado,
+mas apresentou tela preta no seu iPhone. A versão 2.2 usa a função de restauração
+do GameManager somente depois que o jogo iniciou.
