@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#050506"><title>Entrar — RetroPlay</title>
+  <link rel="icon" href="assets/icone-controle.svg"><link rel="stylesheet" href="css/style.css?v=server-1-0">
+</head>
+<body class="auth-page">
+  <main class="auth-shell">
+    <a class="auth-logo" href="index.html"><img src="assets/controle-retro.svg" alt=""><span>RETROPLAY</span></a>
+    <section class="auth-card">
+      <h1 id="auth-title">Entrar</h1>
+      <p id="auth-subtitle">Acesse seus favoritos e saves em qualquer aparelho.</p>
+      <div id="auth-message" class="auth-message hidden" role="status"></div>
+      <form id="login-form" class="auth-form">
+        <label>E-mail<input id="login-email" type="email" autocomplete="email" required></label>
+        <label>Senha<input id="login-password" type="password" autocomplete="current-password" minlength="6" required></label>
+        <button class="purple-button auth-submit" type="submit">ENTRAR</button>
+      </form>
+      <form id="register-form" class="auth-form hidden">
+        <label>Nome de jogador<input id="register-name" type="text" maxlength="40" autocomplete="nickname" required></label>
+        <label>E-mail<input id="register-email" type="email" autocomplete="email" required></label>
+        <label>Senha<input id="register-password" type="password" autocomplete="new-password" minlength="6" required></label>
+        <button class="purple-button auth-submit" type="submit">CRIAR CONTA</button>
+      </form>
+      <form id="forgot-form" class="auth-form hidden">
+        <label>E-mail<input id="forgot-email" type="email" autocomplete="email" required></label>
+        <button class="purple-button auth-submit" type="submit">ENVIAR LINK</button>
+      </form>
+      <form id="reset-form" class="auth-form hidden">
+        <label>Nova senha<input id="reset-password" type="password" autocomplete="new-password" minlength="6" required></label>
+        <button class="purple-button auth-submit" type="submit">SALVAR NOVA SENHA</button>
+      </form>
+      <div class="auth-links">
+        <button id="show-login" type="button">Entrar</button>
+        <button id="show-register" type="button">Criar conta</button>
+        <button id="show-forgot" type="button">Esqueci a senha</button>
+      </div>
+      <a class="auth-back" href="index.html">← Voltar ao RetroPlay</a>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js?v=server-1-0"></script>
+  <script src="js/login.js?v=server-1-0"></script>
+</body></html>

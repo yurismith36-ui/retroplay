@@ -13,7 +13,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://cdn.emulatorjs.org" crossorigin>
   <script src="js/boot.js?v=performance-2-1"></script>
-  <link rel="stylesheet" href="css/style.css?v=performance-2-1">
+  <link rel="stylesheet" href="css/style.css?v=server-1-0">
 </head>
 <body>
   <div class="page-shell">
@@ -28,6 +28,7 @@
 
       <div class="header-tools">
         <button class="utility-btn" id="favorites-top" type="button">★ Favoritos</button>
+        <a class="utility-btn account-button" id="account-button" href="login.html">👤 Entrar</a>
         <button class="utility-btn" id="refresh-site" type="button">↻ Atualizar</button>
         <span class="welcome">Bem-vindo ao RetroPlay!</span>
       </div>
@@ -134,7 +135,11 @@
     </footer>
   </div>
 
-  <script src="js/app.js?v=performance-2-1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js?v=server-1-0"></script>
+  <script src="js/auth.js?v=server-1-0"></script>
+  <script src="js/cloud.js?v=server-1-0"></script>
+  <script src="js/app.js?v=server-1-0"></script>
   <script src="js/console-corner.js?v=performance-2-1"></script>
 </body>
 </html>
