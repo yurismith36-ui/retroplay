@@ -1,0 +1,37 @@
+RETROPLAY CLOUD SAVE 3.0 — ATUALIZAÇÃO ESTÁVEL
+
+OBJETIVO
+Corrigir tela preta, congelamento e salvamentos repetidos enquanto o jogo ainda não iniciou corretamente.
+
+O QUE MUDOU
+1. O save da nuvem NÃO é mais restaurado automaticamente.
+2. Quando existir um save, aparecem dois botões:
+   - CARREGAR SAVE
+   - JOGAR SEM SAVE
+3. O autosave fica totalmente bloqueado enquanto o save aguarda uma escolha.
+4. O autosave só começa 15 segundos depois de o jogo iniciar e o emulador estar pronto.
+5. A restauração é feita apenas uma vez por abertura.
+6. Não há salvamento durante restauração, tela de carregamento ou falha de inicialização.
+7. Dois uploads não podem acontecer ao mesmo tempo.
+8. N64 salva no máximo a cada 60 segundos; outros consoles, a cada 20 segundos.
+9. O save ao fechar só acontece quando o player está confirmado como pronto.
+
+ARQUIVOS PARA SUBSTITUIR NO GITHUB
+- player.html
+- js/player.js
+- js/cloud-save-state.js
+
+COMO TESTAR
+1. Substitua os três arquivos.
+2. Aguarde o GitHub Pages atualizar.
+3. Abra em aba anônima ou limpe o cache do site.
+4. Teste primeiro Super Mario World (SNES):
+   a) Abra o jogo.
+   b) Se aparecer save disponível, clique CARREGAR SAVE.
+   c) Jogue por pelo menos 30 segundos.
+   d) Volte ao site e abra novamente.
+5. Teste depois Mario 64 no celular e no PC.
+6. Caso um save antigo deixe a tela preta, reabra e clique JOGAR SEM SAVE.
+
+IMPORTANTE
+Ao clicar JOGAR SEM SAVE, o save antigo não é apagado imediatamente, mas um novo progresso poderá substituí-lo quando o autosave começar.

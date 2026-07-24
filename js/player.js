@@ -225,7 +225,7 @@ async function startPlayer() {
       || String(game.console || '').toLowerCase().includes('nintendo 64');
     window.EJS_fixedSaveInterval = isN64Game ? 60000 : 10000;
 
-    // Cloud 2.3: apenas baixa o estado agora. A restauração acontece depois do jogo iniciar.
+    // Cloud 3.0: baixa o save, mas nunca restaura automaticamente. O usuário escolhe com segurança.
     await window.RetroPlayAutoSave?.prepare(game);
 
     window.EJS_ready = () => {

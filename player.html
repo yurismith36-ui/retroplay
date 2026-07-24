@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>RetroPlay — Jogando</title>
   <link rel="icon" href="assets/icone-controle.svg">
-  <link rel="stylesheet" href="css/style.css?v=cloud-2-3">
+  <link rel="stylesheet" href="css/style.css?v=cloud-3-0">
 </head>
 <body class="player-page">
   <header class="player-topbar">
@@ -20,6 +20,8 @@
     </div>
     <div class="player-actions">
       <div id="cloud-save-status" class="cloud-save-status offline">☁️ Verificando conta...</div>
+      <button id="cloud-load-save" type="button" hidden style="background:#176b3a;color:#fff;border:0;border-radius:8px;padding:9px 12px;font-weight:700;cursor:pointer">CARREGAR SAVE</button>
+      <button id="cloud-ignore-save" type="button" hidden style="background:#4a4a4a;color:#fff;border:0;border-radius:8px;padding:9px 12px;font-weight:700;cursor:pointer">JOGAR SEM SAVE</button>
       <button id="clear-player-memory" class="clear-player-memory" type="button">LIMPAR MEMÓRIA</button>
       <button id="fullscreen-button" type="button" aria-pressed="false">TELA CHEIA</button>
     </div>
@@ -49,10 +51,10 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js?v=cloud-2-3"></script>
-  <script src="js/auth.js?v=cloud-2-3"></script>
-  <script src="js/cloud.js?v=cloud-2-3"></script>
-  <script src="js/cloud-save-state.js?v=cloud-2-3"></script>
-  <script src="js/player.js?v=cloud-2-3"></script>
+  <script src="js/supabase.js?v=cloud-3-0"></script>
+  <script src="js/auth.js?v=cloud-3-0"></script>
+  <script src="js/cloud.js?v=cloud-3-0"></script>
+  <script src="js/cloud-save-state.js?v=cloud-3-0"></script>
+  <script src="js/player.js?v=cloud-3-0"></script>
 </body>
 </html>

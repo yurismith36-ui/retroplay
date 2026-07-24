@@ -1,30 +1,51 @@
-// RetroPlay Cloud 2.3 — save inteligente para N64 sem travar durante a ação
+// RetroPlay Cloud 3.0 — restauração segura e autosave protegido
 (() => {
-  const DEFAULT_INTERVAL_MS = 10000;
-  const N64_MIN_SAVE_INTERVAL_MS = 60000;
-  const N64_IDLE_REQUIRED_MS = 3500;
-  const N64_CHECK_INTERVAL_MS = 2500;
   const SLOT = 10;
-  const RESTORE_DELAYS = [900, 1700, 2800];
+  const START_GRACE_MS = 15000;
+  const RESTORE_WAIT_MS = 3000;
+  const SNES_INTERVAL_MS = 20000;
+  const N64_INTERVAL_MS = 60000;
+  const MIN_STATE_BYTES = 1024;
 
   let gameId = null;
-  let timer = null;
-  let running = false;
-  let lastHash = "";
-  let restored = false;
-  let pendingState = null;
-  let restoreRunning = false;
   let isN64 = false;
-  let lastInputAt = Date.now();
-  let lastSavedAt = 0;
+  let timer = null;
+  let uploadRunning = false;
+  let restoreRunning = false;
+  let playerStarted = false;
+  let emulatorReady = false;
+  let autosaveEnabled = false;
+  let pendingState = null;
+  let pendingHash = '';
+  let lastHash = '';
+  let startToken = 0;
 
   const statusEl = () => document.querySelector('#cloud-save-status');
+  const loadButton = () => document.querySelector('#cloud-load-save');
+  const ignoreButton = () => document.querySelector('#cloud-ignore-save');
+
+  function log(message, extra) {
+    if (typeof extra === 'undefined') console.info(`[RetroPlay Cloud 3.0] ${message}`);
+    else console.info(`[RetroPlay Cloud 3.0] ${message}`, extra);
+  }
 
   function setStatus(kind, text) {
     const el = statusEl();
     if (!el) return;
     el.className = `cloud-save-status ${kind}`;
     el.textContent = text;
+  }
+
+  function showSaveChoices(show) {
+    [loadButton(), ignoreButton()].forEach(button => {
+      if (button) button.hidden = !show;
+    });
+  }
+
+  function disableSaveChoices(disabled) {
+    [loadButton(), ignoreButton()].forEach(button => {
+      if (button) button.disabled = disabled;
+    });
   }
 
   function wait(ms) {
@@ -64,80 +85,70 @@
   function getStateBytes() {
     const gm = getGameManager();
     if (!gm || typeof gm.getState !== 'function') return null;
-    const state = gm.getState();
-    if (!state) return null;
-    return state instanceof Uint8Array ? state : new Uint8Array(state);
+    try {
+      const state = gm.getState();
+      if (!state) return null;
+      const bytes = state instanceof Uint8Array ? state : new Uint8Array(state);
+      return bytes.length >= MIN_STATE_BYTES ? bytes : null;
+    } catch (error) {
+      console.warn('[RetroPlay Cloud 3.0] Não foi possível capturar o estado.', error);
+      return null;
+    }
   }
 
-  function emulatorCanvasReady() {
+  function canvasReady() {
     const canvas = document.querySelector('#game canvas');
-    if (!canvas) return false;
-    return canvas.width > 0 && canvas.height > 0;
+    return Boolean(canvas && canvas.width > 0 && canvas.height > 0);
   }
 
-  async function waitForGameManager(timeoutMs = 12000) {
+  async function waitForManager(timeoutMs = 15000) {
     const startedAt = Date.now();
     while (Date.now() - startedAt < timeoutMs) {
       const gm = getGameManager();
-      if (gm && typeof gm.loadState === 'function' && emulatorCanvasReady()) return gm;
-      await wait(150);
+      if (gm && typeof gm.getState === 'function' && typeof gm.loadState === 'function' && canvasReady()) {
+        return gm;
+      }
+      await wait(200);
     }
     return null;
   }
 
-  function refreshVideo() {
-    [0, 120, 350, 800].forEach(delay => {
-      window.setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-        const canvas = document.querySelector('#game canvas');
-        if (canvas) {
-          canvas.style.visibility = 'hidden';
-          void canvas.offsetHeight;
-          canvas.style.visibility = '';
-        }
-      }, delay);
-    });
+  function stopTimer() {
+    if (timer) window.clearInterval(timer);
+    timer = null;
   }
 
-  async function restorePendingState() {
-    if (!pendingState?.length || restoreRunning || restored) return restored;
-    restoreRunning = true;
-    setStatus('syncing', '☁️ Preparando save...');
+  function startTimer() {
+    stopTimer();
+    if (!autosaveEnabled || !emulatorReady || pendingState || restoreRunning) return;
+    const interval = isN64 ? N64_INTERVAL_MS : SNES_INTERVAL_MS;
+    timer = window.setInterval(() => saveNow(false), interval);
+    log(`Autosave iniciado a cada ${Math.round(interval / 1000)} segundos.`);
+  }
 
-    try {
-      const gm = await waitForGameManager();
-      if (!gm) throw new Error('Emulador ainda não ficou pronto para restaurar o estado.');
+  async function enableAutosaveAfterGrace(token = startToken) {
+    setStatus('syncing', '☁️ Estabilizando jogo...');
+    await wait(START_GRACE_MS);
+    if (token !== startToken || !playerStarted || pendingState || restoreRunning) return false;
 
-      for (let attempt = 0; attempt < RESTORE_DELAYS.length; attempt += 1) {
-        await wait(RESTORE_DELAYS[attempt]);
-        try {
-          setStatus('syncing', `☁️ Restaurando${'.'.repeat(attempt + 1)}`);
-          const result = gm.loadState(pendingState);
-          if (result && typeof result.then === 'function') await result;
-          restored = true;
-          pendingState = null;
-          refreshVideo();
-          setStatus('synced', '☁️ Jogo restaurado');
-          console.info('[RetroPlay Cloud 2.3] Estado restaurado após o jogo iniciar.');
-          return true;
-        } catch (error) {
-          console.warn(`[RetroPlay Cloud 2.3] Tentativa ${attempt + 1} falhou.`, error);
-          if (attempt === RESTORE_DELAYS.length - 1) throw error;
-        }
-      }
-    } catch (error) {
-      console.warn('Cloud Save não pôde ser restaurado:', error);
-      setStatus('error', '☁️ Falha ao restaurar');
+    const gm = await waitForManager(5000);
+    if (!gm) {
+      setStatus('error', '☁️ Jogo não ficou pronto');
+      log('Autosave bloqueado: emulador não ficou pronto.');
       return false;
-    } finally {
-      restoreRunning = false;
     }
 
-    return false;
+    emulatorReady = true;
+    autosaveEnabled = true;
+    setStatus('synced', '☁️ Nuvem ativa');
+    startTimer();
+    return true;
   }
 
   async function saveNow(force = false) {
-    if (running || !gameId || restoreRunning) return false;
+    if (!gameId || uploadRunning || restoreRunning || pendingState) return false;
+    if (!playerStarted || !emulatorReady || !autosaveEnabled) return false;
+
     const user = window.RetroPlayAuth?.getUser();
     if (!user) {
       setStatus('offline', '☁️ Entre para usar a nuvem');
@@ -145,11 +156,15 @@
     }
 
     const bytes = getStateBytes();
-    if (!bytes?.length) return false;
+    if (!bytes) {
+      log('Salvamento ignorado: estado vazio ou emulador ainda não pronto.');
+      return false;
+    }
+
     const hash = fastHash(bytes);
     if (!force && hash === lastHash) return true;
 
-    running = true;
+    uploadRunning = true;
     setStatus('syncing', '☁️ Salvando...');
     try {
       await window.RetroPlayCloud.saveGame(gameId, SLOT, bytesToBase64(bytes), {
@@ -158,28 +173,37 @@
         size: bytes.length,
         device: navigator.userAgent,
         saved_at: new Date().toISOString(),
-        cloud_version: '2.3',
-        save_mode: isN64 ? 'n64-idle' : 'periodic'
+        cloud_version: '3.0',
+        save_mode: isN64 ? 'n64-safe' : 'safe-periodic'
       });
       lastHash = hash;
-      lastSavedAt = Date.now();
       setStatus('synced', `☁️ Salvo às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`);
       return true;
     } catch (error) {
-      console.warn('Cloud Save não enviado:', error);
+      console.warn('[RetroPlay Cloud 3.0] Falha ao enviar save.', error);
       setStatus('error', navigator.onLine ? '☁️ Erro ao salvar' : '☁️ Sem internet');
       return false;
     } finally {
-      running = false;
+      uploadRunning = false;
     }
   }
 
   async function prepare(game) {
+    stopTimer();
+    startToken += 1;
     gameId = game.id;
     isN64 = String(game.core || '').toLowerCase() === 'n64'
       || String(game.console || '').toLowerCase().includes('nintendo 64');
-    restored = false;
+    uploadRunning = false;
+    restoreRunning = false;
+    playerStarted = false;
+    emulatorReady = false;
+    autosaveEnabled = false;
     pendingState = null;
+    pendingHash = '';
+    lastHash = '';
+    showSaveChoices(false);
+    disableSaveChoices(false);
 
     const user = window.RetroPlayAuth?.getUser();
     if (!user) {
@@ -191,73 +215,113 @@
     try {
       const row = await window.RetroPlayCloud.loadGameSave(gameId, SLOT);
       if (!row?.save_data) {
-        setStatus('synced', '☁️ Nuvem ativa');
+        setStatus('syncing', '☁️ Nuvem pronta');
         return false;
       }
 
-      pendingState = base64ToBytes(row.save_data);
-      lastHash = row.metadata?.hash || fastHash(pendingState);
-      setStatus('syncing', '☁️ Save encontrado');
-      console.info(`[RetroPlay Cloud 2.2] Save encontrado (${pendingState.length} bytes).`);
+      const bytes = base64ToBytes(row.save_data);
+      if (bytes.length < MIN_STATE_BYTES) throw new Error('Save recebido é pequeno demais.');
+
+      pendingState = bytes;
+      pendingHash = row.metadata?.hash || fastHash(bytes);
+      lastHash = pendingHash;
+      setStatus('syncing', '☁️ Save encontrado — escolha abaixo');
+      log(`Save encontrado (${bytes.length} bytes). A restauração automática foi desativada por segurança.`);
       return true;
     } catch (error) {
-      console.warn('Cloud Save não carregado:', error);
+      console.warn('[RetroPlay Cloud 3.0] Save não carregado.', error);
       setStatus('error', '☁️ Nuvem indisponível');
       return false;
     }
   }
 
-  function markPlayerActivity() {
-    lastInputAt = Date.now();
-  }
-
-  function n64CanSaveNow() {
-    const now = Date.now();
-    const idleFor = now - lastInputAt;
-    const sinceLastSave = now - lastSavedAt;
-    return idleFor >= N64_IDLE_REQUIRED_MS && sinceLastSave >= N64_MIN_SAVE_INTERVAL_MS;
-  }
-
   async function start() {
-    if (timer) clearInterval(timer);
+    if (playerStarted) return;
+    playerStarted = true;
+    const token = ++startToken;
+    log('Evento de início do jogo recebido.');
 
-    if (pendingState?.length && !restored) {
-      await restorePendingState();
-    }
-
-    lastInputAt = Date.now();
-    lastSavedAt = Date.now();
-
-    if (isN64) {
-      // N64: nunca captura o estado durante movimentos. Aguarda o jogador ficar parado.
-      timer = setInterval(() => {
-        if (n64CanSaveNow()) saveNow(false);
-      }, N64_CHECK_INTERVAL_MS);
-      setStatus('synced', restored ? '☁️ Jogo restaurado' : '☁️ Nuvem ativa');
-      console.info('[RetroPlay Cloud 2.3] N64 com save inteligente: 60 s + 3,5 s sem comandos.');
+    if (pendingState?.length) {
+      setStatus('syncing', '☁️ Save disponível');
+      showSaveChoices(true);
       return;
     }
 
-    timer = setInterval(() => saveNow(false), DEFAULT_INTERVAL_MS);
-    window.setTimeout(() => saveNow(false), 5000);
+    await enableAutosaveAfterGrace(token);
+  }
+
+  async function restorePendingState() {
+    if (!pendingState?.length || restoreRunning || !playerStarted) return false;
+    restoreRunning = true;
+    autosaveEnabled = false;
+    stopTimer();
+    disableSaveChoices(true);
+    setStatus('syncing', '☁️ Preparando restauração...');
+
+    try {
+      const gm = await waitForManager();
+      if (!gm) throw new Error('Emulador não ficou pronto para restaurar.');
+
+      await wait(RESTORE_WAIT_MS);
+      setStatus('syncing', '☁️ Restaurando save...');
+      const result = gm.loadState(pendingState);
+      if (result && typeof result.then === 'function') await result;
+
+      pendingState = null;
+      pendingHash = '';
+      showSaveChoices(false);
+      setStatus('synced', '☁️ Jogo restaurado');
+      log('Save restaurado uma única vez.');
+
+      await wait(START_GRACE_MS);
+      emulatorReady = true;
+      autosaveEnabled = true;
+      startTimer();
+      return true;
+    } catch (error) {
+      console.warn('[RetroPlay Cloud 3.0] Falha ao restaurar.', error);
+      setStatus('error', '☁️ Save não restaurado');
+      disableSaveChoices(false);
+      showSaveChoices(true);
+      return false;
+    } finally {
+      restoreRunning = false;
+    }
+  }
+
+  async function ignorePendingState() {
+    if (!pendingState?.length || restoreRunning) return false;
+    const confirmed = window.confirm('Jogar sem carregar o save da nuvem? Um novo progresso poderá substituir esse save depois.');
+    if (!confirmed) return false;
+
+    pendingState = null;
+    pendingHash = '';
+    lastHash = '';
+    showSaveChoices(false);
+    setStatus('syncing', '☁️ Iniciando save novo...');
+    log('Usuário escolheu jogar sem restaurar o save existente.');
+    await enableAutosaveAfterGrace(++startToken);
+    return true;
   }
 
   async function stopAndSave() {
-    if (timer) clearInterval(timer);
-    timer = null;
-    await saveNow(true);
+    stopTimer();
+    if (!autosaveEnabled || !emulatorReady || pendingState || restoreRunning) {
+      log('Save ao sair ignorado por segurança.');
+      return false;
+    }
+    return saveNow(true);
   }
 
-  ['pointerdown', 'pointermove', 'touchstart', 'touchmove', 'keydown', 'mousedown'].forEach(eventName => {
-    document.addEventListener(eventName, markPlayerActivity, { passive: true, capture: true });
+  document.addEventListener('click', event => {
+    if (event.target?.id === 'cloud-load-save') restorePendingState();
+    if (event.target?.id === 'cloud-ignore-save') ignorePendingState();
   });
 
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') saveNow(true);
+    if (document.visibilityState === 'hidden') stopAndSave();
   });
-  window.addEventListener('online', () => saveNow(true));
-  window.addEventListener('pagehide', () => saveNow(true));
-  window.addEventListener('beforeunload', () => saveNow(true));
+  window.addEventListener('pagehide', () => stopAndSave());
 
   window.RetroPlayAutoSave = {
     prepare,
@@ -265,7 +329,8 @@
     saveNow,
     stopAndSave,
     restorePendingState,
-    wasRestored: () => restored,
-    hasPendingState: () => Boolean(pendingState?.length)
+    ignorePendingState,
+    hasPendingState: () => Boolean(pendingState?.length),
+    isReady: () => emulatorReady && autosaveEnabled
   };
 })();
