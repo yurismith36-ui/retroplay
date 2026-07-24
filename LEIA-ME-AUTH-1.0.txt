@@ -1,0 +1,20 @@
+RETROPLAY — ATUALIZAÇÃO AUTH 1.0
+
+Envie para a RAIZ do repositório todos os itens deste pacote, mantendo as pastas:
+
+- index.html
+- login.html
+- conta.html
+- service-worker.js
+- pasta css
+- pasta js
+
+No GitHub:
+1. Adicionar arquivo > Fazer upload de arquivos.
+2. Arraste todos os itens acima de uma vez.
+3. Confirme a substituição dos arquivos existentes.
+4. Clique em Commit changes.
+5. Aguarde 1 a 2 minutos.
+6. No celular, abra o RetroPlay e toque em Atualizar.
+
+Este pacote NÃO contém ROMs, capas ou o arquivo SQL.

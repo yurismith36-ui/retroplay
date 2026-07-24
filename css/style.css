@@ -2708,3 +2708,35 @@ img {
     radial-gradient(circle at center, rgba(126,81,165,.28), transparent 55%),
     linear-gradient(145deg, #1a1221, #050506) !important;
 }
+
+
+/* =========================================================
+   RETROPLAY SERVER 1.0 — CONTA E LOGIN
+   ========================================================= */
+.account-button { text-decoration: none; display: inline-flex; align-items: center; }
+.auth-page { min-height: 100vh; background: radial-gradient(circle at top, #24132f, #050506 55%); color: #f5f1f7; }
+.auth-shell { width: min(92%, 460px); margin: 0 auto; padding: 48px 0; }
+.auth-logo { display:flex; align-items:center; justify-content:center; gap:12px; color:#fff; text-decoration:none; font-weight:900; letter-spacing:3px; font-size:1.4rem; margin-bottom:20px; }
+.auth-logo img { width:64px; height:48px; }
+.auth-card { background:rgba(14,12,18,.96); border:2px solid #56306f; box-shadow:0 18px 50px rgba(0,0,0,.45); padding:28px; border-radius:12px; text-align:center; }
+.auth-card h1 { margin:0 0 8px; }
+.auth-card > p { color:#bbb3c2; margin:0 0 22px; }
+.auth-form { display:grid; gap:14px; text-align:left; }
+.auth-form label { display:grid; gap:7px; font-weight:700; font-size:.9rem; }
+.auth-form input { width:100%; box-sizing:border-box; border:1px solid #5f5368; border-radius:7px; background:#09080b; color:#fff; padding:13px; font:inherit; }
+.auth-form input:focus { outline:2px solid #9e52c7; border-color:transparent; }
+.auth-submit { width:100%; border:0; cursor:pointer; text-align:center; margin-top:4px; }
+.auth-submit:disabled { opacity:.55; cursor:wait; }
+.auth-links { display:flex; flex-wrap:wrap; justify-content:center; gap:8px 14px; margin:20px 0; }
+.auth-links button { border:0; background:none; color:#c890e5; cursor:pointer; text-decoration:underline; }
+.auth-back { color:#cfc8d5; text-decoration:none; }
+.auth-message { padding:11px; border-radius:7px; margin:0 0 16px; background:#24202a; }
+.auth-message.error { background:#4b1820; color:#ffd8dd; }
+.auth-message.success { background:#153d2a; color:#d6ffe8; }
+.profile-avatar { font-size:4rem; }
+#profile-name { margin:8px 0 2px; }
+#profile-email { color:#bbb3c2; }
+.account-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:22px 0; }
+.account-stats div { background:#0a090c; border:1px solid #493956; border-radius:8px; padding:14px 8px; display:grid; gap:4px; }
+.account-stats strong { font-size:1.7rem; color:#d992ff; }
+.account-stats span { font-size:.78rem; color:#bbb3c2; }

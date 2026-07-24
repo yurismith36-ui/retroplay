@@ -1,18 +1,18 @@
-const CACHE_VERSION = "retroplay-server-1-0-v1";
+const CACHE_VERSION = "retroplay-auth-1-0-v1";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./css/style.css?v=server-1-0",
+  "./css/style.css?v=auth-1-0",
   "./js/boot.js?v=performance-2-1",
-  "./js/app.js?v=server-1-0",
+  "./js/app.js?v=auth-1-0",
   "./login.html",
   "./conta.html",
-  "./js/supabase.js?v=server-1-0",
-  "./js/auth.js?v=server-1-0",
-  "./js/cloud.js?v=server-1-0",
+  "./js/supabase.js?v=auth-1-0",
+  "./js/auth.js?v=auth-1-0",
+  "./js/cloud.js?v=auth-1-0",
   "./js/console-corner.js?v=performance-2-1",
   "./dados/games.json",
   "./assets/icone-controle.svg",
