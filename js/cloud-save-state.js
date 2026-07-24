@@ -1,10 +1,9 @@
-// RetroPlay Cloud 3.0 — restauração segura e autosave protegido
+// RetroPlay Cloud 3.1 — restauração segura e autosave protegido
 (() => {
   const SLOT = 10;
   const START_GRACE_MS = 15000;
   const RESTORE_WAIT_MS = 3000;
   const SNES_INTERVAL_MS = 20000;
-  const N64_INTERVAL_MS = 60000;
   const MIN_STATE_BYTES = 1024;
 
   let gameId = null;
@@ -25,8 +24,8 @@
   const ignoreButton = () => document.querySelector('#cloud-ignore-save');
 
   function log(message, extra) {
-    if (typeof extra === 'undefined') console.info(`[RetroPlay Cloud 3.0] ${message}`);
-    else console.info(`[RetroPlay Cloud 3.0] ${message}`, extra);
+    if (typeof extra === 'undefined') console.info(`[RetroPlay Cloud 3.1] ${message}`);
+    else console.info(`[RetroPlay Cloud 3.1] ${message}`, extra);
   }
 
   function setStatus(kind, text) {
@@ -91,7 +90,7 @@
       const bytes = state instanceof Uint8Array ? state : new Uint8Array(state);
       return bytes.length >= MIN_STATE_BYTES ? bytes : null;
     } catch (error) {
-      console.warn('[RetroPlay Cloud 3.0] Não foi possível capturar o estado.', error);
+      console.warn('[RetroPlay Cloud 3.1] Não foi possível capturar o estado.', error);
       return null;
     }
   }
@@ -121,7 +120,11 @@
   function startTimer() {
     stopTimer();
     if (!autosaveEnabled || !emulatorReady || pendingState || restoreRunning) return;
-    const interval = isN64 ? N64_INTERVAL_MS : SNES_INTERVAL_MS;
+    if (isN64) {
+      log('N64 Safe Mode: autosave periódico desativado.');
+      return;
+    }
+    const interval = SNES_INTERVAL_MS;
     timer = window.setInterval(() => saveNow(false), interval);
     log(`Autosave iniciado a cada ${Math.round(interval / 1000)} segundos.`);
   }
@@ -140,7 +143,7 @@
 
     emulatorReady = true;
     autosaveEnabled = true;
-    setStatus('synced', '☁️ Nuvem ativa');
+    setStatus('synced', isN64 ? '☁️ N64 modo seguro' : '☁️ Nuvem ativa');
     startTimer();
     return true;
   }
@@ -148,6 +151,10 @@
   async function saveNow(force = false) {
     if (!gameId || uploadRunning || restoreRunning || pendingState) return false;
     if (!playerStarted || !emulatorReady || !autosaveEnabled) return false;
+    if (isN64 && !force) {
+      log('N64 Safe Mode: salvamento automático ignorado.');
+      return false;
+    }
 
     const user = window.RetroPlayAuth?.getUser();
     if (!user) {
@@ -173,14 +180,14 @@
         size: bytes.length,
         device: navigator.userAgent,
         saved_at: new Date().toISOString(),
-        cloud_version: '3.0',
-        save_mode: isN64 ? 'n64-safe' : 'safe-periodic'
+        cloud_version: '3.1',
+        save_mode: isN64 ? 'n64-exit-only' : 'safe-periodic'
       });
       lastHash = hash;
       setStatus('synced', `☁️ Salvo às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`);
       return true;
     } catch (error) {
-      console.warn('[RetroPlay Cloud 3.0] Falha ao enviar save.', error);
+      console.warn('[RetroPlay Cloud 3.1] Falha ao enviar save.', error);
       setStatus('error', navigator.onLine ? '☁️ Erro ao salvar' : '☁️ Sem internet');
       return false;
     } finally {
@@ -229,7 +236,7 @@
       log(`Save encontrado (${bytes.length} bytes). A restauração automática foi desativada por segurança.`);
       return true;
     } catch (error) {
-      console.warn('[RetroPlay Cloud 3.0] Save não carregado.', error);
+      console.warn('[RetroPlay Cloud 3.1] Save não carregado.', error);
       setStatus('error', '☁️ Nuvem indisponível');
       return false;
     }
@@ -270,7 +277,7 @@
       pendingState = null;
       pendingHash = '';
       showSaveChoices(false);
-      setStatus('synced', '☁️ Jogo restaurado');
+      setStatus('synced', isN64 ? '☁️ N64 restaurado — modo seguro' : '☁️ Jogo restaurado');
       log('Save restaurado uma única vez.');
 
       await wait(START_GRACE_MS);
@@ -279,7 +286,7 @@
       startTimer();
       return true;
     } catch (error) {
-      console.warn('[RetroPlay Cloud 3.0] Falha ao restaurar.', error);
+      console.warn('[RetroPlay Cloud 3.1] Falha ao restaurar.', error);
       setStatus('error', '☁️ Save não restaurado');
       disableSaveChoices(false);
       showSaveChoices(true);
@@ -298,7 +305,7 @@
     pendingHash = '';
     lastHash = '';
     showSaveChoices(false);
-    setStatus('syncing', '☁️ Iniciando save novo...');
+    setStatus('syncing', isN64 ? '☁️ N64 sem save — modo seguro' : '☁️ Iniciando save novo...');
     log('Usuário escolheu jogar sem restaurar o save existente.');
     await enableAutosaveAfterGrace(++startToken);
     return true;
@@ -319,9 +326,13 @@
   });
 
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') stopAndSave();
+    // N64: não captura estado ao colocar o navegador em segundo plano,
+    // porque essa captura pode congelar o núcleo em celulares.
+    if (document.visibilityState === 'hidden' && !isN64) stopAndSave();
   });
-  window.addEventListener('pagehide', () => stopAndSave());
+  window.addEventListener('pagehide', () => {
+    if (!isN64) stopAndSave();
+  });
 
   window.RetroPlayAutoSave = {
     prepare,

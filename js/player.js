@@ -144,6 +144,7 @@ async function saveBeforeLeaving() {
   try { await window.RetroPlayAutoSave?.stopAndSave(); } catch (error) { console.warn(error); }
 }
 
+
 function releaseEmulatorMemory(showBlackScreen = true) {
   if (memoryWasReleased || cleanupInProgress) return;
   cleanupInProgress = true;
@@ -220,12 +221,12 @@ async function startPlayer() {
     window.EJS_gameName = game.nome;
     window.EJS_gameID = numericGameId(game.id);
     window.EJS_disableAutoUnload = false;
-    // O save interno do EmulatorJS também fica mais espaçado no N64.
+    // N64 Safe Mode: desativa o ciclo interno frequente durante a partida.
     const isN64Game = String(game.core || '').toLowerCase() === 'n64'
       || String(game.console || '').toLowerCase().includes('nintendo 64');
-    window.EJS_fixedSaveInterval = isN64Game ? 60000 : 10000;
+    window.EJS_fixedSaveInterval = isN64Game ? 86400000 : 10000;
 
-    // Cloud 3.0: baixa o save, mas nunca restaura automaticamente. O usuário escolhe com segurança.
+    // Cloud 3.1: N64 sem autosave periódico; salva somente ao sair.
     await window.RetroPlayAutoSave?.prepare(game);
 
     window.EJS_ready = () => {
@@ -239,8 +240,10 @@ async function startPlayer() {
       window.RetroPlayAutoSave?.start();
     };
 
-    window.EJS_onExit = () => {
-      if (!cleanupInProgress) releaseEmulatorMemory(true);
+    window.EJS_onExit = async () => {
+      if (cleanupInProgress) return;
+      await saveBeforeLeaving();
+      releaseEmulatorMemory(true);
     };
 
     if (game.bios) window.EJS_biosUrl = game.bios;

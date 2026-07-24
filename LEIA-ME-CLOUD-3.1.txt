@@ -1,0 +1,31 @@
+RETROPLAY CLOUD SAVE 3.1 — N64 SAFE MODE
+
+OBJETIVO
+Eliminar o congelamento do Nintendo 64 causado pela captura automática de Save State durante a partida.
+
+O QUE MUDOU
+1. SNES, GBA e GBC continuam com autosave periódico normalmente.
+2. N64 não faz mais autosave periódico durante a partida.
+3. N64 salva apenas quando o jogador sai pelo botão SAIR, VOLTAR ou LIMPAR MEMÓRIA.
+4. N64 não tenta salvar quando o navegador vai para segundo plano.
+5. O ciclo interno frequente do EmulatorJS foi praticamente desativado no N64.
+6. O botão JOGAR SEM SAVE inicia o N64 em modo seguro, sem restaurar o estado antigo.
+7. A restauração manual continua disponível pelo botão CARREGAR SAVE.
+
+ARQUIVOS PARA SUBSTITUIR NO GITHUB
+- player.html
+- js/player.js
+- js/cloud-save-state.js
+
+COMO TESTAR
+1. Substitua os três arquivos no GitHub.
+2. Espere o GitHub Pages atualizar.
+3. Abra o site em aba anônima ou limpe o cache.
+4. Abra Mario 64 e escolha JOGAR SEM SAVE.
+5. Jogue por 2 a 3 minutos. Durante a partida, não deve aparecer Salvando repetidamente.
+6. Clique SAIR. Nesse momento deve aparecer Salvando e depois o jogo deve fechar.
+7. Abra novamente e teste CARREGAR SAVE.
+8. Confirme também que o SNES continua salvando normalmente.
+
+IMPORTANTE
+No iPhone, fechar o navegador à força não garante tempo para enviar o save. Para o N64, use o botão SAIR ou VOLTAR antes de fechar a aba.
