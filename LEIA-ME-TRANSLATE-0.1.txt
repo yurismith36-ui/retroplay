@@ -1,0 +1,20 @@
+RETROPLAY TRANSLATE 0.1 — TESTE COM POKÉMON
+
+O que esta versão faz:
+- Adiciona o botão “🌐 TRADUZIR TELA” no player.
+- Captura a tela atual do EmulatorJS.
+- Usa OCR em inglês para reconhecer o texto do jogo.
+- Mostra o texto reconhecido e uma prévia simples em português.
+
+COMO TESTAR
+1. Suba TODOS os arquivos deste pacote para o GitHub, substituindo os antigos.
+2. Abra um jogo Pokémon em inglês.
+3. Espere aparecer uma caixa de diálogo com letras grandes.
+4. Toque em “🌐 TRADUZIR TELA”.
+5. Na primeira vez, aguarde o download do leitor OCR.
+
+IMPORTANTE
+- Esta é a etapa 0.1: primeiro precisamos confirmar que o OCR consegue ler o texto da tela no seu iPhone e no PC.
+- A prévia em português usa apenas um pequeno glossário de teste. A tradução completa será ligada na etapa seguinte.
+- Nenhuma ROM foi adicionada ou alterada.
+- Cloud Save e demais funções foram mantidos.

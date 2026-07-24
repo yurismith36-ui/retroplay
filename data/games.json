@@ -1,10 +1,47 @@
-{
-  "add_game": {
-    "id": "pokemon-gold",
-    "title": "Pokémon Gold Version",
-    "platform": "gbc",
-    "cover": "covers/pokemon-gold.png",
-    "rom": "roms/gbc/Pokemon - Gold Version (USA, Europe) (SGB Enhanced) (GB Compatible).gbc",
-    "description": "Pokémon Gold Version (Game Boy Color)"
+[
+  {
+    "id": "jogo-01",
+    "title": "Jogo 01",
+    "system": "snes",
+    "rom": "jogos/snes/jogo-01/rom/jogo.sfc",
+    "cover": "jogos/snes/jogo-01/imagens/capa.png",
+    "banner": "jogos/snes/jogo-01/imagens/banner.png",
+    "logo": "jogos/snes/jogo-01/imagens/logo.png"
+  },
+  {
+    "id": "jogo-02",
+    "title": "Jogo 02",
+    "system": "snes",
+    "rom": "jogos/snes/jogo-02/rom/jogo.sfc",
+    "cover": "jogos/snes/jogo-02/imagens/capa.png",
+    "banner": "jogos/snes/jogo-02/imagens/banner.png",
+    "logo": "jogos/snes/jogo-02/imagens/logo.png"
+  },
+  {
+    "id": "jogo-03",
+    "title": "Jogo 03",
+    "system": "snes",
+    "rom": "jogos/snes/jogo-03/rom/jogo.sfc",
+    "cover": "jogos/snes/jogo-03/imagens/capa.png",
+    "banner": "jogos/snes/jogo-03/imagens/banner.png",
+    "logo": "jogos/snes/jogo-03/imagens/logo.png"
+  },
+  {
+    "id": "jogo-04",
+    "title": "Jogo 04",
+    "system": "snes",
+    "rom": "jogos/snes/jogo-04/rom/jogo.sfc",
+    "cover": "jogos/snes/jogo-04/imagens/capa.png",
+    "banner": "jogos/snes/jogo-04/imagens/banner.png",
+    "logo": "jogos/snes/jogo-04/imagens/logo.png"
+  },
+  {
+    "id": "jogo-05",
+    "title": "Jogo 05",
+    "system": "snes",
+    "rom": "jogos/snes/jogo-05/rom/jogo.sfc",
+    "cover": "jogos/snes/jogo-05/imagens/capa.png",
+    "banner": "jogos/snes/jogo-05/imagens/banner.png",
+    "logo": "jogos/snes/jogo-05/imagens/logo.png"
   }
-}
+]
