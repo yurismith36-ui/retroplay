@@ -140,6 +140,10 @@ function clearEJSReferences() {
   });
 }
 
+async function saveBeforeLeaving() {
+  try { await window.RetroPlayAutoSave?.stopAndSave(); } catch (error) { console.warn(error); }
+}
+
 function releaseEmulatorMemory(showBlackScreen = true) {
   if (memoryWasReleased || cleanupInProgress) return;
   cleanupInProgress = true;
@@ -167,9 +171,12 @@ function releaseEmulatorMemory(showBlackScreen = true) {
   cleanupInProgress = false;
 }
 
-function clearMemoryAndOpenBlackScreen() {
+async function clearMemoryAndOpenBlackScreen() {
+  clearMemoryButton.disabled = true;
+  clearMemoryButton.textContent = "SALVANDO...";
+  await saveBeforeLeaving();
   releaseEmulatorMemory(true);
-  window.setTimeout(() => location.replace("limpar.html"), 80);
+  location.replace("limpar.html");
 }
 
 async function startPlayer() {
@@ -213,6 +220,10 @@ async function startPlayer() {
     window.EJS_gameName = game.nome;
     window.EJS_gameID = numericGameId(game.id);
     window.EJS_disableAutoUnload = false;
+    window.EJS_fixedSaveInterval = 10000;
+
+    const cloudStateUrl = await window.RetroPlayAutoSave?.prepare(game);
+    if (cloudStateUrl) window.EJS_loadStateURL = cloudStateUrl;
 
     window.EJS_ready = () => {
       statusBox.classList.add("hidden");
@@ -222,6 +233,7 @@ async function startPlayer() {
     window.EJS_onGameStart = () => {
       statusBox.classList.add("hidden");
       refreshEmulatorSize();
+      window.RetroPlayAutoSave?.start();
     };
 
     window.EJS_onExit = () => {
@@ -248,8 +260,10 @@ async function startPlayer() {
 fullscreenButton.addEventListener("click", toggleFullscreen);
 clearMemoryButton.addEventListener("click", clearMemoryAndOpenBlackScreen);
 
-backButton.addEventListener("click", event => {
+backButton.addEventListener("click", async event => {
   event.preventDefault();
+  backButton.textContent = "SALVANDO...";
+  await saveBeforeLeaving();
   releaseEmulatorMemory(true);
   location.replace("index.html");
 });
