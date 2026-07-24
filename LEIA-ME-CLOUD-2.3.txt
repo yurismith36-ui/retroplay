@@ -1,0 +1,18 @@
+RETROPLAY CLOUD 2.3 — SAVE INTELIGENTE PARA N64
+
+Substitua no GitHub somente:
+- player.html
+- js/player.js
+- js/cloud-save-state.js
+
+O que mudou:
+- SNES e demais consoles continuam salvando a cada 10 segundos.
+- Nintendo 64 só cria o estado após pelo menos 60 segundos desde o último save.
+- Além disso, o N64 espera 3,5 segundos sem toque, teclado ou movimento do controle na tela.
+- Ao sair, minimizar ou apertar Voltar, o RetroPlay continua tentando salvar imediatamente.
+- O carregamento atrasado da versão 2.2 foi mantido.
+
+Objetivo:
+Evitar que Mario 64 congele no ar durante o save automático.
+
+Depois do envio, limpe o cache do site ou use uma aba anônima para testar.

@@ -1,6 +1,9 @@
-// RetroPlay Cloud 2.2 — restauração atrasada para evitar tela preta no iPhone
+// RetroPlay Cloud 2.3 — save inteligente para N64 sem travar durante a ação
 (() => {
-  const INTERVAL_MS = 10000;
+  const DEFAULT_INTERVAL_MS = 10000;
+  const N64_MIN_SAVE_INTERVAL_MS = 60000;
+  const N64_IDLE_REQUIRED_MS = 3500;
+  const N64_CHECK_INTERVAL_MS = 2500;
   const SLOT = 10;
   const RESTORE_DELAYS = [900, 1700, 2800];
 
@@ -11,6 +14,9 @@
   let restored = false;
   let pendingState = null;
   let restoreRunning = false;
+  let isN64 = false;
+  let lastInputAt = Date.now();
+  let lastSavedAt = 0;
 
   const statusEl = () => document.querySelector('#cloud-save-status');
 
@@ -112,10 +118,10 @@
           pendingState = null;
           refreshVideo();
           setStatus('synced', '☁️ Jogo restaurado');
-          console.info('[RetroPlay Cloud 2.2] Estado restaurado após o jogo iniciar.');
+          console.info('[RetroPlay Cloud 2.3] Estado restaurado após o jogo iniciar.');
           return true;
         } catch (error) {
-          console.warn(`[RetroPlay Cloud 2.2] Tentativa ${attempt + 1} falhou.`, error);
+          console.warn(`[RetroPlay Cloud 2.3] Tentativa ${attempt + 1} falhou.`, error);
           if (attempt === RESTORE_DELAYS.length - 1) throw error;
         }
       }
@@ -152,9 +158,11 @@
         size: bytes.length,
         device: navigator.userAgent,
         saved_at: new Date().toISOString(),
-        cloud_version: '2.2'
+        cloud_version: '2.3',
+        save_mode: isN64 ? 'n64-idle' : 'periodic'
       });
       lastHash = hash;
+      lastSavedAt = Date.now();
       setStatus('synced', `☁️ Salvo às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`);
       return true;
     } catch (error) {
@@ -168,6 +176,8 @@
 
   async function prepare(game) {
     gameId = game.id;
+    isN64 = String(game.core || '').toLowerCase() === 'n64'
+      || String(game.console || '').toLowerCase().includes('nintendo 64');
     restored = false;
     pendingState = null;
 
@@ -197,6 +207,17 @@
     }
   }
 
+  function markPlayerActivity() {
+    lastInputAt = Date.now();
+  }
+
+  function n64CanSaveNow() {
+    const now = Date.now();
+    const idleFor = now - lastInputAt;
+    const sinceLastSave = now - lastSavedAt;
+    return idleFor >= N64_IDLE_REQUIRED_MS && sinceLastSave >= N64_MIN_SAVE_INTERVAL_MS;
+  }
+
   async function start() {
     if (timer) clearInterval(timer);
 
@@ -204,7 +225,20 @@
       await restorePendingState();
     }
 
-    timer = setInterval(() => saveNow(false), INTERVAL_MS);
+    lastInputAt = Date.now();
+    lastSavedAt = Date.now();
+
+    if (isN64) {
+      // N64: nunca captura o estado durante movimentos. Aguarda o jogador ficar parado.
+      timer = setInterval(() => {
+        if (n64CanSaveNow()) saveNow(false);
+      }, N64_CHECK_INTERVAL_MS);
+      setStatus('synced', restored ? '☁️ Jogo restaurado' : '☁️ Nuvem ativa');
+      console.info('[RetroPlay Cloud 2.3] N64 com save inteligente: 60 s + 3,5 s sem comandos.');
+      return;
+    }
+
+    timer = setInterval(() => saveNow(false), DEFAULT_INTERVAL_MS);
     window.setTimeout(() => saveNow(false), 5000);
   }
 
@@ -213,6 +247,10 @@
     timer = null;
     await saveNow(true);
   }
+
+  ['pointerdown', 'pointermove', 'touchstart', 'touchmove', 'keydown', 'mousedown'].forEach(eventName => {
+    document.addEventListener(eventName, markPlayerActivity, { passive: true, capture: true });
+  });
 
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') saveNow(true);

@@ -220,9 +220,12 @@ async function startPlayer() {
     window.EJS_gameName = game.nome;
     window.EJS_gameID = numericGameId(game.id);
     window.EJS_disableAutoUnload = false;
-    window.EJS_fixedSaveInterval = 10000;
+    // O save interno do EmulatorJS também fica mais espaçado no N64.
+    const isN64Game = String(game.core || '').toLowerCase() === 'n64'
+      || String(game.console || '').toLowerCase().includes('nintendo 64');
+    window.EJS_fixedSaveInterval = isN64Game ? 60000 : 10000;
 
-    // Cloud 2.2: apenas baixa o estado agora. A restauração acontece depois do jogo iniciar.
+    // Cloud 2.3: apenas baixa o estado agora. A restauração acontece depois do jogo iniciar.
     await window.RetroPlayAutoSave?.prepare(game);
 
     window.EJS_ready = () => {
