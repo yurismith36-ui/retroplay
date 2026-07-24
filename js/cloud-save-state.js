@@ -1,7 +1,7 @@
 // RetroPlay Cloud 2.0 — estado automático do jogo
 (() => {
   const INTERVAL_MS = 10000;
-  const SLOT = 99; // slot reservado para o estado automático
+  const SLOT = 10; // slot reservado para o estado automático
   let gameId = null;
   let timer = null;
   let running = false;
