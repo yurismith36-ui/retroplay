@@ -221,20 +221,20 @@
     "adicionadoEm": "2026-07-22"
   },
   {
-    "id": "snes-012",
-    "nome": "Street Fighter II",
-    "console": "SNES",
-    "ano": "1992",
-    "genero": "Luta",
-    "desenvolvedora": "Capcom",
-    "descricao": "O clássico jogo de luta da Capcom com Ryu, Ken, Chun-Li, Guile e outros lutadores.",
+    "id": "gb-001",
+    "nome": "The Machine",
+    "console": "Game Boy",
+    "ano": "2025",
+    "genero": "Aventura",
+    "desenvolvedora": "Indie",
+    "descricao": "Demo para Game Boy usada para testar o RetroPlay Translate.",
     "destaque": false,
-    "core": "snes",
-    "rom": "jogos/snes/jogo-12/rom/jogo.sfc",
-    "capa": "jogos/snes/jogo-12/imagens/capa.jpg",
-    "banner": "jogos/snes/jogo-12/imagens/banner.jpg",
-    "logo": "jogos/snes/jogo-12/imagens/logo.png",
-    "ordem": 12,
+    "core": "gb",
+    "rom": "jogos/gb/jogo-001/rom/jogo.gb",
+    "capa": "jogos/gb/jogo-001/imagens/capa.jpg",
+    "banner": "jogos/gb/jogo-001/imagens/banner.jpg",
+    "logo": "jogos/gb/jogo-001/imagens/logo.png",
+    "ordem": 14,
     "adicionadoEm": "2026-07-25"
   }
 ]
