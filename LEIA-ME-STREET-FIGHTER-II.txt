@@ -1,0 +1,9 @@
+ATUALIZAÇÃO STREET FIGHTER II — RETROPLAY
+
+1. Extraia este ZIP.
+2. Abra a pasta extraída.
+3. Envie as pastas 'dados' e 'jogos' para a raiz do repositório RetroPlay.
+4. Quando o GitHub perguntar, substitua os arquivos existentes.
+5. Aguarde o GitHub Pages atualizar.
+
+Esta atualização usa o slot jogo-12 e preserva todos os jogos já cadastrados.

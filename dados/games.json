@@ -219,5 +219,22 @@
     "logo": "jogos/n64/jogo-002/imagens/logo.png",
     "ordem": 13,
     "adicionadoEm": "2026-07-22"
+  },
+  {
+    "id": "snes-012",
+    "nome": "Street Fighter II",
+    "console": "SNES",
+    "ano": "1992",
+    "genero": "Luta",
+    "desenvolvedora": "Capcom",
+    "descricao": "O clássico jogo de luta da Capcom com Ryu, Ken, Chun-Li, Guile e outros lutadores.",
+    "destaque": false,
+    "core": "snes",
+    "rom": "jogos/snes/jogo-12/rom/jogo.sfc",
+    "capa": "jogos/snes/jogo-12/imagens/capa.jpg",
+    "banner": "jogos/snes/jogo-12/imagens/banner.jpg",
+    "logo": "jogos/snes/jogo-12/imagens/logo.png",
+    "ordem": 12,
+    "adicionadoEm": "2026-07-25"
   }
 ]
