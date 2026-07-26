@@ -1,0 +1,29 @@
+RETROPLAY TRANSLATE 0.3 — CORREÇÃO DA CAPTURA VAZIA
+
+ENVIE PARA O GITHUB, MANTENDO AS MESMAS PASTAS:
+
+1. player.html
+2. css/retroplay-translate.css
+3. js/retroplay-translate.js
+
+SUBSTITUA OS ARQUIVOS DA VERSÃO 0.2.
+
+CORREÇÕES:
+- Removida a verificação incorreta que dizia que a captura estava vazia.
+- O OCR agora tenta primeiro a parte inferior da tela, onde normalmente fica a caixa de diálogo.
+- Se não encontrar texto, ele tenta automaticamente a tela inteira.
+- A imagem é ampliada em até 6 vezes.
+- O contraste foi ajustado para fontes pixeladas.
+- A captura continua sendo feita antes de a legenda aparecer.
+
+COMO TESTAR:
+1. Espere a frase aparecer por completo.
+2. Não avance o diálogo.
+3. Toque em “🌐 TRADUZIR TELA”.
+4. Na primeira tentativa, aguarde o download do OCR.
+5. Depois de atualizar o GitHub, teste em aba anônima para evitar cache.
+
+OBSERVAÇÃO:
+Se o navegador ou o emulador bloquear a leitura direta do canvas, será necessária
+uma integração específica com o núcleo do emulador. Esta versão remove o erro falso
+de “captura vazia” e deixa o próprio OCR analisar a imagem.

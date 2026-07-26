@@ -34,48 +34,49 @@
     return canvases.sort((a, b) => (b.width * b.height) - (a.width * a.height))[0] || null;
   }
 
-  function canvasHasVisiblePixels(canvas) {
-    try {
-      const ctx = canvas.getContext("2d", { willReadFrequently: true });
-      if (!ctx) return true; // WebGL: não force outro contexto.
-      const sample = ctx.getImageData(
-        Math.max(0, Math.floor(canvas.width * .2)),
-        Math.max(0, Math.floor(canvas.height * .2)),
-        Math.max(1, Math.floor(canvas.width * .6)),
-        Math.max(1, Math.floor(canvas.height * .6))
-      ).data;
-      for (let i = 0; i < sample.length; i += 40) {
-        if (sample[i] + sample[i + 1] + sample[i + 2] > 18 && sample[i + 3] > 20) return true;
-      }
-      return false;
-    } catch {
-      return true;
-    }
-  }
+  function prepareCanvas(sourceCanvas, crop = null) {
+    const sx = crop?.x ?? 0;
+    const sy = crop?.y ?? 0;
+    const sw = crop?.width ?? sourceCanvas.width;
+    const sh = crop?.height ?? sourceCanvas.height;
 
-  function captureAndPrepare(canvas) {
-    const scale = Math.min(4, Math.max(2, 1200 / Math.max(canvas.width, 1)));
+    const scale = Math.min(6, Math.max(3, 1500 / Math.max(sw, 1)));
     const output = document.createElement("canvas");
-    output.width = Math.round(canvas.width * scale);
-    output.height = Math.round(canvas.height * scale);
+    output.width = Math.max(1, Math.round(sw * scale));
+    output.height = Math.max(1, Math.round(sh * scale));
+
     const ctx = output.getContext("2d", { willReadFrequently: true });
     ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(sourceCanvas, sx, sy, sw, sh, 0, 0, output.width, output.height);
 
-    // A captura ocorre antes de a legenda ser exibida.
-    ctx.drawImage(canvas, 0, 0, output.width, output.height);
-
-    // Aumenta contraste para fontes pixeladas claras e escuras.
+    // Converte para alto contraste sem apagar completamente os tons médios.
     const image = ctx.getImageData(0, 0, output.width, output.height);
     const data = image.data;
     for (let i = 0; i < data.length; i += 4) {
       const gray = Math.round(data[i] * .299 + data[i + 1] * .587 + data[i + 2] * .114);
-      const contrasted = gray < 92 ? 0 : gray > 178 ? 255 : Math.round((gray - 92) * 2.965);
-      data[i] = contrasted;
-      data[i + 1] = contrasted;
-      data[i + 2] = contrasted;
+      const boosted = Math.max(0, Math.min(255, Math.round((gray - 70) * 1.65)));
+      data[i] = boosted;
+      data[i + 1] = boosted;
+      data[i + 2] = boosted;
     }
     ctx.putImageData(image, 0, 0);
     return output;
+  }
+
+  function captureCandidates(canvas) {
+    // 1) Região inferior: onde normalmente ficam as caixas de diálogo.
+    const lowerDialogue = {
+      x: 0,
+      y: Math.floor(canvas.height * 0.56),
+      width: canvas.width,
+      height: Math.max(1, Math.floor(canvas.height * 0.44))
+    };
+
+    // 2) Tela inteira: serve para menus e textos fora da caixa inferior.
+    return [
+      { name: "caixa de diálogo", image: prepareCanvas(canvas, lowerDialogue) },
+      { name: "tela inteira", image: prepareCanvas(canvas) }
+    ];
   }
 
   async function getWorker() {
@@ -159,36 +160,47 @@
       const canvas = findGameCanvas();
       if (!canvas) throw new Error("A tela do jogo ainda não apareceu.");
 
-      // Captura primeiro; só depois mostra qualquer interface por cima do jogo.
-      const prepared = captureAndPrepare(canvas);
+      // Captura tudo antes de mostrar a legenda.
+      const candidates = captureCandidates(canvas);
       await wait(40);
       showCaption("Preparando leitura...");
 
-      if (!canvasHasVisiblePixels(prepared)) {
-        throw new Error("A captura saiu vazia. Aguarde a imagem do jogo aparecer e tente novamente.");
-      }
-
       const ocrWorker = await getWorker();
-      const result = await ocrWorker.recognize(prepared);
-      const recognized = cleanOCR(result?.data?.text);
+      let recognized = "";
+      let usedRegion = "";
+
+      for (const candidate of candidates) {
+        status.textContent = `Lendo ${candidate.name}...`;
+        const result = await ocrWorker.recognize(candidate.image);
+        const text = cleanOCR(result?.data?.text);
+
+        if (looksUseful(text)) {
+          recognized = text;
+          usedRegion = candidate.name;
+          break;
+        }
+      }
 
       if (!looksUseful(recognized)) {
         status.textContent = "Nenhum texto foi reconhecido.";
-        translatedText.textContent = "Tente novamente quando a caixa de diálogo estiver inteira e parada.";
+        translatedText.textContent =
+          "Deixe a caixa de diálogo inteira, sem animação, e toque novamente.";
         originalBox.hidden = true;
         return;
       }
 
       originalBox.hidden = false;
       originalText.textContent = recognized;
-      status.textContent = "Traduzindo...";
+      status.textContent = `Texto encontrado na ${usedRegion}. Traduzindo...`;
+
       const translation = await translate(recognized);
       translatedText.textContent = translation;
       status.textContent = "Tradução concluída.";
     } catch (error) {
       console.error("[RetroPlay Translate]", error);
       showCaption("Não foi possível traduzir.");
-      translatedText.textContent = error?.message || "Tente novamente com a caixa de diálogo visível.";
+      translatedText.textContent =
+        error?.message || "Tente novamente com a caixa de diálogo visível.";
       originalBox.hidden = true;
     } finally {
       busy = false;
