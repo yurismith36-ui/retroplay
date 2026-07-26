@@ -1,0 +1,32 @@
+RETROPLAY TRANSLATE 0.2 — LEGENDA SEM COBRIR O JOGO
+
+ENVIE PARA O GITHUB, MANTENDO AS MESMAS PASTAS:
+
+1. player.html
+2. css/retroplay-translate.css
+3. js/retroplay-translate.js
+
+IMPORTANTE:
+- Substitua o player.html antigo pelo player.html deste pacote.
+- Os outros dois arquivos são novos.
+- Não apague js/player.js nem os arquivos do Cloud Save.
+- Depois do upload, abra o site em aba anônima para evitar cache antigo.
+
+O QUE MUDOU:
+- A captura do jogo é feita ANTES de aparecer qualquer janela.
+- O pop-up grande foi removido.
+- A tradução aparece como uma legenda pequena e transparente na parte inferior.
+- O OCR tenta ler todo o canvas do jogo.
+- A imagem é ampliada e recebe mais contraste para ajudar com letras pixeladas.
+- O texto original fica escondido em “Ver texto reconhecido”.
+- No primeiro uso, o OCR é baixado no aparelho e pode demorar um pouco.
+
+COMO TESTAR:
+1. Abra um jogo e espere aparecer uma caixa de diálogo completa.
+2. Deixe a imagem parada.
+3. Toque em “🌐 TRADUZIR TELA”.
+4. Aguarde a legenda aparecer.
+5. Use o X pequeno para fechar.
+
+OBSERVAÇÃO:
+A leitura depende do formato da fonte do jogo. Letras muito pequenas, animadas ou misturadas ao cenário podem não ser reconhecidas perfeitamente.
