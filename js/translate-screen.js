@@ -1,36 +1,13 @@
 (() => {
-  "use strict";
+  'use strict';
 
-  /*
-    RETROPLAY — ÚLTIMO TESTE 1.0
-    Estratégia: captura manual, região exata, prévia visível, OCR leve e tradução.
-    Nada roda continuamente enquanto o usuário joga.
-  */
-
-  const GAME_ID = new URLSearchParams(location.search).get("id") || "";
-  const state = { busy: false, worker: null };
-
-  const PROFILES = {
-    // Perfil específico para The Machine (Game Boy): faixa inferior do quadro.
-    "gb-machine": { x: 0.015, y: 0.745, width: 0.97, height: 0.245, scale: 5 },
-    gb:           { x: 0.015, y: 0.690, width: 0.97, height: 0.300, scale: 5 },
-    gba:          { x: 0.020, y: 0.650, width: 0.96, height: 0.330, scale: 4 },
-    snes:         { x: 0.025, y: 0.590, width: 0.95, height: 0.380, scale: 4 },
-    default:      { x: 0.020, y: 0.620, width: 0.96, height: 0.350, scale: 4 }
+  const state = {
+    busy: false,
+    worker: null,
+    overlay: null,
   };
 
-  const $ = selector => document.querySelector(selector);
-  const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-  function currentProfile() {
-    const consoleName = ($('#player-console')?.textContent || "").toLowerCase();
-    const title = ($('#player-title')?.textContent || "").toLowerCase();
-    if (title.includes("the machine") || GAME_ID.toLowerCase().includes("machine")) return PROFILES["gb-machine"];
-    if (consoleName.includes("game boy advance") || consoleName.includes("gba")) return PROFILES.gba;
-    if (consoleName.includes("game boy") || consoleName.includes("gbc")) return PROFILES.gb;
-    if (consoleName.includes("snes") || consoleName.includes("super nintendo")) return PROFILES.snes;
-    return PROFILES.default;
-  }
+  const $ = (selector) => document.querySelector(selector);
 
   function setStatus(message, progress = null) {
     const status = $('#translate-status');
@@ -39,8 +16,15 @@
     if (bar) {
       const value = typeof progress === 'number' ? Math.max(0, Math.min(1, progress)) : 0;
       bar.style.width = `${Math.round(value * 100)}%`;
-      if (bar.parentElement) bar.parentElement.hidden = progress === null;
+      bar.parentElement.hidden = progress === null;
     }
+  }
+
+  function setText(original, translated) {
+    const originalBox = $('#translate-original');
+    const translatedBox = $('#translate-result');
+    if (originalBox) originalBox.textContent = original || '—';
+    if (translatedBox) translatedBox.textContent = translated || '—';
   }
 
   function openPanel() {
@@ -53,118 +37,32 @@
     $('#translate-panel')?.setAttribute('aria-hidden', 'true');
   }
 
-  function findGameCanvas() {
-    return [...document.querySelectorAll('#game canvas')]
-      .filter(c => c.width >= 100 && c.height >= 100)
-      .sort((a, b) => b.width * b.height - a.width * a.height)[0] || null;
-  }
-
-  function ensurePreview() {
-    let box = document.getElementById('translate-capture-box');
-    if (box) return box.querySelector('canvas');
-
-    box = document.createElement('div');
-    box.id = 'translate-capture-box';
-    box.style.cssText = 'margin:12px 0;padding:8px;border:1px solid rgba(255,255,255,.22);border-radius:8px;background:#050505';
-    box.innerHTML = '<small style="display:block;margin-bottom:6px">ÁREA QUE O LEITOR ESTÁ ENXERGANDO</small><canvas style="display:block;width:100%;height:auto;image-rendering:pixelated;background:#111"></canvas>';
-    const firstBlock = document.querySelector('.translate-text-block');
-    firstBlock?.parentNode?.insertBefore(box, firstBlock);
-    return box.querySelector('canvas');
-  }
-
-  function ensureOverlay() {
-    let overlay = document.getElementById('retroplay-final-translation');
-    if (overlay) return overlay;
-    overlay = document.createElement('div');
-    overlay.id = 'retroplay-final-translation';
-    overlay.style.cssText = [
-      'position:absolute','left:1.5%','bottom:1.2%','width:97%','box-sizing:border-box',
-      'z-index:999999','display:none','padding:10px 12px','background:rgba(0,0,0,.96)',
-      'border:2px solid rgba(255,255,255,.85)','color:#fff','font:700 clamp(15px,3.4vw,25px)/1.25 Arial,sans-serif',
-      'text-align:center','pointer-events:none','text-shadow:0 2px 2px #000'
-    ].join(';');
-    const stage = $('#emulator-stage');
-    if (stage) {
-      stage.style.position = 'relative';
-      stage.appendChild(overlay);
-    }
-    return overlay;
-  }
-
-  function showOverlay(text) {
-    const overlay = ensureOverlay();
-    if (!overlay) return;
-    overlay.textContent = text;
-    overlay.style.display = 'block';
-    clearTimeout(showOverlay.timer);
-    showOverlay.timer = setTimeout(() => { overlay.style.display = 'none'; }, 12000);
-  }
-
-  function captureDialogue(source) {
-    const p = currentProfile();
-    const sx = Math.round(source.width * p.x);
-    const sy = Math.round(source.height * p.y);
-    const sw = Math.max(1, Math.round(source.width * p.width));
-    const sh = Math.max(1, Math.round(source.height * p.height));
-
-    const raw = document.createElement('canvas');
-    raw.width = sw;
-    raw.height = sh;
-    const rawCtx = raw.getContext('2d', { willReadFrequently: true });
-    rawCtx.imageSmoothingEnabled = false;
-    rawCtx.drawImage(source, sx, sy, sw, sh, 0, 0, sw, sh);
-
-    // Verifica se o canvas capturado veio totalmente preto/transparente.
-    const sample = rawCtx.getImageData(0, 0, sw, sh).data;
-    let min = 255, max = 0, alpha = 0;
-    for (let i = 0; i < sample.length; i += 16) {
-      const value = (sample[i] + sample[i + 1] + sample[i + 2]) / 3;
-      min = Math.min(min, value); max = Math.max(max, value); alpha += sample[i + 3];
-    }
-    if (alpha === 0 || max - min < 8) throw new Error('CAPTURA_VAZIA');
-
-    const output = document.createElement('canvas');
-    output.width = sw * p.scale;
-    output.height = sh * p.scale;
-    const ctx = output.getContext('2d', { willReadFrequently: true });
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(raw, 0, 0, output.width, output.height);
-
-    // Contraste forte próprio para fontes claras de Game Boy.
-    const image = ctx.getImageData(0, 0, output.width, output.height);
-    const data = image.data;
-    let sum = 0;
-    for (let i = 0; i < data.length; i += 4) sum += data[i] * .299 + data[i+1] * .587 + data[i+2] * .114;
-    const mean = sum / (data.length / 4);
-    const threshold = Math.max(105, Math.min(185, mean + 22));
-    for (let i = 0; i < data.length; i += 4) {
-      const gray = data[i] * .299 + data[i+1] * .587 + data[i+2] * .114;
-      const v = gray >= threshold ? 255 : 0;
-      data[i] = data[i+1] = data[i+2] = v;
-      data[i+3] = 255;
-    }
-    ctx.putImageData(image, 0, 0);
-    return output;
-  }
-
-  function copyPreview(snapshot) {
-    const preview = ensurePreview();
-    preview.width = snapshot.width;
-    preview.height = snapshot.height;
-    const ctx = preview.getContext('2d');
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(snapshot, 0, 0);
+  function cleanText(text) {
+    return String(text || '')
+      .replace(/\s+/g, ' ')
+      .replace(/[|]{2,}/g, 'I')
+      .trim();
   }
 
   async function loadTesseract() {
     if (window.Tesseract?.createWorker) return;
-    setStatus('Baixando o leitor de texto…', .03);
+
+    setStatus('Baixando o leitor de texto...', 0.02);
     await new Promise((resolve, reject) => {
+      const old = document.querySelector('script[data-retroplay-tesseract]');
+      if (old) {
+        if (window.Tesseract?.createWorker) return resolve();
+        old.addEventListener('load', resolve, { once: true });
+        old.addEventListener('error', reject, { once: true });
+        return;
+      }
+
       const script = document.createElement('script');
       script.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
       script.async = true;
+      script.dataset.retroplayTesseract = 'true';
       script.onload = resolve;
-      script.onerror = () => reject(new Error('Falha ao baixar o OCR.'));
+      script.onerror = () => reject(new Error('Não foi possível carregar o OCR.'));
       document.head.appendChild(script);
     });
   }
@@ -172,117 +70,256 @@
   async function getWorker() {
     if (state.worker) return state.worker;
     await loadTesseract();
+
     state.worker = await window.Tesseract.createWorker('eng', 1, {
-      logger(m) {
-        if (m.status === 'recognizing text') setStatus(`Lendo letras… ${Math.round((m.progress || 0) * 100)}%`, m.progress || 0);
-      }
+      logger(message) {
+        if (message.status === 'recognizing text') {
+          setStatus('Reconhecendo o texto...', message.progress || 0);
+        } else if (message.status) {
+          setStatus('Preparando o OCR...', message.progress ?? 0.05);
+        }
+      },
     });
+
     await state.worker.setParameters({
-      tessedit_pageseg_mode: '6',
       preserve_interword_spaces: '1',
-      tessedit_char_whitelist: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,!?'-: "
+      tessedit_pageseg_mode: '6',
     });
+
     return state.worker;
   }
 
-  function cleanText(text) {
-    return String(text || '')
-      .replace(/[|]/g, 'I')
-      .replace(/\s+/g, ' ')
-      .replace(/\s+([,.!?])/g, '$1')
-      .trim();
+  function findGameCanvas() {
+    return [...document.querySelectorAll('#game canvas')]
+      .filter(canvas => canvas.width > 0 && canvas.height > 0)
+      .sort((a, b) => (b.width * b.height) - (a.width * a.height))[0] || null;
+  }
+
+  function canvasHasImage(canvas) {
+    try {
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      if (!ctx) return false;
+      const width = Math.max(1, Math.min(canvas.width, 64));
+      const height = Math.max(1, Math.min(canvas.height, 64));
+      const pixels = ctx.getImageData(0, 0, width, height).data;
+      let total = 0;
+      for (let i = 0; i < pixels.length; i += 4) total += pixels[i] + pixels[i + 1] + pixels[i + 2];
+      return total > 100;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function preprocess(source) {
+    const maxWidth = 1600;
+    const scale = Math.max(1, Math.min(4, maxWidth / source.width));
+    const output = document.createElement('canvas');
+    output.width = Math.round(source.width * scale);
+    output.height = Math.round(source.height * scale);
+
+    const ctx = output.getContext('2d', { willReadFrequently: true });
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(source, 0, 0, output.width, output.height);
+
+    const image = ctx.getImageData(0, 0, output.width, output.height);
+    const data = image.data;
+    for (let i = 0; i < data.length; i += 4) {
+      const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+      const value = gray > 125 ? 255 : 0;
+      data[i] = value;
+      data[i + 1] = value;
+      data[i + 2] = value;
+    }
+    ctx.putImageData(image, 0, 0);
+    return output;
+  }
+
+  async function captureViaScreenShare() {
+    if (!navigator.mediaDevices?.getDisplayMedia) {
+      throw new Error('Este navegador não oferece captura de tela. Use Chrome ou Edge atualizado.');
+    }
+
+    setStatus('Escolha “Esta guia” ou a aba do RetroPlay...', 0.05);
+
+    const stream = await navigator.mediaDevices.getDisplayMedia({
+      video: { frameRate: 1 },
+      audio: false,
+      preferCurrentTab: true,
+      selfBrowserSurface: 'include',
+      surfaceSwitching: 'exclude',
+    });
+
+    try {
+      const video = document.createElement('video');
+      video.muted = true;
+      video.playsInline = true;
+      video.srcObject = stream;
+      await video.play();
+
+      await new Promise(resolve => {
+        if (video.readyState >= 2 && video.videoWidth) return resolve();
+        video.onloadedmetadata = () => resolve();
+      });
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+      const stage = $('#emulator-stage');
+      if (!stage) throw new Error('Área do jogo não encontrada.');
+
+      const rect = stage.getBoundingClientRect();
+      const scaleX = video.videoWidth / window.innerWidth;
+      const scaleY = video.videoHeight / window.innerHeight;
+
+      let sx = Math.round(rect.left * scaleX);
+      let sy = Math.round(rect.top * scaleY);
+      let sw = Math.round(rect.width * scaleX);
+      let sh = Math.round(rect.height * scaleY);
+
+      // Limites seguros. Se o usuário compartilhou a tela inteira e não a aba,
+      // a captura completa ainda será usada em vez de falhar.
+      if (sx < 0 || sy < 0 || sx + sw > video.videoWidth || sy + sh > video.videoHeight || sw < 100 || sh < 100) {
+        sx = 0;
+        sy = 0;
+        sw = video.videoWidth;
+        sh = video.videoHeight;
+      }
+
+      const shot = document.createElement('canvas');
+      shot.width = sw;
+      shot.height = sh;
+      const ctx = shot.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
+      return shot;
+    } finally {
+      stream.getTracks().forEach(track => track.stop());
+    }
+  }
+
+  async function captureGame() {
+    // Primeiro tenta a captura leve do canvas, útil no PC/Android quando disponível.
+    const canvas = findGameCanvas();
+    if (canvas && canvasHasImage(canvas)) {
+      const shot = document.createElement('canvas');
+      shot.width = canvas.width;
+      shot.height = canvas.height;
+      shot.getContext('2d').drawImage(canvas, 0, 0);
+      return shot;
+    }
+
+    // Caso WebGL não permita copiar o canvas, usa a captura oficial do navegador.
+    return captureViaScreenShare();
   }
 
   async function translateOnline(text) {
-    // Confirmação garantida para a frase exibida na captura enviada pelo usuário.
-    const normalized = text.toLowerCase().replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim();
-    if (normalized.includes('one monday morning') && normalized.includes('heart')) {
-      return 'Numa manhã de segunda-feira, bem no coração…';
-    }
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 9000);
-    try {
-      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.slice(0, 450))}&langpair=en|pt-BR`;
-      const response = await fetch(url, { signal: controller.signal, cache: 'no-store' });
-      if (!response.ok) throw new Error(`Tradução HTTP ${response.status}`);
-      const data = await response.json();
-      const translated = data?.responseData?.translatedText;
-      if (!translated) throw new Error('Serviço não devolveu tradução.');
-      return translated;
-    } finally {
-      clearTimeout(timeout);
-    }
+    const limited = text.slice(0, 450);
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(limited)}&langpair=en|pt-BR`;
+    const response = await fetch(url, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`Serviço de tradução respondeu ${response.status}.`);
+    const data = await response.json();
+    const result = data?.responseData?.translatedText;
+    if (!result) throw new Error('O serviço não devolveu uma tradução.');
+    return result;
   }
 
-  async function run() {
+  function createOverlay() {
+    if (state.overlay?.isConnected) return state.overlay;
+    const overlay = document.createElement('div');
+    overlay.id = 'retroplay-live-translation';
+    Object.assign(overlay.style, {
+      position: 'fixed',
+      left: '50%',
+      bottom: '9%',
+      transform: 'translateX(-50%)',
+      width: 'min(92vw, 900px)',
+      boxSizing: 'border-box',
+      zIndex: '2147483646',
+      padding: '14px 18px',
+      borderRadius: '8px',
+      background: 'rgba(0,0,0,.94)',
+      color: '#fff',
+      fontFamily: 'Arial, sans-serif',
+      fontSize: 'clamp(17px, 2.2vw, 26px)',
+      fontWeight: '700',
+      lineHeight: '1.35',
+      textAlign: 'center',
+      boxShadow: '0 8px 28px rgba(0,0,0,.5)',
+      pointerEvents: 'none',
+    });
+    document.body.appendChild(overlay);
+    state.overlay = overlay;
+    return overlay;
+  }
+
+  function showOverlay(text) {
+    const overlay = createOverlay();
+    overlay.textContent = text;
+    overlay.hidden = false;
+    window.clearTimeout(showOverlay.timer);
+    showOverlay.timer = window.setTimeout(() => { overlay.hidden = true; }, 15000);
+  }
+
+  async function translateCurrentScreen() {
     if (state.busy) return;
     state.busy = true;
     openPanel();
+    setText('Aguardando captura...', '—');
 
-    const original = $('#translate-original');
-    const result = $('#translate-result');
     const button = $('#translate-screen-button');
-    if (original) original.textContent = 'Capturando…';
-    if (result) result.textContent = '—';
-    if (button) { button.disabled = true; button.textContent = 'CAPTURANDO…'; }
+    if (button) {
+      button.disabled = true;
+      button.textContent = 'CAPTURANDO...';
+    }
 
     try {
-      await sleep(120);
-      const canvas = findGameCanvas();
-      if (!canvas) throw new Error('A tela do jogo ainda não apareceu.');
+      setStatus('Capturando a tela inteira do jogo...', 0.02);
+      const raw = await captureGame();
+      const snapshot = preprocess(raw);
 
-      setStatus('Capturando somente a caixa de diálogo…', .02);
-      const snapshot = captureDialogue(canvas);
-      copyPreview(snapshot);
-
-      // Dá tempo ao iPhone para desenhar a prévia antes do trabalho pesado.
-      await sleep(350);
-      setStatus('Preparando leitura…', .05);
       const worker = await getWorker();
-      const recognition = await worker.recognize(snapshot);
-      const text = cleanText(recognition?.data?.text);
+      const result = await worker.recognize(snapshot);
+      const text = cleanText(result?.data?.text);
 
-      if (original) original.textContent = text || 'Nenhuma letra reconhecida.';
-      if (!text || text.length < 4) {
-        if (result) result.textContent = 'Veja a prévia acima. Se ela mostrar o diálogo corretamente, o problema é apenas o OCR da fonte.';
-        setStatus('A captura funcionou, mas o OCR não leu as letras.', null);
+      if (!text || text.length < 3) {
+        setText('Nenhum texto reconhecido.', 'Tente novamente quando o diálogo estiver completamente visível.');
+        setStatus('A captura funcionou, mas o OCR não encontrou texto.', null);
         return;
       }
 
-      setStatus('Traduzindo para português…', .94);
+      setText(text, 'Traduzindo...');
+      setStatus('Enviando o texto para tradução...', 0.92);
+
       let translated;
       try {
         translated = await translateOnline(text);
       } catch (error) {
-        console.warn('Serviço de tradução:', error);
-        translated = 'O texto foi reconhecido, mas o serviço de tradução não respondeu.';
+        console.warn('Tradução online falhou:', error);
+        translated = `Falha na tradução online: ${error.message}`;
       }
 
-      if (result) result.textContent = translated;
-      showOverlay(translated);
-      setStatus('Concluído. A tradução foi colocada sobre o diálogo.', null);
+      setText(text, translated);
+      if (!translated.startsWith('Falha na tradução')) showOverlay(translated);
+      setStatus('Tradução concluída.', null);
     } catch (error) {
-      console.error('[RetroPlay último teste]', error);
-      if (error?.message === 'CAPTURA_VAZIA') {
-        if (original) original.textContent = 'A imagem do emulador apareceu vazia para o navegador.';
-        if (result) result.textContent = 'Este é o limite técnico: o EmulatorJS está mostrando a imagem, mas bloqueando a cópia do canvas no iPhone.';
-        setStatus('O canvas não permitiu a captura.', null);
-      } else {
-        if (original) original.textContent = 'Falha no teste.';
-        if (result) result.textContent = error?.message || 'Erro desconhecido.';
-        setStatus('Não foi possível concluir.', null);
-      }
+      console.error('RetroPlay Capture Translate:', error);
+      const message = error?.name === 'NotAllowedError'
+        ? 'A captura foi cancelada. Toque em Traduzir novamente e escolha “Esta guia”.'
+        : (error?.message || 'Não foi possível capturar a tela.');
+      setText('Captura não concluída.', message);
+      setStatus('Falha na captura.', null);
     } finally {
       state.busy = false;
-      if (button) { button.disabled = false; button.textContent = '🌐 TRADUZIR'; }
+      if (button) {
+        button.disabled = false;
+        button.textContent = '🌐 TRADUZIR';
+      }
     }
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    $('#translate-screen-button')?.addEventListener('click', run);
+    $('#translate-screen-button')?.addEventListener('click', translateCurrentScreen);
     $('#translate-close')?.addEventListener('click', closePanel);
-    $('#translate-panel')?.addEventListener('click', e => { if (e.target?.id === 'translate-panel') closePanel(); });
+    $('#translate-panel')?.addEventListener('click', event => {
+      if (event.target?.id === 'translate-panel') closePanel();
+    });
   });
 
   window.addEventListener('pagehide', () => {
