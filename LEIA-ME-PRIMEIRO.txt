@@ -1,45 +1,53 @@
-RETROPLAY 1.0 — TEMA 16 BITS
+RETROPLAY — TRADUÇÃO OCR 0.4
 ================================
 
-CONTEÚDO
-- Site completo para GitHub Pages.
-- Tema retrô cinza e roxo inspirado na imagem de referência.
-- Player com EmulatorJS.
-- Busca, filtros por console e favoritos.
-- Página admin.html que gera o cadastro para o games.json.
-- Pastas preparadas para:
-  SNES, Game Boy, Game Boy Color, Game Boy Advance,
-  Nintendo 64, Arcade e Neo Geo.
-- Os 5 jogos SNES da versão anterior foram mantidos.
+ESTE É UM PACOTE DE TESTE SEGURO.
 
-COMO INSTALAR NO GITHUB
-1. Extraia este ZIP.
-2. Abra o repositório retroplay no GitHub.
-3. Envie TODO o conteúdo de dentro da pasta RetroPlay-1.0-Tema-16Bits.
-4. Substitua index.html, player.html, css, js e dados quando o GitHub perguntar.
-5. Mantenha as pastas de jogos incluídas.
-6. Aguarde alguns minutos e atualize o GitHub Pages.
+Ele NÃO substitui o player.html e não apaga nenhuma função do site.
+Primeiro ele confirma se o texto do diálogo pode ser lido sem fechar o jogo.
 
-LINKS
-Página inicial:
-https://yurismith36-ui.github.io/retroplay/
+ARQUIVO PARA ENVIAR AO GITHUB:
+- js/retroplay-tradutor.js
 
-Gerador de jogos:
-https://yurismith36-ui.github.io/retroplay/admin.html
+PASSO 1
+-------
+Envie a pasta "js" deste pacote para a raiz do seu repositório.
+Se já existir uma pasta js, coloque apenas o arquivo retroplay-tradutor.js dentro dela.
 
-Link individual de um jogo:
-https://yurismith36-ui.github.io/retroplay/player.html?id=snes-001
+PASSO 2
+-------
+Abra o player.html no GitHub e procure:
 
-NÚCLEOS CONFIGURADOS
-SNES: core snes
-GB e GBC: core gb
-GBA: core gba
-Nintendo 64: core n64
-Arcade e Neo Geo: core arcade (FBNeo padrão)
+</body>
 
-NEO GEO
-O site está preparado, mas não inclui KOF 2002, ROM ou BIOS.
-Para usar Neo Geo, coloque uma BIOS compatível e legalmente obtida em:
-jogos/neogeo/bios/neogeo.zip
+Imediatamente ANTES de </body>, cole:
 
-Use apenas ROMs e BIOS que você tenha autorização para hospedar.
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="js/retroplay-tradutor.js?v=0.4"></script>
+
+PASSO 3
+-------
+Salve o player.html, abra o site em aba anônima e inicie um jogo.
+
+Aparecerá o botão:
+🌐 Ativar tradução
+
+Deixe um diálogo em inglês na tela e aperte o botão.
+
+RESULTADO ESPERADO
+------------------
+A tarja deverá mostrar:
+
+OCR: texto reconhecido
+
+Isso ainda NÃO traduz para português. Esta versão testa primeiro o OCR para evitar
+que o jogo feche novamente. Depois que o OCR estiver estável, conectamos a tradução.
+
+IMPORTANTE
+----------
+- O OCR lê somente a parte inferior da tela.
+- A leitura acontece a cada 4,5 segundos.
+- Apenas uma leitura pode acontecer por vez.
+- O OCR só é carregado quando o botão é apertado.
+- Ao sair da página, o leitor é encerrado.
+- Não apague seus outros arquivos.
