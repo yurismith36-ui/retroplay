@@ -228,6 +228,7 @@ async function startPlayer() {
       statusBox.classList.add("hidden");
       refreshEmulatorSize();
       window.RetroPlayAutoSave?.start();
+      window.dispatchEvent(new CustomEvent("retroplay:emulator-ready"));
     };
 
     window.EJS_onExit = async () => {
