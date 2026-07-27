@@ -4,7 +4,7 @@
   const state = {
     worker: null,
     busy: false,
-    autoEnabled: true,
+    autoEnabled: false,
     started: false,
     timer: null,
     lastSourceText: "",
@@ -35,6 +35,14 @@
 
   const $ = selector => document.querySelector(selector);
 
+  const IS_NATIVE_APP = Boolean(
+    window.Capacitor?.isNativePlatform?.() ||
+    window.Capacitor?.getPlatform?.() === "android" ||
+    window.Capacitor?.getPlatform?.() === "ios"
+  );
+
+  const IS_IOS_BROWSER = /iPad|iPhone|iPod/i.test(navigator.userAgent) && !IS_NATIVE_APP;
+
   function log(...args) {
     console.log("[RetroPlay AutoTranslate]", ...args);
   }
@@ -50,6 +58,15 @@
   function updateButton() {
     const button = $("#translate-screen-button");
     if (!button) return;
+
+    if (IS_IOS_BROWSER) {
+      button.textContent = "🌐 TRADUÇÃO OFF";
+      button.setAttribute("aria-pressed", "false");
+      button.classList.remove("active");
+      button.title = "Desativada no iPhone para evitar falta de memória.";
+      return;
+    }
+
     button.textContent = state.autoEnabled ? "🌐 AUTO ON" : "🌐 AUTO OFF";
     button.setAttribute("aria-pressed", String(state.autoEnabled));
     button.classList.toggle("active", state.autoEnabled);
@@ -402,12 +419,29 @@
     }
   }
 
-  function stopAuto() {
+  async function stopAuto({ releaseOCR = true } = {}) {
     if (state.timer) {
       clearInterval(state.timer);
       state.timer = null;
     }
+
+    state.started = false;
+    state.busy = false;
+    state.lastSourceText = "";
+    state.lastTranslatedText = "";
+    state.emptyReads = 0;
     hideOverlay();
+
+    if (releaseOCR && state.worker) {
+      const workerToClose = state.worker;
+      state.worker = null;
+      try {
+        await workerToClose.terminate();
+        log("OCR encerrado e memória liberada.");
+      } catch (error) {
+        console.warn("Não foi possível encerrar o OCR:", error);
+      }
+    }
   }
 
   function startAuto() {
@@ -420,13 +454,20 @@
     log("Tradução automática iniciada.");
   }
 
-  function toggleAuto() {
+  async function toggleAuto() {
+    if (IS_IOS_BROWSER) {
+      state.autoEnabled = false;
+      await stopAuto({ releaseOCR: true });
+      updateButton();
+      alert("A tradução foi mantida desligada no iPhone para impedir que o jogo reinicie por falta de memória.");
+      return;
+    }
+
     state.autoEnabled = !state.autoEnabled;
     updateButton();
 
     if (!state.autoEnabled) {
-      stopAuto();
-      state.started = false;
+      await stopAuto({ releaseOCR: true });
       log("Tradução automática desligada.");
       return;
     }
@@ -435,6 +476,8 @@
   }
 
   function waitForEmulatorAndStart() {
+    if (!state.autoEnabled || IS_IOS_BROWSER) return;
+
     let tries = 0;
     const maxTries = 60;
 
@@ -457,13 +500,18 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
+    state.autoEnabled = false;
     hideTranslatePanel();
+    hideOverlay();
     updateButton();
 
     $("#translate-screen-button")?.addEventListener("click", toggleAuto);
     $("#translate-close")?.addEventListener("click", hideTranslatePanel);
 
-    waitForEmulatorAndStart();
+    log(IS_IOS_BROWSER
+      ? "Tradução bloqueada no navegador do iPhone para proteger a memória."
+      : "Tradução carregada em modo OFF. Use o botão para ativar manualmente."
+    );
   });
 
   window.addEventListener("retroplay:emulator-ready", () => {
@@ -478,12 +526,6 @@
   });
 
   window.addEventListener("pagehide", () => {
-    stopAuto();
-    try {
-      state.worker?.terminate?.();
-    } catch (error) {
-      console.warn(error);
-    }
-    state.worker = null;
+    stopAuto({ releaseOCR: true });
   });
 })();
