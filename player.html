@@ -11,7 +11,6 @@
   <link rel="icon" href="assets/icone-controle.svg">
   <link rel="stylesheet" href="css/style.css?v=player-isolado-1-0">
   <link rel="stylesheet" href="css/player-isolated.css?v=player-isolado-1-0">
-  <style>#retroplay-translation-ui{display:none!important}</style>
 </head>
 <body class="player-page player-isolated-page">
   <header class="isolated-toolbar">
@@ -73,27 +72,7 @@
   <script src="js/auth.js?v=cloud-3-1"></script>
   <script src="js/cloud.js?v=cloud-3-1"></script>
   <script src="js/cloud-save-state.js?v=cloud-3-1"></script>
+  <script src="js/translate-screen.js?v=ultimo-teste-1-0"></script>
   <script src="js/player.js?v=player-isolado-1-0"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="js/retroplay-tradutor.js?v=0.4"></script>
-  <script>
-    (() => {
-      const botao = document.getElementById("translate-screen-button");
-      const painel = document.getElementById("translate-panel");
-      if (painel) painel.style.display = "none";
-      if (!botao) return;
-      botao.addEventListener("click", () => {
-        const interno = document.getElementById("retroplay-translation-toggle");
-        if (!interno) {
-          alert("O tradutor ainda está carregando. Tente novamente em alguns segundos.");
-          return;
-        }
-        interno.click();
-        const ativo = interno.dataset.active === "true";
-        botao.textContent = ativo ? "🌐 DESATIVAR TRADUÇÃO" : "🌐 TRADUZIR";
-        botao.classList.toggle("active", ativo);
-      });
-    })();
-  </script>
 </body>
 </html>
