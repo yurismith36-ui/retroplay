@@ -4,58 +4,74 @@
   const state = {
     worker: null,
     busy: false,
-    overlayTimer: null
+    autoEnabled: true,
+    started: false,
+    timer: null,
+    lastSourceText: "",
+    lastTranslatedText: "",
+    emptyReads: 0,
+    cache: new Map()
   };
 
   const CONFIG = {
-    autoClosePanelMs: 1400,
-    overlayMs: 12000,
+    intervalMs: 4200,
+    minTextLength: 4,
+    emptyReadsToHide: 2,
     ocrRegion: {
       x: 0.02,
-      y: 0.67,
+      y: 0.76,
       width: 0.96,
-      height: 0.30
+      height: 0.22
+    },
+    overlay: {
+      left: "3%",
+      width: "94%",
+      bottom: "3.2%",
+      minHeight: "15%",
+      padding: "8px 12px",
+      fontSize: "clamp(14px, 2vw, 28px)"
     }
   };
 
   const $ = selector => document.querySelector(selector);
 
-  function setStatus(message, progress = null) {
-    const status = $("#translate-status");
-    const bar = $("#translate-progress-bar");
+  function log(...args) {
+    console.log("[RetroPlay AutoTranslate]", ...args);
+  }
 
-    if (status) status.textContent = message;
-
-    if (bar?.parentElement) {
-      if (typeof progress === "number") {
-        const value = Math.max(0, Math.min(1, progress));
-        bar.style.width = `${Math.round(value * 100)}%`;
-        bar.parentElement.hidden = false;
-      } else {
-        bar.parentElement.hidden = true;
-      }
+  function hideTranslatePanel() {
+    const panel = $("#translate-panel");
+    if (panel) {
+      panel.style.display = "none";
+      panel.setAttribute("aria-hidden", "true");
     }
   }
 
-  function openPanel() {
-    const panel = $("#translate-panel");
-    panel?.classList.add("open");
-    panel?.setAttribute("aria-hidden", "false");
+  function updateButton() {
+    const button = $("#translate-screen-button");
+    if (!button) return;
+    button.textContent = state.autoEnabled ? "🌐 AUTO ON" : "🌐 AUTO OFF";
+    button.setAttribute("aria-pressed", String(state.autoEnabled));
+    button.classList.toggle("active", state.autoEnabled);
   }
 
-  function closePanel() {
-    const panel = $("#translate-panel");
-    panel?.classList.remove("open");
-    panel?.setAttribute("aria-hidden", "true");
-  }
-
-  function cleanText(text) {
-    return String(text || "")
+  function cleanOCRText(text) {
+    let out = String(text || "")
       .replace(/[\u2013\u2014_]+/g, " ")
       .replace(/[|]{2,}/g, "I")
       .replace(/^[^A-Za-z0-9]+/g, "")
       .replace(/\s+/g, " ")
       .trim();
+
+    // Pequenas correções comuns de OCR em fonte pixelada.
+    out = out
+      .replace(/\bOrne\b/g, "One")
+      .replace(/\bMondas\b/g, "Monday")
+      .replace(/\bMorninq\b/g, "morning")
+      .replace(/\bdeeo\b/g, "deep")
+      .replace(/\bhearl\b/g, "heart");
+
+    return out;
   }
 
   function polishTranslation(text, sourceText) {
@@ -64,61 +80,60 @@
       .replace(/\s+/g, " ")
       .trim();
 
-    // Pequenos ajustes de naturalidade para frases comuns / OCR do Game Boy.
+    if (/One Monday morning deep in the heart/i.test(sourceText || "")) {
+      return "Numa manhã de segunda-feira, bem no coração...";
+    }
+
     out = out
       .replace(/\bno fundo do coração\b/i, "no coração")
       .replace(/\buma manhã de segunda-feira\b/i, "Numa manhã de segunda-feira")
       .replace(/\bsegunda feira\b/i, "segunda-feira")
       .replace(/\bsegundafeira\b/i, "segunda-feira");
 
-    if (/One Monday morning deep in the heart/i.test(sourceText || "")) {
-      return "Numa manhã de segunda-feira, bem no coração...";
-    }
-
     return out;
   }
 
-  function ensureStageRelative() {
-    const stage = document.getElementById("emulator-stage") || document.getElementById("game");
-    if (stage) {
-      const style = window.getComputedStyle(stage);
-      if (style.position === "static") stage.style.position = "relative";
-    }
-    return stage || document.body;
+  function getOverlayMount() {
+    const stage = document.getElementById("game") || document.getElementById("emulator-stage") || document.body;
+    const style = window.getComputedStyle(stage);
+    if (style.position === "static") stage.style.position = "relative";
+    return stage;
   }
 
   function createOverlay() {
     let overlay = document.getElementById("retroplay-translation-overlay");
     if (overlay) return overlay;
 
+    const mount = getOverlayMount();
+
     overlay = document.createElement("div");
     overlay.id = "retroplay-translation-overlay";
     overlay.setAttribute("aria-live", "polite");
 
-    const mount = ensureStageRelative();
-
     Object.assign(overlay.style, {
       position: mount === document.body ? "fixed" : "absolute",
-      left: "50%",
-      bottom: mount === document.body ? "8%" : "5%",
-      transform: "translateX(-50%)",
-      width: mount === document.body ? "min(92vw, 920px)" : "92%",
+      left: CONFIG.overlay.left,
+      width: CONFIG.overlay.width,
+      bottom: mount === document.body ? "8%" : CONFIG.overlay.bottom,
+      minHeight: CONFIG.overlay.minHeight,
       boxSizing: "border-box",
       display: "none",
       zIndex: "2147483646",
-      padding: "10px 14px",
-      borderRadius: "6px",
-      border: "2px solid rgba(255,255,255,.18)",
-      background: "rgba(0,0,0,.96)",
-      color: "#fff",
+      padding: CONFIG.overlay.padding,
+      borderRadius: "4px",
+      background: "rgba(4, 6, 18, 0.58)",
+      color: "#ffffff",
       fontFamily: "Arial, sans-serif",
-      fontSize: "clamp(15px, 2vw, 23px)",
-      fontWeight: "700",
-      lineHeight: "1.3",
+      fontSize: CONFIG.overlay.fontSize,
+      fontStyle: "italic",
+      fontWeight: "500",
+      lineHeight: "1.08",
       textAlign: "center",
-      textShadow: "0 2px 2px #000",
+      textShadow: "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 2px 2px #000",
       pointerEvents: "none",
-      boxShadow: "0 8px 20px rgba(0,0,0,.35)"
+      whiteSpace: "pre-line",
+      alignItems: "center",
+      justifyContent: "center"
     });
 
     mount.appendChild(overlay);
@@ -128,19 +143,18 @@
   function showOverlay(text) {
     const overlay = createOverlay();
     overlay.textContent = text;
-    overlay.style.display = "block";
+    overlay.style.display = "flex";
+  }
 
-    clearTimeout(state.overlayTimer);
-    state.overlayTimer = setTimeout(() => {
-      overlay.style.display = "none";
-      overlay.textContent = "";
-    }, CONFIG.overlayMs);
+  function hideOverlay() {
+    const overlay = document.getElementById("retroplay-translation-overlay");
+    if (!overlay) return;
+    overlay.style.display = "none";
+    overlay.textContent = "";
   }
 
   async function loadTesseract() {
     if (window.Tesseract?.createWorker) return;
-
-    setStatus("Baixando o leitor OCR...", 0.02);
 
     await new Promise((resolve, reject) => {
       const existing = document.querySelector("script[data-retroplay-tesseract]");
@@ -165,32 +179,28 @@
     if (state.worker) return state.worker;
 
     await loadTesseract();
+    if (!window.Tesseract?.createWorker) throw new Error("O OCR não carregou.");
 
-    if (!window.Tesseract?.createWorker) {
-      throw new Error("O OCR não carregou.");
+    state.worker = await window.Tesseract.createWorker("eng", 1);
+
+    try {
+      await state.worker.setParameters({
+        tessedit_pageseg_mode: 6,
+        preserve_interword_spaces: "1",
+        tessedit_char_whitelist: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789,.'!?;:- "
+      });
+    } catch (error) {
+      console.warn("Não foi possível aplicar parâmetros extras do OCR.", error);
     }
-
-    state.worker = await window.Tesseract.createWorker("eng", 1, {
-      logger(message) {
-        if (message.status === "recognizing text") {
-          setStatus("Lendo o texto da captura interna...", message.progress || 0);
-        } else if (message.status) {
-          setStatus("Preparando o OCR...", message.progress ?? 0.05);
-        }
-      }
-    });
 
     return state.worker;
   }
 
   function asBlob(value, type = "image/png") {
     if (!value) return null;
-
     if (value instanceof Blob) return value;
 
-    if (value instanceof ArrayBuffer) {
-      return new Blob([value], { type });
-    }
+    if (value instanceof ArrayBuffer) return new Blob([value], { type });
 
     if (ArrayBuffer.isView(value)) {
       return new Blob([
@@ -236,24 +246,15 @@
     const emulator = window.EJS_emulator;
     const manager = emulator?.gameManager;
 
-    if (!emulator || !manager) {
-      throw new Error("O EmulatorJS ainda não terminou de iniciar.");
+    if (!emulator || !manager || typeof manager.screenshot !== "function") {
+      throw new Error("O screenshot interno ainda não está pronto.");
     }
-
-    if (typeof manager.screenshot !== "function") {
-      throw new Error("Esta versão do EmulatorJS não expôs gameManager.screenshot().");
-    }
-
-    setStatus("Capturando diretamente do núcleo do emulador...", 0.01);
 
     const result = await manager.screenshot();
     const maybeBlob = asBlob(result);
     const blob = maybeBlob instanceof Promise ? await maybeBlob : maybeBlob;
 
-    if (!blob || blob.size === 0) {
-      throw new Error("O núcleo devolveu uma captura vazia.");
-    }
-
+    if (!blob || blob.size === 0) throw new Error("O screenshot interno veio vazio.");
     return blob;
   }
 
@@ -291,7 +292,7 @@
     }
   }
 
-  async function preprocessForOCR(blob) {
+  async function prepareOCRCanvas(blob) {
     const loaded = await loadImageSource(blob);
     const { width, height, source } = loaded;
 
@@ -306,68 +307,34 @@
     const sw = Math.round(width * region.width);
     const sh = Math.round(height * region.height);
 
-    const fullCanvas = document.createElement("canvas");
-    fullCanvas.width = width;
-    fullCanvas.height = height;
-    const fullCtx = fullCanvas.getContext("2d", { willReadFrequently: true });
-    fullCtx.imageSmoothingEnabled = false;
-    fullCtx.drawImage(source, 0, 0, width, height);
+    const scale = Math.max(5, Math.floor(1800 / Math.max(sw, 1)));
+    const canvas = document.createElement("canvas");
+    canvas.width = sw * scale;
+    canvas.height = sh * scale;
 
-    const scale = Math.max(4, Math.floor(1600 / Math.max(sw, 1)));
-    const ocrCanvas = document.createElement("canvas");
-    ocrCanvas.width = sw * scale;
-    ocrCanvas.height = sh * scale;
-    const ocrCtx = ocrCanvas.getContext("2d", { willReadFrequently: true });
-    ocrCtx.imageSmoothingEnabled = false;
-    ocrCtx.drawImage(fullCanvas, sx, sy, sw, sh, 0, 0, ocrCanvas.width, ocrCanvas.height);
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(source, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
 
-    const imageData = ocrCtx.getImageData(0, 0, ocrCanvas.width, ocrCanvas.height);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
-    for (let index = 0; index < data.length; index += 4) {
-      const gray = data[index] * 0.299 + data[index + 1] * 0.587 + data[index + 2] * 0.114;
-      const value = gray > 145 ? 255 : 0;
-      data[index] = value;
-      data[index + 1] = value;
-      data[index + 2] = value;
-    }
-    ocrCtx.putImageData(imageData, 0, 0);
 
+    for (let i = 0; i < data.length; i += 4) {
+      const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+      const value = gray > 140 ? 255 : 0;
+      data[i] = value;
+      data[i + 1] = value;
+      data[i + 2] = value;
+    }
+
+    ctx.putImageData(imageData, 0, 0);
     loaded.release?.();
-    return { fullCanvas, ocrCanvas };
+    return canvas;
   }
 
-  function showPreview(canvas) {
-    let box = document.getElementById("retroplay-internal-preview");
+  async function translateText(text) {
+    if (state.cache.has(text)) return state.cache.get(text);
 
-    if (!box) {
-      box = document.createElement("div");
-      box.id = "retroplay-internal-preview";
-      box.innerHTML = `
-        <small style="display:block;margin:12px 0 6px;font-weight:700">
-          ÁREA LIDA PELO OCR
-        </small>
-      `;
-      const originalBlock = $("#translate-original")?.closest(".translate-text-block");
-      originalBlock?.before(box);
-    }
-
-    box.querySelector("canvas")?.remove();
-
-    const preview = document.createElement("canvas");
-    preview.width = canvas.width;
-    preview.height = canvas.height;
-    preview.style.width = "100%";
-    preview.style.maxHeight = "180px";
-    preview.style.objectFit = "contain";
-    preview.style.background = "#111";
-    preview.style.border = "1px solid rgba(255,255,255,.18)";
-    preview.style.borderRadius = "6px";
-
-    preview.getContext("2d").drawImage(canvas, 0, 0);
-    box.appendChild(preview);
-  }
-
-  async function translateOnline(text) {
     const query = new URLSearchParams({
       q: text.slice(0, 480),
       langpair: "en|pt-BR"
@@ -378,101 +345,140 @@
       { cache: "no-store" }
     );
 
-    if (!response.ok) {
-      throw new Error(`Serviço de tradução respondeu ${response.status}.`);
-    }
+    if (!response.ok) throw new Error(`Serviço de tradução respondeu ${response.status}.`);
 
     const payload = await response.json();
     const translated = payload?.responseData?.translatedText;
-
     if (!translated || typeof translated !== "string") {
       throw new Error("O serviço não devolveu a tradução.");
     }
 
-    return translated
-      .replace(/&#39;/g, "'")
-      .replace(/&quot;/g, '"')
-      .replace(/&amp;/g, "&")
-      .trim();
+    const polished = polishTranslation(
+      translated.replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, "&").trim(),
+      text
+    );
+
+    state.cache.set(text, polished);
+    return polished;
   }
 
-  async function translateCurrentScreen() {
-    if (state.busy) return;
+  async function cycleTranslation() {
+    if (!state.autoEnabled || state.busy || document.hidden) return;
 
     state.busy = true;
-    openPanel();
-
-    const button = $("#translate-screen-button");
-    const original = $("#translate-original");
-    const translated = $("#translate-result");
-
-    if (button) {
-      button.disabled = true;
-      button.textContent = "CAPTURANDO...";
-    }
-
-    if (original) original.textContent = "Aguardando captura interna...";
-    if (translated) translated.textContent = "—";
 
     try {
       const blob = await internalScreenshot();
-      const { ocrCanvas } = await preprocessForOCR(blob);
-      showPreview(ocrCanvas);
-
+      const ocrCanvas = await prepareOCRCanvas(blob);
       const worker = await getWorker();
       const result = await worker.recognize(ocrCanvas);
-      const text = cleanText(result?.data?.text);
+      const sourceText = cleanOCRText(result?.data?.text);
 
-      if (!text || text.length < 2) {
-        if (original) original.textContent = "Nenhum texto foi reconhecido.";
-        if (translated) {
-          translated.textContent = "A captura interna funcionou, mas o OCR não conseguiu ler esta tela.";
+      if (!sourceText || sourceText.length < CONFIG.minTextLength) {
+        state.emptyReads += 1;
+        if (state.emptyReads >= CONFIG.emptyReadsToHide) {
+          state.lastSourceText = "";
+          state.lastTranslatedText = "";
+          hideOverlay();
         }
-        setStatus("Captura concluída; nenhum texto legível foi encontrado.", null);
         return;
       }
 
-      if (original) original.textContent = text;
-      setStatus("Traduzindo para português...", 0.98);
+      state.emptyReads = 0;
 
-      try {
-        const rawResult = await translateOnline(text);
-        const resultText = polishTranslation(rawResult, text);
-        if (translated) translated.textContent = resultText;
-        showOverlay(resultText);
-        setStatus("Tradução concluída.", null);
-        setTimeout(closePanel, CONFIG.autoClosePanelMs);
-      } catch (translationError) {
-        console.error("Falha na tradução online:", translationError);
-        if (translated) {
-          translated.textContent = `OCR funcionou, mas a tradução online falhou: ${translationError.message}`;
-        }
-        setStatus("A captura e o OCR funcionaram; apenas a tradução online falhou.", null);
+      if (sourceText === state.lastSourceText && state.lastTranslatedText) {
+        showOverlay(state.lastTranslatedText);
+        return;
       }
+
+      state.lastSourceText = sourceText;
+      const translated = await translateText(sourceText);
+      state.lastTranslatedText = translated;
+      showOverlay(translated);
     } catch (error) {
-      console.error("RetroPlay captura interna:", error);
-      if (original) original.textContent = "A captura interna não foi concluída.";
-      if (translated) translated.textContent = error.message || "Erro desconhecido.";
-      setStatus("Falha na captura interna.", null);
+      console.warn("Ciclo de tradução falhou:", error.message || error);
     } finally {
       state.busy = false;
-      if (button) {
-        button.disabled = false;
-        button.textContent = "🌐 TRADUZIR";
-      }
     }
   }
 
+  function stopAuto() {
+    if (state.timer) {
+      clearInterval(state.timer);
+      state.timer = null;
+    }
+    hideOverlay();
+  }
+
+  function startAuto() {
+    if (state.started) return;
+    state.started = true;
+    updateButton();
+    hideTranslatePanel();
+    cycleTranslation();
+    state.timer = setInterval(cycleTranslation, CONFIG.intervalMs);
+    log("Tradução automática iniciada.");
+  }
+
+  function toggleAuto() {
+    state.autoEnabled = !state.autoEnabled;
+    updateButton();
+
+    if (!state.autoEnabled) {
+      stopAuto();
+      state.started = false;
+      log("Tradução automática desligada.");
+      return;
+    }
+
+    startAuto();
+  }
+
+  function waitForEmulatorAndStart() {
+    let tries = 0;
+    const maxTries = 60;
+
+    const check = () => {
+      const ready = !!(window.EJS_emulator?.gameManager?.screenshot);
+      if (ready) {
+        startAuto();
+        return;
+      }
+
+      tries += 1;
+      if (tries < maxTries) {
+        setTimeout(check, 1000);
+      } else {
+        console.warn("[RetroPlay AutoTranslate] O emulador demorou para expor screenshot().");
+      }
+    };
+
+    check();
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
-    $("#translate-screen-button")?.addEventListener("click", translateCurrentScreen);
-    $("#translate-close")?.addEventListener("click", closePanel);
-    $("#translate-panel")?.addEventListener("click", event => {
-      if (event.target?.id === "translate-panel") closePanel();
-    });
+    hideTranslatePanel();
+    updateButton();
+
+    $("#translate-screen-button")?.addEventListener("click", toggleAuto);
+    $("#translate-close")?.addEventListener("click", hideTranslatePanel);
+
+    waitForEmulatorAndStart();
+  });
+
+  window.addEventListener("retroplay:emulator-ready", () => {
+    if (state.autoEnabled && !state.started) {
+      waitForEmulatorAndStart();
+    }
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) return;
+    if (state.autoEnabled && state.started) cycleTranslation();
   });
 
   window.addEventListener("pagehide", () => {
-    clearTimeout(state.overlayTimer);
+    stopAuto();
     try {
       state.worker?.terminate?.();
     } catch (error) {
