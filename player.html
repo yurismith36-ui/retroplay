@@ -9,57 +9,70 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>RetroPlay — Jogando</title>
   <link rel="icon" href="assets/icone-controle.svg">
-  <link rel="stylesheet" href="css/style.css?v=cloud-2-3">
-  <link rel="stylesheet" href="css/retroplay-translate.css?v=translate-map-1-0">
+  <link rel="stylesheet" href="css/style.css?v=player-isolado-1-0">
+  <link rel="stylesheet" href="css/player-isolated.css?v=player-isolado-1-0">
 </head>
-<body class="player-page">
-  <header class="player-topbar">
-    <a href="index.html" class="player-back">← VOLTAR</a>
-    <div class="player-game-title">
+<body class="player-page player-isolated-page">
+  <header class="isolated-toolbar">
+    <a href="index.html" class="player-back isolated-back" aria-label="Voltar para a biblioteca">← BIBLIOTECA</a>
+
+    <div class="isolated-title">
       <strong id="player-title">Carregando...</strong>
       <span id="player-console"></span>
     </div>
-    <div class="player-actions">
-      <div id="cloud-save-status" class="cloud-save-status offline">☁️ Verificando conta...</div>
-      <button id="translate-screen-button" class="translate-screen-button" type="button" aria-pressed="false">🌐 AUTO: DESLIGADO</button>
-      <button id="clear-player-memory" class="clear-player-memory" type="button">LIMPAR MEMÓRIA</button>
-      <button id="fullscreen-button" type="button" aria-pressed="false">TELA CHEIA</button>
-    </div>
+
+    <button id="isolated-menu-toggle" class="isolated-menu-toggle" type="button"
+            aria-expanded="false" aria-controls="isolated-actions">☰</button>
   </header>
 
-  <main>
-    <section class="emulator-stage" id="emulator-stage">
+  <section id="isolated-actions" class="isolated-actions" aria-label="Ferramentas do jogo">
+    <div id="cloud-save-status" class="cloud-save-status offline">☁️ Verificando conta...</div>
+    <button id="cloud-load-save" type="button" hidden>CARREGAR SAVE</button>
+    <button id="cloud-ignore-save" type="button" hidden>JOGAR SEM SAVE</button>
+    <button id="translate-screen-button" class="translate-screen-button" type="button">🌐 TRADUZIR</button>
+    <button id="fullscreen-button" type="button" aria-pressed="false">TELA CHEIA</button>
+    <button id="clear-player-memory" class="clear-player-memory" type="button">SAIR E LIMPAR</button>
+  </section>
+
+  <main class="isolated-player-main">
+    <section class="emulator-stage isolated-emulator-stage" id="emulator-stage">
       <div id="player-status" class="player-status">
         <div class="loading-pixel"></div>
-        <p>Preparando o emulador...</p>
+        <p>Preparando o jogo...</p>
       </div>
       <div id="game"></div>
     </section>
-
-    <section class="player-info">
-      <img id="player-cover" alt="" class="player-cover">
-      <div>
-        <span id="player-genre" class="genre-badge"></span>
-        <h1 id="player-info-title"></h1>
-        <p id="player-description"></p>
-        <div class="info-list">
-          <div><small>ANO</small><strong id="player-year">—</strong></div>
-          <div><small>DESENVOLVEDORA</small><strong id="player-developer">—</strong></div>
-        </div>
-      </div>
-    </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js?v=cloud-2-3"></script>
-  <script src="js/auth.js?v=cloud-2-3"></script>
-  <script src="js/cloud.js?v=cloud-2-3"></script>
-  <script src="js/cloud-save-state.js?v=cloud-2-3"></script>
-  <script src="js/player.js?v=cloud-2-3"></script>
+  <div id="translate-panel" class="translate-panel" aria-hidden="true">
+    <section class="translate-card" role="dialog" aria-modal="true" aria-labelledby="translate-title">
+      <div class="translate-card-header">
+        <div>
+          <small>RETROPLAY TRANSLATE</small>
+          <h2 id="translate-title">Tradução da tela</h2>
+        </div>
+        <button id="translate-close" type="button" aria-label="Fechar">×</button>
+      </div>
+      <p id="translate-status" class="translate-status">Pronto para ler a tela atual.</p>
+      <div class="translate-progress" hidden><span id="translate-progress-bar"></span></div>
+      <div class="translate-text-block">
+        <small>TEXTO RECONHECIDO</small>
+        <p id="translate-original">—</p>
+      </div>
+      <div class="translate-text-block translated">
+        <small>PRÉVIA EM PORTUGUÊS</small>
+        <p id="translate-result">—</p>
+      </div>
+      <p class="translate-hint">O leitor de texto só será baixado quando você tocar em Traduzir.</p>
+    </section>
+  </div>
 
-  <!-- OCR carregado somente no player. A primeira leitura pode demorar um pouco. -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="js/retroplay-translate-config.js?v=translate-map-1-0"></script>
-  <script src="js/retroplay-translate.js?v=translate-map-1-0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js?v=cloud-3-1"></script>
+  <script src="js/auth.js?v=cloud-3-1"></script>
+  <script src="js/cloud.js?v=cloud-3-1"></script>
+  <script src="js/cloud-save-state.js?v=cloud-3-1"></script>
+  <script src="js/translate-screen.js?v=player-isolado-1-0"></script>
+  <script src="js/player.js?v=player-isolado-1-0"></script>
 </body>
 </html>

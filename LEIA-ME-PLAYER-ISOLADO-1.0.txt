@@ -1,0 +1,19 @@
+RETROPLAY PLAYER ISOLADO 1.0
+
+O que muda:
+- A biblioteca continua completa na página inicial.
+- Cada jogo abre numa página isolada.
+- A página do jogo mostra somente: jogo, controles do emulador, tradução, save, tela cheia e voltar.
+- Foram removidos da página do jogo: capa, descrição, ano, desenvolvedora e outras informações.
+- O Tesseract OCR não é mais baixado ao abrir o jogo. Ele só é carregado quando o botão TRADUZIR é tocado.
+- O menu de ferramentas fica recolhido no botão ☰ para liberar espaço no celular.
+
+INSTALAÇÃO:
+1. Extraia este ZIP.
+2. Envie player.html e as pastas css e js para a raiz do repositório.
+3. Confirme a substituição dos arquivos player.html, js/player.js e js/translate-screen.js.
+4. O arquivo css/player-isolated.css é novo e também deve ser enviado.
+5. Aguarde o GitHub Pages atualizar.
+6. No iPhone, feche a aba antiga e abra o site novamente para evitar cache.
+
+Este pacote não contém ROMs e não altera dados/games.json.

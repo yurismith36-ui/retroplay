@@ -91,13 +91,37 @@
     return output;
   }
 
+  async function loadTesseractOnDemand() {
+    if (window.Tesseract?.createWorker) return;
+
+    setStatus('Baixando o leitor de texto pela primeira vez...', 0.02);
+    await new Promise((resolve, reject) => {
+      const existing = document.querySelector('script[data-retroplay-tesseract]');
+      if (existing) {
+        existing.addEventListener('load', resolve, { once: true });
+        existing.addEventListener('error', reject, { once: true });
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+      script.async = true;
+      script.dataset.retroplayTesseract = 'true';
+      script.onload = resolve;
+      script.onerror = () => reject(new Error('Não foi possível baixar o leitor de texto.'));
+      document.head.appendChild(script);
+    });
+  }
+
   async function getWorker() {
     if (state.worker) return state.worker;
+    await loadTesseractOnDemand();
+
     if (!window.Tesseract?.createWorker) {
       throw new Error('O leitor de texto não carregou. Verifique a internet e tente novamente.');
     }
 
-    setStatus('Baixando o leitor de texto pela primeira vez...', 0.05);
+    setStatus('Preparando o leitor de texto...', 0.05);
     state.worker = await window.Tesseract.createWorker('eng', 1, {
       logger(message) {
         if (message.status === 'recognizing text') {

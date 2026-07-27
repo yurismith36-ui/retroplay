@@ -201,16 +201,6 @@ async function startPlayer() {
     document.title = `${game.nome} — RetroPlay`;
     document.querySelector("#player-title").textContent = game.nome;
     document.querySelector("#player-console").textContent = game.console;
-    document.querySelector("#player-info-title").textContent = game.nome;
-    document.querySelector("#player-description").textContent = game.descricao || "";
-    document.querySelector("#player-year").textContent = game.ano || "—";
-    document.querySelector("#player-developer").textContent = game.desenvolvedora || "—";
-    document.querySelector("#player-genre").textContent = game.genero || game.console;
-
-    const cover = document.querySelector("#player-cover");
-    cover.src = game.capa || "";
-    cover.alt = `Capa de ${game.nome}`;
-
     try { sessionStorage.setItem("retroplay-rom-em-memoria", game.id); } catch (error) {}
 
     window.EJS_player = "#game";
@@ -297,3 +287,20 @@ window.addEventListener("pageshow", event => {
 
 updateFullscreenButton();
 startPlayer();
+
+
+// Player isolado: menu compacto para deixar somente o jogo visível.
+const isolatedMenuToggle = document.querySelector("#isolated-menu-toggle");
+const isolatedActions = document.querySelector("#isolated-actions");
+
+isolatedMenuToggle?.addEventListener("click", () => {
+  const open = isolatedActions?.classList.toggle("open");
+  isolatedMenuToggle.setAttribute("aria-expanded", String(Boolean(open)));
+});
+
+isolatedActions?.addEventListener("click", event => {
+  if (event.target?.tagName === "BUTTON" && event.target?.id !== "cloud-load-save") {
+    isolatedActions.classList.remove("open");
+    isolatedMenuToggle?.setAttribute("aria-expanded", "false");
+  }
+});
