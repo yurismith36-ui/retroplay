@@ -10,7 +10,7 @@
   <title>RetroPlay — Jogando</title>
   <link rel="icon" href="assets/icone-controle.svg">
   <link rel="stylesheet" href="css/style.css?v=cloud-2-3">
-  <link rel="stylesheet" href="css/retroplay-translate.css?v=translate-0-3">
+  <link rel="stylesheet" href="css/retroplay-translate.css?v=translate-map-1-0">
 </head>
 <body class="player-page">
   <header class="player-topbar">
@@ -21,7 +21,7 @@
     </div>
     <div class="player-actions">
       <div id="cloud-save-status" class="cloud-save-status offline">☁️ Verificando conta...</div>
-      <button id="translate-screen-button" class="translate-screen-button" type="button">🌐 TRADUZIR TELA</button>
+      <button id="translate-screen-button" class="translate-screen-button" type="button" aria-pressed="false">🌐 AUTO: DESLIGADO</button>
       <button id="clear-player-memory" class="clear-player-memory" type="button">LIMPAR MEMÓRIA</button>
       <button id="fullscreen-button" type="button" aria-pressed="false">TELA CHEIA</button>
     </div>
@@ -34,17 +34,6 @@
         <p>Preparando o emulador...</p>
       </div>
       <div id="game"></div>
-
-      <aside id="translate-caption" class="translate-caption" hidden aria-live="polite">
-        <button id="translate-caption-close" class="translate-caption-close" type="button" aria-label="Fechar tradução">×</button>
-        <div class="translate-caption-label">🌐 TRADUÇÃO</div>
-        <div id="translate-caption-status" class="translate-caption-status">Lendo a tela...</div>
-        <div id="translate-caption-text" class="translate-caption-text"></div>
-        <details id="translate-original-box" class="translate-original-box">
-          <summary>Ver texto reconhecido</summary>
-          <p id="translate-original-text"></p>
-        </details>
-      </aside>
     </section>
 
     <section class="player-info">
@@ -70,6 +59,7 @@
 
   <!-- OCR carregado somente no player. A primeira leitura pode demorar um pouco. -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="js/retroplay-translate.js?v=translate-0-3"></script>
+  <script src="js/retroplay-translate-config.js?v=translate-map-1-0"></script>
+  <script src="js/retroplay-translate.js?v=translate-map-1-0"></script>
 </body>
 </html>

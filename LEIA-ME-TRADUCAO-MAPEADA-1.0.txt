@@ -1,0 +1,50 @@
+RETROPLAY — TRADUÇÃO AUTOMÁTICA MAPEADA 1.0
+
+ARQUIVOS DO PACOTE
+- player.html
+- css/retroplay-translate.css
+- js/retroplay-translate.js
+- js/retroplay-translate-config.js
+
+COMO ATUALIZAR NO GITHUB
+1. Substitua player.html.
+2. Substitua css/retroplay-translate.css.
+3. Substitua js/retroplay-translate.js.
+4. Adicione o novo arquivo js/retroplay-translate-config.js.
+5. Aguarde o GitHub Pages atualizar.
+6. No celular, teste em uma guia anônima para evitar cache antigo.
+
+FUNCIONAMENTO
+- The Machine inicia com tradução automática.
+- O OCR lê somente a área fixa da caixa de diálogo.
+- A tradução aparece em uma tarja preta exatamente sobre o texto original.
+- A leitura ocorre apenas quando a imagem da caixa muda.
+- O botão “AUTO: LIGADO/DESLIGADO” permite controlar o recurso.
+- Jogos marcados como pt-BR não ativam a tradução automática.
+
+MAPEAMENTO DO THE MACHINE
+x: 4,5%
+y: 70,5%
+largura: 91%
+altura: 19%
+
+COMO CONFIGURAR OUTROS JOGOS
+Abra js/retroplay-translate-config.js e copie o perfil “the machine”.
+Use o título exibido no player como nome do perfil.
+
+Exemplo:
+"pokemon crystal": {
+  language: "en",
+  autoTranslate: true,
+  intervalMs: 4200,
+  dialogue: { x: 0.04, y: 0.70, width: 0.92, height: 0.20 }
+}
+
+PARA JOGOS EM PORTUGUÊS
+Use:
+language: "pt-BR",
+autoTranslate: false
+
+IMPORTANTE
+A primeira tradução pode demorar porque o OCR é carregado no aparelho.
+O intervalo mínimo é de 3 segundos para reduzir travamentos e consumo de memória.
