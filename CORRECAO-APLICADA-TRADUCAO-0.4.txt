@@ -1,0 +1,10 @@
+CORREÇÃO APLICADA
+
+- O tradutor antigo translate-screen.js deixou de ser carregado no player.html.
+- Tesseract.js foi adicionado.
+- js/retroplay-tradutor.js?v=0.4 foi adicionado.
+- O botão original 🌐 TRADUZIR agora aciona o novo OCR.
+- O cache do service worker foi atualizado para evitar carregar a versão antiga.
+
+Envie todos os arquivos deste pacote substituindo os existentes no GitHub.
+Depois teste em aba anônima.

@@ -1,4 +1,4 @@
-const CACHE_VERSION = "retroplay-auth-1-0-v1";
+const CACHE_VERSION = "retroplay-translate-0-4-v1";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 
