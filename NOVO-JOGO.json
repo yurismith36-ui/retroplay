@@ -1,0 +1,19 @@
+{
+  "id": "gba-001",
+  "nome": "MÄR Heaven: Knockin' on Heaven's Door",
+  "console": "Game Boy Advance",
+  "ano": "2005",
+  "genero": "Ação / RPG",
+  "desenvolvedora": "Alpha Unit / Konami",
+  "descricao": "Aventura de ação inspirada em MÄR Heaven, com batalhas, exploração e coleta de ÄRMs. Versão japonesa.",
+  "destaque": false,
+  "core": "gba",
+  "rom": "jogos/gba/jogo-001/rom/jogo.gba",
+  "capa": "jogos/gba/jogo-001/imagens/capa.jpg",
+  "banner": "jogos/gba/jogo-001/imagens/banner.jpg",
+  "logo": "jogos/gba/jogo-001/imagens/logo.png",
+  "ordem": 15,
+  "adicionadoEm": "2026-07-27",
+  "sha256": "a1b3a48afefc61d2781c6b1d5f87f24e51b124f9f649a4239c6c73f912f6d675",
+  "bytes": 16777216
+}
