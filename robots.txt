@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Áreas internas e arquivos que não devem aparecer na pesquisa
+Disallow: /retroplay/admin.html
+Disallow: /retroplay/EDITOR-DE-JOGOS.html
+Disallow: /retroplay/jogos/
+
+Sitemap: https://yurismith36-ui.github.io/retroplay/sitemap.xml

@@ -1,18 +1,19 @@
 {
-  "name": "RetroPlay",
+  "name": "RetroPlay — Jogos Clássicos",
   "short_name": "RetroPlay",
-  "description": "Biblioteca retrô de jogos clássicos.",
-  "start_url": "./index.html",
+  "description": "Biblioteca retrô organizada por console para jogar no navegador.",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#050506",
   "theme_color": "#050506",
+  "lang": "pt-BR",
   "icons": [
     {
       "src": "assets/icone-controle.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }

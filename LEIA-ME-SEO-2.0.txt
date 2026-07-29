@@ -1,0 +1,32 @@
+RETROPLAY — ATUALIZAÇÃO SEO 2.0
+================================
+
+LINK CONFIGURADO:
+https://yurismith36-ui.github.io/retroplay/
+
+COMO INSTALAR PELO GITHUB (MÉTODO ANTIGO)
+1. Abra o repositório: https://github.com/yurismith36-ui/retroplay
+2. Envie os arquivos e pastas deste pacote para a RAIZ do repositório.
+3. Quando o GitHub perguntar, confirme a substituição dos arquivos existentes.
+4. Não apague as outras pastas do site.
+5. Aguarde alguns minutos para o GitHub Pages publicar.
+
+ARQUIVOS ALTERADOS
+- index.html: SEO, compartilhamento e dados estruturados.
+- salas.html: descrição e compartilhamento.
+- player.html, login.html, conta.html, admin.html e EDITOR-DE-JOGOS.html: noindex para evitar páginas internas no Google.
+- manifest.webmanifest: informações do aplicativo instalável.
+
+ARQUIVOS NOVOS
+- robots.txt
+- sitemap.xml
+- assets/retroplay-compartilhamento.jpg
+
+DEPOIS DE PUBLICAR
+1. Abra o Google Search Console.
+2. Adicione a propriedade por Prefixo do URL usando: https://yurismith36-ui.github.io/retroplay/
+3. Em Sitemaps, envie: sitemap.xml
+4. Em Inspeção de URL, cole a página inicial e clique em Solicitar indexação.
+
+SEGURANÇA
+Esta atualização não altera app.js, player.js, emulador, ROMs, tradução, Supabase ou Cloud Save.
