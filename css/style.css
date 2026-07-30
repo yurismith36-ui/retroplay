@@ -2838,3 +2838,315 @@ body.retro-pseudo-fullscreen #fullscreen-button {
   .translate-screen-button { order: -1; width:100%; }
   .translate-card { max-height:85vh; }
 }
+
+/* =========================================================
+   RETROPLAY ARENA ONLINE 1.0
+   Complementos para salas reais pelo Supabase.
+   ========================================================= */
+
+.server-status.connecting .status-light {
+  background: #c38d21;
+  box-shadow: 0 0 0 4px rgba(195,141,33,.18), 0 0 15px rgba(195,141,33,.6);
+  animation: arena-status-pulse 1.2s ease-in-out infinite alternate;
+}
+
+.server-status.online {
+  border-color: #34724d;
+  background: linear-gradient(#f4fff7, #cce6d4);
+}
+
+.server-status.online .status-light {
+  background: #2f9c57;
+  box-shadow: 0 0 0 4px rgba(47,156,87,.18), 0 0 16px rgba(47,156,87,.62);
+}
+
+.server-status.online strong { color: #24583a; }
+
+.server-status.error {
+  border-color: #8a3d52;
+  background: linear-gradient(#fff5f7, #e8c9d1);
+}
+
+.server-status.error .status-light {
+  background: #a93c5a;
+  box-shadow: 0 0 0 4px rgba(169,60,90,.17), 0 0 15px rgba(169,60,90,.55);
+}
+
+.server-status.error strong { color: #713044; }
+
+@keyframes arena-status-pulse {
+  from { opacity: .55; transform: scale(.9); }
+  to { opacity: 1; transform: scale(1.08); }
+}
+
+.arena-notice {
+  padding: 13px 15px;
+  border: 3px solid #594268;
+  background: #eee8f2;
+  color: #3e2b49;
+  box-shadow: inset 0 0 0 2px #fff;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.arena-notice.success {
+  border-color: #34724d;
+  color: #24583a;
+  background: #dff1e5;
+}
+
+.arena-notice.error {
+  border-color: #8a3d52;
+  color: #6c2d40;
+  background: #f2dbe1;
+}
+
+.arena-notice.info {
+  border-color: #4c6182;
+  color: #324664;
+  background: #e0e8f4;
+}
+
+.arena-create-panel {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.2fr) minmax(280px, 1fr) auto;
+  align-items: end;
+  gap: 13px;
+  padding: 15px;
+  background: #eeedf0;
+}
+
+.arena-create-panel > label:not(.privacy-check) {
+  display: grid;
+  gap: 6px;
+}
+
+.arena-create-panel > label > span {
+  color: #493456;
+  font-family: var(--pixel-font);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.arena-create-panel select {
+  width: 100%;
+  min-height: 43px;
+  padding: 9px 11px;
+  border: 2px solid #4e4855;
+  border-radius: 2px;
+  color: #27232b;
+  background: #fff;
+  box-shadow: inset 2px 2px 0 #cfccd3;
+}
+
+.arena-private-check {
+  margin: 0;
+}
+
+.arena-empty-state {
+  grid-column: 1 / -1;
+  min-height: 150px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  padding: 25px;
+  border: 2px dashed #7d7185;
+  color: #5d5263;
+  background: #f1eff3;
+  text-align: center;
+}
+
+.arena-empty-state strong {
+  color: #442d52;
+  font-family: var(--pixel-font);
+}
+
+.arena-room-card > header > div {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.arena-room-card > header > div strong {
+  font-size: clamp(20px, 3vw, 28px);
+  letter-spacing: 2px;
+}
+
+.room-status-pill.playing { background: #315e8f; }
+
+.arena-room-online-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #3c6148;
+  font-size: 12px;
+}
+
+.arena-invite-link-panel {
+  max-width: 860px;
+  width: 100%;
+  display: grid;
+  gap: 7px;
+  margin: 0 auto;
+  padding: 12px;
+  border: 2px solid #675472;
+  background: #e5e0e9;
+}
+
+.arena-invite-link-panel label {
+  color: #493456;
+  font-family: var(--pixel-font);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.arena-invite-link-panel > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.arena-invite-link-panel input {
+  min-width: 0;
+  min-height: 43px;
+  padding: 9px 10px;
+  border: 2px solid #443d49;
+  color: #34283d;
+  background: #fff;
+  font-size: 12px;
+}
+
+.arena-chat-window {
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  border: 3px solid #423b48;
+  background: #d7d4dc;
+  box-shadow: inset 0 0 0 2px #f3f1f5, 4px 4px 0 #99949e;
+}
+
+.arena-chat-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  color: #fff;
+  background: linear-gradient(#5f3a7b, #38204b);
+  border-bottom: 2px solid #423b48;
+}
+
+.arena-chat-title strong {
+  font-family: var(--pixel-font);
+  font-size: 12px;
+}
+
+.arena-chat-title span {
+  font-size: 11px;
+  opacity: .85;
+}
+
+.arena-chat-messages {
+  height: 230px;
+  overflow-y: auto;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 11px;
+  background: #f4f3f5;
+}
+
+.arena-chat-empty {
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  color: #77707b;
+  text-align: center;
+}
+
+.arena-chat-message {
+  padding: 9px 10px;
+  border: 1px solid #a7a1aa;
+  background: #fff;
+  box-shadow: 2px 2px 0 #d2cfd5;
+}
+
+.arena-chat-message header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.arena-chat-message strong {
+  color: #4d2f61;
+  font-size: 12px;
+}
+
+.arena-chat-message time {
+  color: #827b86;
+  font-size: 10px;
+}
+
+.arena-chat-message p {
+  margin: 0;
+  color: #403b43;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.arena-chat-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  padding: 10px;
+  border-top: 2px solid #9d97a1;
+}
+
+.arena-chat-form input {
+  min-width: 0;
+  min-height: 43px;
+  padding: 9px 10px;
+  border: 2px solid #443d49;
+  background: #fff;
+}
+
+.arena-invite-banner.expired {
+  color: #6c2d40;
+  border-color: #8a3d52;
+  background: #f2dbe1;
+}
+
+@media (max-width: 980px) {
+  .arena-create-panel {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .arena-create-panel > button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .arena-create-panel,
+  .arena-invite-link-panel > div,
+  .arena-chat-form {
+    grid-template-columns: 1fr;
+  }
+
+  .arena-create-panel > button {
+    grid-column: auto;
+  }
+
+  .arena-create-panel button,
+  .arena-invite-link-panel button,
+  .arena-chat-form button {
+    width: 100%;
+  }
+
+  .arena-chat-title {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

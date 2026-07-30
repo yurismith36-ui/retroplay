@@ -1,33 +1,54 @@
-const ARENA_STORAGE_KEY = "retroplay-arena-rooms-v1";
 const ARENA_NAME_KEY = "retroplay-arena-nickname";
-const ARENA_ACTIVE_KEY = "retroplay-arena-active-room";
-const ROOM_COUNT = 3;
-const ROOM_MAX_AGE = 12 * 60 * 60 * 1000;
+const ARENA_TOKEN_KEY = "retroplay-arena-online-token";
+const ARENA_ACTIVE_KEY = "retroplay-arena-online-active-code";
+const ARENA_INVITE_SEEN_KEY = "retroplay-arena-invite-seen";
+const ROOM_REFRESH_MS = 8000;
 
-const playerSessionId = (() => {
-  let id = sessionStorage.getItem("retroplay-arena-session-id");
-  if (!id) {
-    id = typeof crypto !== "undefined" && crypto.randomUUID
-      ? crypto.randomUUID()
-      : `sessao-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-    sessionStorage.setItem("retroplay-arena-session-id", id);
-  }
-  return id;
-})();
+const inviteParams = new URLSearchParams(location.search);
+const inviteCodeAtBoot = cleanCode(inviteParams.get("codigo") || "");
 
-const arenaState = {
+// Ao abrir o link de convite em outra aba, cria uma identidade nova para permitir
+// o teste como Jogador 2 no mesmo navegador. A atualização da própria aba mantém o token.
+if (
+  inviteCodeAtBoot &&
+  inviteParams.get("convite") === "1" &&
+  sessionStorage.getItem(ARENA_INVITE_SEEN_KEY) !== inviteCodeAtBoot
+) {
+  sessionStorage.removeItem(ARENA_TOKEN_KEY);
+  sessionStorage.setItem(ARENA_INVITE_SEEN_KEY, inviteCodeAtBoot);
+}
+
+const playerToken = getOrCreatePlayerToken();
+const client = window.retroplaySupabase || null;
+
+const state = {
   games: [],
-  rooms: [],
-  activeRoomNumber: Number(sessionStorage.getItem(ARENA_ACTIVE_KEY) || 0),
-  nickname: localStorage.getItem(ARENA_NAME_KEY) || "",
-  channel: "BroadcastChannel" in window ? new BroadcastChannel("retroplay-arena-v1") : null
+  publicRooms: [],
+  activeRoom: null,
+  messages: [],
+  lobbyChannel: null,
+  roomChannel: null,
+  presenceCount: 0,
+  serverReady: false,
+  redirecting: false,
+  refreshTimer: null
 };
 
-const arenaElements = {
+const elements = {
   nickname: document.querySelector("#arena-nickname"),
   saveNickname: document.querySelector("#save-nickname"),
   codeInput: document.querySelector("#room-code-input"),
   openCode: document.querySelector("#open-room-code"),
+  refresh: document.querySelector("#arena-refresh"),
+  headerMessage: document.querySelector("#arena-header-message"),
+  serverStatus: document.querySelector("#arena-server-status"),
+  serverTitle: document.querySelector("#arena-server-title"),
+  serverDetail: document.querySelector("#arena-server-detail"),
+  notice: document.querySelector("#arena-notice"),
+  inviteBanner: document.querySelector("#invite-banner"),
+  gameSelect: document.querySelector("#arena-game-select"),
+  privateRoom: document.querySelector("#arena-private-room"),
+  createRoom: document.querySelector("#create-online-room"),
   rooms: document.querySelector("#arena-rooms"),
   roomSummary: document.querySelector("#arena-room-summary"),
   activePanel: document.querySelector("#active-room-panel"),
@@ -43,16 +64,51 @@ const arenaElements = {
   guestName: document.querySelector("#guest-name"),
   hostReady: document.querySelector("#host-ready"),
   guestReady: document.querySelector("#guest-ready"),
-  toggleReady: document.querySelector("#toggle-ready"),
+  presenceCount: document.querySelector("#active-presence-count"),
+  inviteLink: document.querySelector("#active-invite-link"),
   copyInvite: document.querySelector("#copy-invite"),
-  simulatePlayerTwo: document.querySelector("#simulate-player-two"),
+  shareInvite: document.querySelector("#share-invite"),
+  refreshActive: document.querySelector("#refresh-active-room"),
+  toggleReady: document.querySelector("#toggle-ready"),
   leaveRoom: document.querySelector("#leave-room"),
   closePanel: document.querySelector("#close-room-panel"),
-  startLocal: document.querySelector("#start-local-game"),
-  inviteBanner: document.querySelector("#invite-banner"),
-  inviteLink: document.querySelector("#active-invite-link"),
-  openInviteLink: document.querySelector("#open-invite-link")
+  chatMessages: document.querySelector("#arena-chat-messages"),
+  chatForm: document.querySelector("#arena-chat-form"),
+  chatInput: document.querySelector("#arena-chat-input"),
+  startGame: document.querySelector("#start-online-game"),
+  startHelp: document.querySelector("#arena-start-help")
 };
+
+function cleanCode(value) {
+  return String(value || "")
+    .toUpperCase()
+    .replace(/[^A-F0-9]/g, "")
+    .slice(0, 6);
+}
+
+function randomUuid() {
+  if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+  const bytes = new Uint8Array(16);
+  globalThis.crypto?.getRandomValues?.(bytes);
+  if (!bytes.some(Boolean)) {
+    for (let index = 0; index < bytes.length; index += 1) {
+      bytes[index] = Math.floor(Math.random() * 256);
+    }
+  }
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = [...bytes].map(value => value.toString(16).padStart(2, "0"));
+  return `${hex.slice(0, 4).join("")}-${hex.slice(4, 6).join("")}-${hex.slice(6, 8).join("")}-${hex.slice(8, 10).join("")}-${hex.slice(10).join("")}`;
+}
+
+function getOrCreatePlayerToken() {
+  let token = sessionStorage.getItem(ARENA_TOKEN_KEY);
+  if (!token) {
+    token = randomUuid();
+    sessionStorage.setItem(ARENA_TOKEN_KEY, token);
+  }
+  return token;
+}
 
 function escapeHtml(value = "") {
   return String(value)
@@ -76,605 +132,889 @@ function placeholderCover(title) {
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 }
 
-function makeEmptyRoom(number) {
+function normalizeRoom(room) {
+  if (!room || typeof room !== "object") return null;
   return {
-    number,
-    code: "",
-    gameId: "",
-    host: null,
-    guest: null,
-    private: false,
-    createdAt: 0,
-    updatedAt: 0
+    code: cleanCode(room.code),
+    game_id: String(room.game_id || ""),
+    game_name: String(room.game_name || "Jogo"),
+    game_console: String(room.game_console || "Console"),
+    game_cover: String(room.game_cover || ""),
+    host_name: String(room.host_name || "Jogador 1"),
+    guest_name: room.guest_name ? String(room.guest_name) : "",
+    host_ready: Boolean(room.host_ready),
+    guest_ready: Boolean(room.guest_ready),
+    is_private: Boolean(room.is_private),
+    status: String(room.status || "waiting"),
+    viewer_role: String(room.viewer_role || ""),
+    created_at: room.created_at || "",
+    updated_at: room.updated_at || "",
+    expires_at: room.expires_at || ""
   };
 }
 
-function normalizeRooms(rawRooms) {
-  const now = Date.now();
-  const source = Array.isArray(rawRooms) ? rawRooms : [];
+function friendlyError(error) {
+  const raw = String(error?.message || error || "Erro desconhecido");
+  if (/arena_create_room|arena_list_rooms|arena_get_room|PGRST202|Could not find the function/i.test(raw)) {
+    return "A Arena ainda não foi ativada no Supabase. Execute o arquivo SUPABASE-ARENA-ONLINE-1.0.sql.";
+  }
 
-  return Array.from({ length: ROOM_COUNT }, (_, index) => {
-    const number = index + 1;
-    const found = source.find(room => Number(room.number) === number);
-    if (!found) return makeEmptyRoom(number);
+  const known = {
+    SALA_NAO_ENCONTRADA: "A sala não foi encontrada ou expirou.",
+    SALA_CHEIA: "A sala já possui dois jogadores.",
+    DIGITE_UM_NOME: "Digite um nome com pelo menos 2 caracteres.",
+    ESCOLHA_UM_JOGO: "Escolha um jogo para criar a sala.",
+    IDENTIFICACAO_INVALIDA: "Não foi possível identificar este aparelho.",
+    VOCE_NAO_ESTA_NESTA_SALA: "Você não está mais nesta sala.",
+    SOMENTE_O_ANFITRIAO_PODE_INICIAR: "Somente o anfitrião pode iniciar o jogo.",
+    OS_DOIS_JOGADORES_PRECISAM_ESTAR_PRONTOS: "Os dois jogadores precisam estar prontos.",
+    MENSAGEM_VAZIA: "Escreva uma mensagem antes de enviar."
+  };
 
-    const expired = found.updatedAt && now - Number(found.updatedAt) > ROOM_MAX_AGE;
-    if (expired) return makeEmptyRoom(number);
-
-    return {
-      ...makeEmptyRoom(number),
-      ...found,
-      number,
-      host: found.host || null,
-      guest: found.guest || null
-    };
-  });
+  const key = Object.keys(known).find(item => raw.includes(item));
+  return key ? known[key] : raw.replace(/^.*message[: ]+/i, "");
 }
 
-function loadRooms() {
-  try {
-    arenaState.rooms = normalizeRooms(JSON.parse(localStorage.getItem(ARENA_STORAGE_KEY) || "[]"));
-  } catch (error) {
-    arenaState.rooms = normalizeRooms([]);
+function setServerStatus(type, title, detail) {
+  elements.serverStatus.className = `server-status ${type}`;
+  elements.serverTitle.textContent = title;
+  elements.serverDetail.textContent = detail;
+  elements.headerMessage.textContent = title;
+}
+
+function showNotice(message, type = "info", autoHide = false) {
+  elements.notice.textContent = message;
+  elements.notice.className = `arena-notice ${type}`;
+  if (autoHide) {
+    window.setTimeout(() => elements.notice.classList.add("hidden"), 3500);
   }
 }
 
-function saveRooms() {
-  const now = Date.now();
-  arenaState.rooms = arenaState.rooms.map(room =>
-    room.host ? { ...room, updatedAt: now } : room
-  );
-  localStorage.setItem(ARENA_STORAGE_KEY, JSON.stringify(arenaState.rooms));
-  arenaState.channel?.postMessage({ type: "rooms-updated", at: now });
-  renderArena();
+function hideNotice() {
+  elements.notice.classList.add("hidden");
 }
 
-function currentRoom() {
-  return arenaState.rooms.find(room => room.number === arenaState.activeRoomNumber) || null;
-}
-
-function gameById(gameId) {
-  return arenaState.games.find(game => game.id === gameId) || null;
-}
-
-function currentRole(room) {
-  if (!room) return "";
-  if (room.host?.sessionId === playerSessionId) return "host";
-  if (room.guest?.sessionId === playerSessionId) return "guest";
-  return "";
-}
-
-function roomStatus(room) {
-  if (!room.host) return { key: "free", label: "LIVRE" };
-  if (!room.guest) return { key: "waiting", label: "1/2 — AGUARDANDO" };
-  if (room.host.ready && room.guest.ready) return { key: "ready", label: "2/2 — PRONTOS" };
-  return { key: "occupied", label: "2/2 — PREPARANDO" };
+function setButtonBusy(button, busy, busyText = "AGUARDE...") {
+  if (!button) return;
+  if (busy) {
+    button.dataset.originalText = button.textContent;
+    button.textContent = busyText;
+    button.disabled = true;
+  } else {
+    button.textContent = button.dataset.originalText || button.textContent;
+    button.disabled = false;
+    delete button.dataset.originalText;
+  }
 }
 
 function requireNickname() {
-  const value = arenaElements.nickname.value.trim().slice(0, 18);
-  if (!value) {
-    arenaElements.nickname.focus();
-    alert("Digite seu nome na Arena antes de criar ou entrar em uma sala.");
+  const name = elements.nickname.value.trim().slice(0, 24);
+  if (name.length < 2) {
+    elements.nickname.focus();
+    showNotice("Digite seu nome na Arena antes de criar ou entrar em uma sala.", "error");
     return "";
   }
-  arenaState.nickname = value;
-  localStorage.setItem(ARENA_NAME_KEY, value);
-  return value;
+  localStorage.setItem(ARENA_NAME_KEY, name);
+  return name;
 }
 
-function generateCode() {
-  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let code = "";
-  do {
-    code = Array.from({ length: 6 }, () =>
-      alphabet[Math.floor(Math.random() * alphabet.length)]
-    ).join("");
-  } while (arenaState.rooms.some(room => room.code === code));
-  return code;
+function roomStatus(room) {
+  if (!room.guest_name) return { key: "waiting", label: "1/2 — AGUARDANDO" };
+  if (room.status === "playing") return { key: "playing", label: "JOGO INICIADO" };
+  if (room.host_ready && room.guest_ready) return { key: "ready", label: "2/2 — PRONTOS" };
+  return { key: "occupied", label: "2/2 — PREPARANDO" };
+}
+
+function gameById(gameId) {
+  return state.games.find(game => game.id === gameId) || null;
 }
 
 function roomInviteUrl(room) {
-  const game = gameById(room.gameId);
-  const url = new URL("salas.html", window.location.href);
-  url.searchParams.set("sala", String(room.number));
+  const url = new URL("salas.html", location.href);
   url.searchParams.set("codigo", room.code);
-  url.searchParams.set("jogo", room.gameId);
-  url.searchParams.set("host", room.host?.name || "Jogador 1");
-  if (game?.nome) url.searchParams.set("nomeJogo", game.nome);
+  url.searchParams.set("convite", "1");
   return url.toString();
 }
 
-function createRoom(number) {
-  const nickname = requireNickname();
-  if (!nickname) return;
-
-  const select = document.querySelector(`[data-game-select="${number}"]`);
-  const privacy = document.querySelector(`[data-private-room="${number}"]`);
-  const gameId = select?.value || "";
-  if (!gameId) {
-    alert("Escolha um jogo para criar a sala.");
-    return;
-  }
-
-  const roomIndex = arenaState.rooms.findIndex(room => room.number === number);
-  if (roomIndex < 0 || arenaState.rooms[roomIndex].host) {
-    alert("Essa sala já está ocupada. Atualize a página e escolha outra.");
-    return;
-  }
-
-  arenaState.rooms[roomIndex] = {
-    number,
-    code: generateCode(),
-    gameId,
-    private: Boolean(privacy?.checked),
-    host: {
-      sessionId: playerSessionId,
-      name: nickname,
-      ready: false
-    },
-    guest: null,
-    createdAt: Date.now(),
-    updatedAt: Date.now()
-  };
-
-  arenaState.activeRoomNumber = number;
-  sessionStorage.setItem(ARENA_ACTIVE_KEY, String(number));
-  saveRooms();
-  setTimeout(() => arenaElements.activePanel.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
+async function rpc(name, params = {}) {
+  if (!client) throw new Error("Supabase não foi carregado.");
+  const { data, error } = await client.rpc(name, params);
+  if (error) throw error;
+  return data;
 }
 
-function joinRoom(number) {
-  const nickname = requireNickname();
-  if (!nickname) return;
+async function loadCatalog() {
+  const response = await fetch("./dados/games.json", { cache: "no-store" });
+  if (!response.ok) throw new Error(`Não foi possível carregar os jogos: HTTP ${response.status}`);
+  const games = await response.json();
+  if (!Array.isArray(games)) throw new Error("O arquivo dados/games.json está inválido.");
 
-  const room = arenaState.rooms.find(item => item.number === number);
-  if (!room?.host) {
-    alert("A sala ficou livre. Escolha um jogo e crie uma nova sala.");
-    renderArena();
-    return;
-  }
-
-  const role = currentRole(room);
-  if (role) {
-    openRoomPanel(number);
-    return;
-  }
-
-  if (room.guest) {
-    alert("A sala já possui dois jogadores.");
-    return;
-  }
-
-  room.guest = {
-    sessionId: playerSessionId,
-    name: nickname,
-    ready: false
-  };
-
-  arenaState.activeRoomNumber = number;
-  sessionStorage.setItem(ARENA_ACTIVE_KEY, String(number));
-  saveRooms();
-  setTimeout(() => arenaElements.activePanel.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
-}
-
-function openRoomPanel(number) {
-  arenaState.activeRoomNumber = number;
-  sessionStorage.setItem(ARENA_ACTIVE_KEY, String(number));
-  renderArena();
-  setTimeout(() => arenaElements.activePanel.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
-}
-
-function toggleReady() {
-  const room = currentRoom();
-  const role = currentRole(room);
-  if (!room || !role) {
-    alert("Entre na sala antes de ficar pronto.");
-    return;
-  }
-
-  room[role].ready = !room[role].ready;
-  saveRooms();
-}
-
-function simulatePlayerTwo() {
-  const room = currentRoom();
-  if (!room || currentRole(room) !== "host") return;
-
-  if (room.guest?.simulated) {
-    room.guest = null;
-  } else if (!room.guest) {
-    room.guest = {
-      sessionId: `simulado-${room.number}`,
-      name: "Amigo (teste)",
-      ready: false,
-      simulated: true
+  state.games = [...games].sort((a, b) => {
+    const score = game => {
+      let value = 0;
+      if (/luta/i.test(game.genero || "")) value += 20;
+      if (/snes/i.test(game.console || "")) value += 10;
+      return value;
     };
-  } else {
-    alert("A sala já possui um Jogador 2 real.");
-    return;
-  }
+    return score(b) - score(a) || Number(a.ordem || 0) - Number(b.ordem || 0);
+  });
 
-  saveRooms();
+  elements.gameSelect.innerHTML = state.games.map(game => {
+    const multiplayerHint = /luta|coop|tiro/i.test(`${game.genero || ""} ${game.descricao || ""}`) ? " ★" : "";
+    return `<option value="${escapeHtml(game.id)}">${escapeHtml(game.nome)} — ${escapeHtml(game.console)}${multiplayerHint}</option>`;
+  }).join("");
 }
 
-function leaveRoom() {
-  const room = currentRoom();
-  const role = currentRole(room);
-  if (!room || !role) {
-    arenaState.activeRoomNumber = 0;
-    sessionStorage.removeItem(ARENA_ACTIVE_KEY);
-    renderArena();
+async function refreshPublicRooms({ silent = false } = {}) {
+  if (!client) return;
+  try {
+    const data = await rpc("arena_list_rooms");
+    state.publicRooms = Array.isArray(data) ? data.map(normalizeRoom).filter(Boolean) : [];
+    renderRooms();
+    if (!silent) hideNotice();
+  } catch (error) {
+    console.error(error);
+    state.publicRooms = [];
+    renderRooms();
+    setServerStatus("error", "ARENA AINDA NÃO ATIVADA", "Execute o arquivo SQL fornecido no Supabase.");
+    showNotice(friendlyError(error), "error");
+  }
+}
+
+async function fetchRoom(code) {
+  const data = await rpc("arena_get_room", {
+    p_code: cleanCode(code),
+    p_player_token: playerToken
+  });
+  return normalizeRoom(data);
+}
+
+async function createRoom() {
+  const nickname = requireNickname();
+  if (!nickname) return;
+
+  const game = gameById(elements.gameSelect.value);
+  if (!game) {
+    showNotice("Escolha um jogo para criar a sala.", "error");
     return;
   }
 
-  if (role === "host") {
+  setButtonBusy(elements.createRoom, true, "CRIANDO SALA...");
+  hideNotice();
+
+  try {
+    const data = await rpc("arena_create_room", {
+      p_game_id: game.id,
+      p_game_name: game.nome,
+      p_game_console: game.console,
+      p_game_cover: game.capa || "",
+      p_host_name: nickname,
+      p_host_token: playerToken,
+      p_is_private: Boolean(elements.privateRoom.checked)
+    });
+
+    const room = normalizeRoom(data);
+    await openActiveRoom(room);
+    await notifyLobby();
+    showNotice(`Sala ${room.code} criada! Agora copie o link e envie ao seu amigo.`, "success", true);
+    elements.activePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (error) {
+    console.error(error);
+    showNotice(friendlyError(error), "error");
+  } finally {
+    setButtonBusy(elements.createRoom, false);
+  }
+}
+
+async function joinRoom(code) {
+  const nickname = requireNickname();
+  if (!nickname) return;
+
+  const roomCode = cleanCode(code);
+  if (roomCode.length !== 6) {
+    showNotice("Digite o código completo de 6 caracteres.", "error");
+    return;
+  }
+
+  setButtonBusy(elements.openCode, true, "ENTRANDO...");
+  hideNotice();
+
+  try {
+    let room = await fetchRoom(roomCode);
+    if (!room) throw new Error("SALA_NAO_ENCONTRADA");
+
+    if (!room.viewer_role) {
+      const data = await rpc("arena_join_room", {
+        p_code: roomCode,
+        p_guest_name: nickname,
+        p_guest_token: playerToken
+      });
+      room = normalizeRoom(data);
+      await notifyLobby();
+      showNotice(`Você entrou na sala ${roomCode}.`, "success", true);
+    }
+
+    await openActiveRoom(room);
+    await notifyRoom("room-updated", { code: roomCode });
+    elements.activePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (error) {
+    console.error(error);
+    showNotice(friendlyError(error), "error");
+  } finally {
+    setButtonBusy(elements.openCode, false);
+  }
+}
+
+async function openActiveRoom(room) {
+  if (!room) return;
+  state.activeRoom = room;
+  sessionStorage.setItem(ARENA_ACTIVE_KEY, room.code);
+  renderActiveRoom();
+  await subscribeRoom(room.code);
+  await loadMessages();
+  await renderInviteBanner();
+}
+
+async function refreshActiveRoom({ silent = false } = {}) {
+  if (!state.activeRoom?.code) return;
+  try {
+    const previousStatus = state.activeRoom.status;
+    const room = await fetchRoom(state.activeRoom.code);
+    if (!room) {
+      clearActiveRoom("A sala foi encerrada ou expirou.");
+      return;
+    }
+
+    state.activeRoom = room;
+    renderActiveRoom();
+    if (previousStatus !== "playing" && room.status === "playing") {
+      scheduleGameOpen(room);
+    }
+    if (!silent) hideNotice();
+  } catch (error) {
+    console.error(error);
+    if (!silent) showNotice(friendlyError(error), "error");
+  }
+}
+
+function clearActiveRoom(message = "") {
+  if (state.roomChannel && client) {
+    client.removeChannel(state.roomChannel);
+  }
+  state.roomChannel = null;
+  state.activeRoom = null;
+  state.messages = [];
+  state.presenceCount = 0;
+  sessionStorage.removeItem(ARENA_ACTIVE_KEY);
+  elements.activePanel.classList.add("hidden");
+  renderMessages();
+  if (message) showNotice(message, "info", true);
+}
+
+async function toggleReady() {
+  const room = state.activeRoom;
+  if (!room?.viewer_role) return;
+  const current = room.viewer_role === "host" ? room.host_ready : room.guest_ready;
+  setButtonBusy(elements.toggleReady, true, "SALVANDO...");
+
+  try {
+    const data = await rpc("arena_set_ready", {
+      p_code: room.code,
+      p_player_token: playerToken,
+      p_ready: !current
+    });
+    state.activeRoom = normalizeRoom(data);
+    renderActiveRoom();
+    await notifyRoom("room-updated", { code: room.code });
+    await notifyLobby();
+  } catch (error) {
+    console.error(error);
+    showNotice(friendlyError(error), "error");
+  } finally {
+    setButtonBusy(elements.toggleReady, false);
+    renderActiveRoom();
+  }
+}
+
+async function leaveRoom() {
+  const room = state.activeRoom;
+  if (!room?.viewer_role) {
+    clearActiveRoom();
+    return;
+  }
+
+  if (room.viewer_role === "host") {
     const confirmed = confirm("Encerrar esta sala para todos os jogadores?");
     if (!confirmed) return;
-    const index = arenaState.rooms.findIndex(item => item.number === room.number);
-    arenaState.rooms[index] = makeEmptyRoom(room.number);
-  } else {
-    room.guest = null;
   }
 
-  arenaState.activeRoomNumber = 0;
-  sessionStorage.removeItem(ARENA_ACTIVE_KEY);
-  saveRooms();
+  setButtonBusy(elements.leaveRoom, true, "SAINDO...");
+  try {
+    await rpc("arena_leave_room", {
+      p_code: room.code,
+      p_player_token: playerToken
+    });
+    await notifyRoom("room-updated", { code: room.code, closed: room.viewer_role === "host" });
+    await notifyLobby();
+    clearActiveRoom(room.viewer_role === "host" ? "Sala encerrada." : "Você saiu da sala.");
+    await refreshPublicRooms({ silent: true });
+  } catch (error) {
+    console.error(error);
+    showNotice(friendlyError(error), "error");
+  } finally {
+    setButtonBusy(elements.leaveRoom, false);
+  }
+}
+
+async function startGame() {
+  const room = state.activeRoom;
+  if (!room || room.viewer_role !== "host") return;
+
+  setButtonBusy(elements.startGame, true, "INICIANDO NOS DOIS...");
+  try {
+    const data = await rpc("arena_start_game", {
+      p_code: room.code,
+      p_player_token: playerToken
+    });
+    state.activeRoom = normalizeRoom(data);
+    renderActiveRoom();
+    await notifyRoom("game-started", {
+      code: room.code,
+      game_id: room.game_id,
+      started_at: Date.now()
+    });
+    await notifyLobby();
+    scheduleGameOpen(state.activeRoom);
+  } catch (error) {
+    console.error(error);
+    showNotice(friendlyError(error), "error");
+    setButtonBusy(elements.startGame, false);
+    renderActiveRoom();
+  }
+}
+
+function scheduleGameOpen(room) {
+  if (state.redirecting || !room?.game_id || !room.viewer_role) return;
+  state.redirecting = true;
+  showNotice("O anfitrião iniciou. Abrindo o jogo neste aparelho...", "success");
+  window.setTimeout(() => {
+    const url = new URL("player.html", location.href);
+    url.searchParams.set("id", room.game_id);
+    url.searchParams.set("arena", "online");
+    url.searchParams.set("codigo", room.code);
+    url.searchParams.set("papel", room.viewer_role);
+    location.href = url.toString();
+  }, 1100);
+}
+
+async function loadMessages() {
+  const room = state.activeRoom;
+  if (!room?.viewer_role) {
+    state.messages = [];
+    renderMessages();
+    return;
+  }
+
+  try {
+    const data = await rpc("arena_list_messages", {
+      p_code: room.code,
+      p_player_token: playerToken
+    });
+    state.messages = Array.isArray(data) ? data : [];
+    renderMessages();
+  } catch (error) {
+    console.error(error);
+    state.messages = [];
+    renderMessages();
+  }
+}
+
+async function sendMessage(event) {
+  event.preventDefault();
+  const room = state.activeRoom;
+  const message = elements.chatInput.value.trim();
+  if (!room?.viewer_role || !message) return;
+
+  const button = elements.chatForm.querySelector("button");
+  setButtonBusy(button, true, "ENVIANDO...");
+  try {
+    await rpc("arena_send_message", {
+      p_code: room.code,
+      p_player_token: playerToken,
+      p_message: message
+    });
+    elements.chatInput.value = "";
+    await loadMessages();
+    await notifyRoom("chat-message", { code: room.code });
+  } catch (error) {
+    console.error(error);
+    showNotice(friendlyError(error), "error");
+  } finally {
+    setButtonBusy(button, false);
+  }
+}
+
+function renderMessages() {
+  if (!state.activeRoom?.viewer_role) {
+    elements.chatMessages.innerHTML = '<div class="arena-chat-empty">Entre na sala para conversar.</div>';
+    elements.chatInput.disabled = true;
+    elements.chatForm.querySelector("button").disabled = true;
+    return;
+  }
+
+  elements.chatInput.disabled = false;
+  elements.chatForm.querySelector("button").disabled = false;
+
+  if (!state.messages.length) {
+    elements.chatMessages.innerHTML = '<div class="arena-chat-empty">Nenhuma mensagem ainda. Diga olá para seu amigo!</div>';
+    return;
+  }
+
+  elements.chatMessages.innerHTML = state.messages.map(item => {
+    const time = item.created_at
+      ? new Date(item.created_at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
+      : "";
+    return `<article class="arena-chat-message">
+      <header><strong>${escapeHtml(item.sender_name || "Jogador")}</strong><time>${escapeHtml(time)}</time></header>
+      <p>${escapeHtml(item.message || "")}</p>
+    </article>`;
+  }).join("");
+  elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
 }
 
 async function copyInvite() {
-  const room = currentRoom();
-  if (!room?.host) return;
-
-  const inviteLink = roomInviteUrl(room);
-
-  if (arenaElements.inviteLink) {
-    arenaElements.inviteLink.value = inviteLink;
-  }
+  const room = state.activeRoom;
+  if (!room) return;
+  const link = roomInviteUrl(room);
+  elements.inviteLink.value = link;
 
   let copied = false;
-
   try {
-    await navigator.clipboard.writeText(inviteLink);
+    await navigator.clipboard.writeText(link);
     copied = true;
   } catch (error) {
-    if (arenaElements.inviteLink) {
-      arenaElements.inviteLink.focus();
-      arenaElements.inviteLink.select();
-      arenaElements.inviteLink.setSelectionRange(0, inviteLink.length);
+    elements.inviteLink.focus();
+    elements.inviteLink.select();
+    try { copied = document.execCommand("copy"); } catch (fallbackError) { copied = false; }
+  }
 
-      try {
-        copied = document.execCommand("copy");
-      } catch (fallbackError) {
-        copied = false;
-      }
+  const original = elements.copyInvite.textContent;
+  elements.copyInvite.textContent = copied ? "LINK COPIADO!" : "SELECIONE E COPIE";
+  window.setTimeout(() => { elements.copyInvite.textContent = original; }, 1800);
+}
+
+async function shareInvite() {
+  const room = state.activeRoom;
+  if (!room) return;
+  const link = roomInviteUrl(room);
+  const text = `${room.host_name} convidou você para jogar ${room.game_name} no RetroPlay. Código: ${room.code}`;
+
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: "Convite RetroPlay Arena", text, url: link });
+      return;
+    } catch (error) {
+      if (error?.name === "AbortError") return;
     }
   }
 
-  const original = arenaElements.copyInvite.textContent;
-
-  if (copied) {
-    arenaElements.copyInvite.textContent = "LINK COPIADO!";
-  } else {
-    arenaElements.copyInvite.textContent = "SELECIONE O LINK ACIMA";
-    arenaElements.inviteLink?.focus();
-    arenaElements.inviteLink?.select();
-  }
-
-  setTimeout(() => {
-    arenaElements.copyInvite.textContent = original;
-  }, 1900);
+  await copyInvite();
 }
 
-function openRoomByCode() {
-  const code = arenaElements.codeInput.value.trim().toUpperCase();
-  arenaElements.codeInput.value = code;
+function renderRooms() {
+  elements.roomSummary.textContent = state.publicRooms.length
+    ? `${state.publicRooms.length} ${state.publicRooms.length === 1 ? "SALA" : "SALAS"}`
+    : "NENHUMA SALA";
 
-  if (code.length !== 6) {
-    alert("Digite o código de 6 caracteres.");
+  if (!state.publicRooms.length) {
+    elements.rooms.innerHTML = `
+      <div class="arena-empty-state">
+        <strong>NENHUMA SALA PÚBLICA AGORA</strong>
+        <span>Crie uma sala acima ou entre pelo link enviado por um amigo.</span>
+      </div>`;
     return;
   }
 
-  const room = arenaState.rooms.find(item => item.code === code && item.host);
-  if (!room) {
-    alert("Esse código não foi encontrado neste navegador. Na Fase 2, o servidor permitirá encontrar salas criadas em outros aparelhos.");
-    return;
-  }
-
-  if (currentRole(room)) openRoomPanel(room.number);
-  else joinRoom(room.number);
-}
-
-function startLocalGame() {
-  const room = currentRoom();
-  if (!room?.host || !room.guest || !room.host.ready || !room.guest.ready) return;
-
-  const game = gameById(room.gameId);
-  if (!game) {
-    alert("O jogo da sala não foi encontrado no catálogo.");
-    return;
-  }
-
-  const confirmed = confirm(
-    "Este é um teste local da Fase 1. O jogo abrirá sem sincronizar os controles pela internet. Continuar?"
-  );
-  if (!confirmed) return;
-
-  window.location.href = `player.html?id=${encodeURIComponent(game.id)}&arena=teste&sala=${room.number}`;
-}
-
-function renderRoomCard(room) {
-  const game = gameById(room.gameId);
-  const status = roomStatus(room);
-  const role = currentRole(room);
-  const full = Boolean(room.host && room.guest);
-  const cover = game?.capa || placeholderCover(game?.nome || `Sala ${room.number}`);
-
-  const freeContent = `
-    <div class="room-create-form">
-      <label>
-        <span>ESCOLHA O JOGO</span>
-        <select data-game-select="${room.number}">
-          ${arenaState.games.map(item => `
-            <option value="${escapeHtml(item.id)}"${/mortal kombat/i.test(item.nome) ? " selected" : ""}>
-              ${escapeHtml(item.nome)} — ${escapeHtml(item.console)}
-            </option>`).join("")}
-        </select>
-      </label>
-      <label class="privacy-check">
-        <input data-private-room="${room.number}" type="checkbox">
-        <span>Sala privada por convite</span>
-      </label>
-      <button class="purple-button arena-button" data-create-room="${room.number}" type="button">
-        CRIAR SALA
-      </button>
-    </div>`;
-
-  const occupiedContent = `
-    <div class="room-game-preview">
-      <img src="${escapeHtml(cover)}"
-           alt="Capa de ${escapeHtml(game?.nome || "jogo")}"
-           onerror="this.onerror=null;this.src='${placeholderCover(game?.nome || "Jogo")}'">
-      <div>
-        <strong>${escapeHtml(game?.nome || "Jogo não encontrado")}</strong>
-        <small>${escapeHtml(game?.console || "Console")} • ${escapeHtml(game?.ano || "Clássico")}</small>
-        <span>👤 ${escapeHtml(room.host?.name || "Jogador 1")}</span>
-        <span>🔑 ${escapeHtml(room.code)}</span>
-      </div>
-    </div>
-    <div class="room-card-actions">
-      ${role
-        ? `<button class="purple-button arena-button" data-open-room="${room.number}" type="button">ABRIR SALA</button>`
-        : `<button class="purple-button arena-button" data-join-room="${room.number}" type="button" ${full ? "disabled" : ""}>
-             ${full ? "SALA CHEIA" : "ENTRAR"}
-           </button>`}
-    </div>`;
-
-  return `
-    <article class="arena-room-card ${status.key}">
+  elements.rooms.innerHTML = state.publicRooms.map(room => {
+    const status = roomStatus(room);
+    const cover = room.game_cover || placeholderCover(room.game_name);
+    const full = Boolean(room.guest_name);
+    const isCurrent = state.activeRoom?.code === room.code;
+    return `<article class="arena-room-card ${status.key}">
       <header>
-        <div>
-          <small>SALA</small>
-          <strong>${room.number}</strong>
-        </div>
+        <div><small>SALA</small><strong>${escapeHtml(room.code)}</strong></div>
         <span class="room-status-pill ${status.key}">${status.label}</span>
       </header>
       <div class="room-card-body">
-        ${room.host ? occupiedContent : freeContent}
+        <div class="room-game-preview">
+          <img src="${escapeHtml(cover)}" alt="Capa de ${escapeHtml(room.game_name)}"
+               onerror="this.onerror=null;this.src='${placeholderCover(room.game_name)}'">
+          <div>
+            <strong>${escapeHtml(room.game_name)}</strong>
+            <small>${escapeHtml(room.game_console)}</small>
+            <span>👤 ${escapeHtml(room.host_name)}</span>
+            <span>${room.guest_name ? `👥 ${escapeHtml(room.guest_name)}` : "⌛ Esperando Jogador 2"}</span>
+          </div>
+        </div>
+        <div class="room-card-actions">
+          <button class="purple-button arena-button" data-room-code="${escapeHtml(room.code)}" type="button" ${full && !isCurrent ? "disabled" : ""}>
+            ${isCurrent ? "ABRIR MINHA SALA" : (full ? "SALA CHEIA" : "ENTRAR")}
+          </button>
+        </div>
       </div>
-      <footer>
-        <span>${room.private ? "🔒 PRIVADA" : "🌍 PÚBLICA"}</span>
-        <span>${room.host ? (room.guest ? "2 JOGADORES" : "1 JOGADOR") : "0 JOGADORES"}</span>
-      </footer>
+      <footer><span>🌍 PÚBLICA</span><span>${room.guest_name ? "2 JOGADORES" : "1 JOGADOR"}</span></footer>
     </article>`;
-}
+  }).join("");
 
-function bindRoomCardActions() {
-  document.querySelectorAll("[data-create-room]").forEach(button => {
-    button.addEventListener("click", () => createRoom(Number(button.dataset.createRoom)));
-  });
-
-  document.querySelectorAll("[data-join-room]").forEach(button => {
-    button.addEventListener("click", () => joinRoom(Number(button.dataset.joinRoom)));
-  });
-
-  document.querySelectorAll("[data-open-room]").forEach(button => {
-    button.addEventListener("click", () => openRoomPanel(Number(button.dataset.openRoom)));
+  elements.rooms.querySelectorAll("[data-room-code]").forEach(button => {
+    button.addEventListener("click", () => {
+      const code = button.dataset.roomCode;
+      if (state.activeRoom?.code === code) {
+        elements.activePanel.classList.remove("hidden");
+        elements.activePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        elements.codeInput.value = code;
+        joinRoom(code);
+      }
+    });
   });
 }
 
 function renderActiveRoom() {
-  const room = currentRoom();
-  if (!room?.host) {
-    arenaElements.activePanel.classList.add("hidden");
+  const room = state.activeRoom;
+  if (!room) {
+    elements.activePanel.classList.add("hidden");
     return;
   }
 
-  const game = gameById(room.gameId);
   const status = roomStatus(room);
-  const role = currentRole(room);
-  const bothReady = Boolean(room.host?.ready && room.guest?.ready);
+  const role = room.viewer_role;
+  const bothReady = Boolean(room.guest_name && room.host_ready && room.guest_ready);
+  const roleReady = role === "host" ? room.host_ready : room.guest_ready;
 
-  arenaElements.activePanel.classList.remove("hidden");
-  arenaElements.activeHeading.textContent = `🎮 SALA ${room.number}`;
-  arenaElements.activeStatus.textContent = status.label;
-  arenaElements.activeStatus.className = `room-status-pill ${status.key}`;
-  arenaElements.activeCode.textContent = room.code;
-  if (arenaElements.inviteLink) {
-    arenaElements.inviteLink.value = roomInviteUrl(room);
-  }
-  arenaElements.activeGameName.textContent = game?.nome || "Jogo não encontrado";
-  arenaElements.activeGameMeta.textContent = `${game?.console || "Console"} • ${game?.ano || "Clássico"}`;
-  arenaElements.activeCover.src = game?.capa || placeholderCover(game?.nome || "Jogo");
-  arenaElements.activeCover.onerror = () => {
-    arenaElements.activeCover.onerror = null;
-    arenaElements.activeCover.src = placeholderCover(game?.nome || "Jogo");
+  elements.activePanel.classList.remove("hidden");
+  elements.activeHeading.textContent = `🎮 SALA ${room.code}`;
+  elements.activeStatus.textContent = status.label;
+  elements.activeStatus.className = `room-status-pill ${status.key}`;
+  elements.activeCode.textContent = room.code;
+  elements.activeGameName.textContent = room.game_name;
+  elements.activeGameMeta.textContent = `${room.game_console}${room.is_private ? " • SALA PRIVADA" : " • SALA PÚBLICA"}`;
+  elements.activeCover.src = room.game_cover || placeholderCover(room.game_name);
+  elements.activeCover.onerror = () => {
+    elements.activeCover.onerror = null;
+    elements.activeCover.src = placeholderCover(room.game_name);
   };
-
-  arenaElements.hostName.textContent = room.host?.name || "Aguardando...";
-  arenaElements.guestName.textContent = room.guest?.name || "Aguardando amigo...";
-  arenaElements.hostReady.textContent = room.host?.ready ? "✓ PRONTO" : "NÃO PRONTO";
-  arenaElements.guestReady.textContent = room.guest
-    ? (room.guest.ready ? "✓ PRONTO" : "NÃO PRONTO")
+  elements.hostName.textContent = room.host_name;
+  elements.guestName.textContent = room.guest_name || "Aguardando amigo...";
+  elements.hostReady.textContent = room.host_ready ? "✓ PRONTO" : "NÃO PRONTO";
+  elements.guestReady.textContent = room.guest_name
+    ? (room.guest_ready ? "✓ PRONTO" : "NÃO PRONTO")
     : "SEM JOGADOR";
+  elements.hostSlot.classList.toggle("ready", room.host_ready);
+  elements.guestSlot.classList.toggle("ready", room.guest_ready);
+  elements.inviteLink.value = roomInviteUrl(room);
+  elements.presenceCount.textContent = `${state.presenceCount} ${state.presenceCount === 1 ? "conectado" : "conectados"} nesta sala`;
 
-  arenaElements.hostSlot.classList.toggle("ready", Boolean(room.host?.ready));
-  arenaElements.guestSlot.classList.toggle("ready", Boolean(room.guest?.ready));
+  elements.toggleReady.hidden = !role;
+  elements.leaveRoom.hidden = !role;
+  elements.copyInvite.hidden = role !== "host";
+  elements.shareInvite.hidden = role !== "host";
+  elements.toggleReady.textContent = roleReady ? "CANCELAR PRONTO" : "FICAR PRONTO";
 
-  if (role) {
-    arenaElements.toggleReady.hidden = false;
-    arenaElements.toggleReady.textContent = room[role].ready ? "CANCELAR PRONTO" : "FICAR PRONTO";
-    arenaElements.leaveRoom.hidden = false;
+  if (room.status === "playing") {
+    elements.startGame.disabled = true;
+    elements.startGame.textContent = "JOGO INICIADO";
+    elements.startHelp.textContent = "O jogo foi aberto nos aparelhos conectados. Os controles ainda são locais nesta versão.";
+  } else if (role === "host" && bothReady) {
+    elements.startGame.disabled = false;
+    elements.startGame.textContent = "ABRIR JOGO NOS DOIS (TESTE)";
+    elements.startHelp.textContent = "Esta etapa abre o mesmo jogo nos dois aparelhos. O combate com controles sincronizados depende do servidor Netplay.";
+  } else if (role === "guest" && bothReady) {
+    elements.startGame.disabled = true;
+    elements.startGame.textContent = "AGUARDANDO O ANFITRIÃO";
+    elements.startHelp.textContent = "Os dois estão prontos. O Jogador 1 iniciará o jogo.";
   } else {
-    arenaElements.toggleReady.hidden = true;
-    arenaElements.leaveRoom.hidden = true;
+    elements.startGame.disabled = true;
+    elements.startGame.textContent = room.guest_name ? "AGUARDANDO OS 2 PRONTOS" : "AGUARDANDO JOGADOR 2";
+    elements.startHelp.textContent = "Quando os dois estiverem prontos, o anfitrião poderá abrir o mesmo jogo nos dois aparelhos. A sincronização dos controles será adicionada com o servidor Netplay.";
   }
 
-  arenaElements.copyInvite.hidden = !role;
-  arenaElements.simulatePlayerTwo.hidden = role !== "host" || Boolean(room.guest && !room.guest.simulated);
-  arenaElements.simulatePlayerTwo.textContent = room.guest?.simulated
-    ? "REMOVER JOGADOR DE TESTE"
-    : "SIMULAR JOGADOR 2";
-
-  arenaElements.startLocal.disabled = !bothReady || !role;
-  arenaElements.startLocal.textContent = bothReady
-    ? "ABRIR JOGO LOCAL"
-    : "AGUARDANDO OS 2 PRONTOS";
+  renderMessages();
 }
 
-function renderInviteBanner() {
-  const params = new URLSearchParams(location.search);
-  const roomNumber = Number(params.get("sala") || 0);
-  const code = (params.get("codigo") || "").toUpperCase();
-  const host = params.get("host") || "Jogador 1";
-  const gameName = params.get("nomeJogo") || "jogo escolhido";
-
-  if (!roomNumber || !code) {
-    arenaElements.inviteBanner.classList.add("hidden");
+async function renderInviteBanner() {
+  const code = cleanCode(inviteParams.get("codigo") || "");
+  if (!code) {
+    elements.inviteBanner.classList.add("hidden");
     return;
   }
 
-  const localRoom = arenaState.rooms.find(room => room.number === roomNumber && room.code === code && room.host);
-
-  if (localRoom) {
-    arenaElements.inviteBanner.classList.remove("hidden");
-    arenaElements.inviteBanner.innerHTML = `
-      <div>
-        <strong>🎟 CONVITE ENCONTRADO</strong>
-        <span>${escapeHtml(host)} convidou você para jogar ${escapeHtml(gameName)} na Sala ${roomNumber}.</span>
-      </div>
-      <button id="accept-invite" class="purple-button arena-button" type="button">
-        ${currentRole(localRoom) ? "ABRIR SALA" : "ACEITAR CONVITE"}
-      </button>`;
-    document.querySelector("#accept-invite")?.addEventListener("click", () => {
-      if (currentRole(localRoom)) openRoomPanel(roomNumber);
-      else joinRoom(roomNumber);
-    });
-  } else {
-    arenaElements.inviteBanner.classList.remove("hidden");
-    arenaElements.inviteBanner.innerHTML = `
-      <div>
-        <strong>🎟 LINK DE CONVITE RECONHECIDO</strong>
-        <span>Convite de ${escapeHtml(host)} para ${escapeHtml(gameName)}, Sala ${roomNumber}, código ${escapeHtml(code)}.</span>
-        <small>Este link foi aberto em outro aparelho ou navegador. A Fase 2 conectará essa sala pela internet.</small>
-      </div>`;
-  }
-}
-
-function renderArena() {
-  const occupied = arenaState.rooms.filter(room => room.host).length;
-  arenaElements.roomSummary.textContent = `${occupied}/${ROOM_COUNT} OCUPADAS`;
-  arenaElements.rooms.innerHTML = arenaState.rooms.map(renderRoomCard).join("");
-  bindRoomCardActions();
-  renderActiveRoom();
-  renderInviteBanner();
-}
-
-async function loadCatalog() {
   try {
-    const response = await fetch("./dados/games.json", { cache: "no-store" });
-    if (!response.ok) throw new Error(`Erro HTTP ${response.status}`);
-    const data = await response.json();
-    if (!Array.isArray(data)) throw new Error("Catálogo inválido.");
-    arenaState.games = data;
-    loadRooms();
-    renderArena();
+    const room = await fetchRoom(code);
+    if (!room) {
+      elements.inviteBanner.className = "arena-invite-banner expired";
+      elements.inviteBanner.innerHTML = `<div><strong>⚠ CONVITE EXPIRADO</strong><span>A sala ${escapeHtml(code)} não existe mais.</span></div>`;
+      return;
+    }
+
+    if (state.activeRoom?.code === code && state.activeRoom.viewer_role) {
+      elements.inviteBanner.classList.add("hidden");
+      return;
+    }
+
+    const full = Boolean(room.guest_name);
+    elements.inviteBanner.className = "arena-invite-banner";
+    elements.inviteBanner.innerHTML = `
+      <div>
+        <strong>🎟 CONVITE PARA A SALA ${escapeHtml(room.code)}</strong>
+        <span>${escapeHtml(room.host_name)} convidou você para jogar ${escapeHtml(room.game_name)}.</span>
+        <small>${escapeHtml(room.game_console)} • ${full ? "Sala com dois jogadores" : "Uma vaga disponível"}</small>
+      </div>
+      <button id="accept-invite" class="purple-button arena-button" type="button" ${full && !room.viewer_role ? "disabled" : ""}>
+        ${room.viewer_role ? "ABRIR SALA" : (full ? "SALA CHEIA" : "ENTRAR NESTA SALA")}
+      </button>`;
+
+    document.querySelector("#accept-invite")?.addEventListener("click", () => {
+      elements.codeInput.value = code;
+      if (room.viewer_role) openActiveRoom(room);
+      else joinRoom(code);
+    });
   } catch (error) {
     console.error(error);
-    arenaElements.rooms.innerHTML = `
-      <div class="notice">
-        <strong>Não foi possível carregar os jogos.</strong><br>
-        Verifique o arquivo <code>dados/games.json</code>.
-      </div>`;
+    elements.inviteBanner.className = "arena-invite-banner expired";
+    elements.inviteBanner.innerHTML = `<div><strong>⚠ NÃO FOI POSSÍVEL ABRIR O CONVITE</strong><span>${escapeHtml(friendlyError(error))}</span></div>`;
   }
 }
 
-arenaElements.nickname.value = arenaState.nickname;
+async function subscribeLobby() {
+  if (!client) return;
+  if (state.lobbyChannel) await client.removeChannel(state.lobbyChannel);
 
-arenaElements.saveNickname.addEventListener("click", () => {
+  await new Promise(resolve => {
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+
+    state.lobbyChannel = client
+      .channel("retroplay-arena-lobby-online-1", {
+        config: { broadcast: { self: false } }
+      })
+      .on("broadcast", { event: "room-list-changed" }, () => {
+        refreshPublicRooms({ silent: true });
+      })
+      .subscribe((status, error) => {
+        if (status === "SUBSCRIBED") {
+          state.serverReady = true;
+          setServerStatus("online", "SERVIDOR ONLINE", "Salas e convites estão conectados em tempo real.");
+          finish();
+        } else if (["CHANNEL_ERROR", "TIMED_OUT"].includes(status)) {
+          state.serverReady = false;
+          setServerStatus("error", "CANAL EM TEMPO REAL INDISPONÍVEL", friendlyError(error || "A conexão será tentada novamente."));
+          finish();
+        } else if (status === "CLOSED" && navigator.onLine) {
+          state.serverReady = false;
+          setServerStatus("connecting", "RECONECTANDO...", "A lista continuará sendo atualizada automaticamente.");
+        }
+      });
+
+    window.setTimeout(finish, 2500);
+  });
+}
+
+async function notifyLobby() {
+  if (!state.lobbyChannel) return;
+  try {
+    await state.lobbyChannel.send({
+      type: "broadcast",
+      event: "room-list-changed",
+      payload: { at: Date.now() }
+    });
+  } catch (error) {
+    console.warn("Não foi possível avisar o lobby.", error);
+  }
+  refreshPublicRooms({ silent: true });
+}
+
+async function subscribeRoom(code) {
+  if (!client || !code) return;
+  if (state.roomChannel) await client.removeChannel(state.roomChannel);
+
+  state.presenceCount = 0;
+
+  await new Promise(resolve => {
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+
+    state.roomChannel = client
+      .channel(`retroplay-arena-room-${code}`, {
+        config: {
+          broadcast: { self: true },
+          presence: { key: playerToken }
+        }
+      })
+      .on("broadcast", { event: "room-updated" }, async payload => {
+        if (payload?.payload?.closed) {
+          const room = await fetchRoom(code).catch(() => null);
+          if (!room) {
+            clearActiveRoom("O anfitrião encerrou a sala.");
+            return;
+          }
+        }
+        await refreshActiveRoom({ silent: true });
+      })
+      .on("broadcast", { event: "chat-message" }, () => loadMessages())
+      .on("broadcast", { event: "game-started" }, async () => {
+        await refreshActiveRoom({ silent: true });
+        if (state.activeRoom?.status === "playing") scheduleGameOpen(state.activeRoom);
+      })
+      .on("presence", { event: "sync" }, () => {
+        const presence = state.roomChannel?.presenceState?.() || {};
+        state.presenceCount = Object.values(presence).reduce(
+          (total, entries) => total + (Array.isArray(entries) ? entries.length : 0),
+          0
+        );
+        renderActiveRoom();
+      })
+      .subscribe(async status => {
+        if (status === "SUBSCRIBED") {
+          try {
+            await state.roomChannel.track({
+              name: elements.nickname.value.trim() || "Jogador",
+              role: state.activeRoom?.viewer_role || "visitante",
+              online_at: new Date().toISOString()
+            });
+          } catch (error) {
+            console.warn("Presence não foi registrada.", error);
+          }
+          finish();
+        } else if (["CHANNEL_ERROR", "TIMED_OUT"].includes(status)) {
+          finish();
+        }
+      });
+
+    window.setTimeout(finish, 2500);
+  });
+}
+
+async function notifyRoom(event, payload = {}) {
+  if (!state.roomChannel) return;
+  try {
+    await state.roomChannel.send({ type: "broadcast", event, payload });
+  } catch (error) {
+    console.warn(`Não foi possível transmitir ${event}.`, error);
+  }
+}
+
+async function restoreRoom() {
+  const code = inviteCodeAtBoot || cleanCode(sessionStorage.getItem(ARENA_ACTIVE_KEY) || "");
+  if (!code) return;
+
+  try {
+    const room = await fetchRoom(code);
+    if (room?.viewer_role) {
+      await openActiveRoom(room);
+      if (room.status === "playing") {
+        showNotice("Você voltou para uma sala cujo jogo já foi iniciado.", "info", true);
+      }
+    }
+  } catch (error) {
+    console.warn("Não foi possível restaurar a sala.", error);
+  }
+}
+
+async function initializeArena() {
+  elements.nickname.value = localStorage.getItem(ARENA_NAME_KEY) || "";
+  renderMessages();
+
+  if (!client) {
+    setServerStatus("error", "SUPABASE NÃO CARREGOU", "Verifique sua internet e o arquivo js/supabase.js.");
+    showNotice("Não foi possível carregar o servidor da Arena.", "error");
+    return;
+  }
+
+  try {
+    await loadCatalog();
+    await subscribeLobby();
+    await refreshPublicRooms({ silent: true });
+    await restoreRoom();
+    await renderInviteBanner();
+
+    state.refreshTimer = window.setInterval(async () => {
+      if (!navigator.onLine) return;
+      await refreshPublicRooms({ silent: true });
+      await refreshActiveRoom({ silent: true });
+    }, ROOM_REFRESH_MS);
+  } catch (error) {
+    console.error(error);
+    setServerStatus("error", "ERRO AO ABRIR A ARENA", "Confira os arquivos e a configuração do Supabase.");
+    showNotice(friendlyError(error), "error");
+  }
+}
+
+elements.saveNickname.addEventListener("click", () => {
   const name = requireNickname();
   if (!name) return;
-  arenaElements.saveNickname.textContent = "NOME SALVO!";
-  setTimeout(() => arenaElements.saveNickname.textContent = "SALVAR NOME", 1300);
+  const original = elements.saveNickname.textContent;
+  elements.saveNickname.textContent = "NOME SALVO!";
+  window.setTimeout(() => { elements.saveNickname.textContent = original; }, 1300);
 });
 
-arenaElements.nickname.addEventListener("keydown", event => {
-  if (event.key === "Enter") arenaElements.saveNickname.click();
+elements.nickname.addEventListener("keydown", event => {
+  if (event.key === "Enter") elements.saveNickname.click();
 });
 
-arenaElements.openCode.addEventListener("click", openRoomByCode);
-arenaElements.codeInput.addEventListener("input", () => {
-  arenaElements.codeInput.value = arenaElements.codeInput.value
-    .toUpperCase()
-    .replace(/[^A-Z0-9]/g, "")
-    .slice(0, 6);
-});
-arenaElements.codeInput.addEventListener("keydown", event => {
-  if (event.key === "Enter") openRoomByCode();
+elements.codeInput.addEventListener("input", () => {
+  elements.codeInput.value = cleanCode(elements.codeInput.value);
 });
 
-arenaElements.toggleReady.addEventListener("click", toggleReady);
-arenaElements.copyInvite.addEventListener("click", copyInvite);
-
-arenaElements.inviteLink?.addEventListener("click", event => {
-  event.currentTarget.select();
+elements.codeInput.addEventListener("keydown", event => {
+  if (event.key === "Enter") joinRoom(elements.codeInput.value);
 });
 
-arenaElements.openInviteLink?.addEventListener("click", () => {
-  const room = currentRoom();
-  if (!room?.host) return;
-  window.open(roomInviteUrl(room), "_blank", "noopener");
+elements.openCode.addEventListener("click", () => joinRoom(elements.codeInput.value));
+elements.createRoom.addEventListener("click", createRoom);
+elements.toggleReady.addEventListener("click", toggleReady);
+elements.copyInvite.addEventListener("click", copyInvite);
+elements.shareInvite.addEventListener("click", shareInvite);
+elements.refreshActive.addEventListener("click", () => refreshActiveRoom());
+elements.leaveRoom.addEventListener("click", leaveRoom);
+elements.startGame.addEventListener("click", startGame);
+elements.chatForm.addEventListener("submit", sendMessage);
+elements.inviteLink.addEventListener("click", event => event.currentTarget.select());
+
+elements.closePanel.addEventListener("click", () => {
+  elements.activePanel.classList.add("hidden");
+  document.querySelector(".arena-rooms-window")?.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
-arenaElements.simulatePlayerTwo.addEventListener("click", simulatePlayerTwo);
-arenaElements.leaveRoom.addEventListener("click", leaveRoom);
-arenaElements.closePanel.addEventListener("click", () => {
-  arenaState.activeRoomNumber = 0;
-  sessionStorage.removeItem(ARENA_ACTIVE_KEY);
-  renderArena();
-});
-arenaElements.startLocal.addEventListener("click", startLocalGame);
-document.querySelector("#arena-refresh").addEventListener("click", () => location.reload());
-
-window.addEventListener("storage", event => {
-  if (event.key === ARENA_STORAGE_KEY) {
-    loadRooms();
-    renderArena();
-  }
+elements.refresh.addEventListener("click", async () => {
+  setButtonBusy(elements.refresh, true, "ATUALIZANDO...");
+  await refreshPublicRooms();
+  await refreshActiveRoom();
+  await renderInviteBanner();
+  setButtonBusy(elements.refresh, false);
 });
 
-arenaState.channel?.addEventListener("message", event => {
-  if (event.data?.type === "rooms-updated") {
-    loadRooms();
-    renderArena();
-  }
+window.addEventListener("online", () => {
+  setServerStatus("connecting", "RECONECTANDO...", "A internet voltou. Reconectando à Arena.");
+  subscribeLobby();
+  refreshPublicRooms({ silent: true });
+  refreshActiveRoom({ silent: true });
 });
 
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) {
-    loadRooms();
-    renderArena();
-  }
+window.addEventListener("offline", () => {
+  setServerStatus("error", "SEM INTERNET", "As salas voltarão a sincronizar quando a conexão retornar.");
 });
 
-loadCatalog();
+window.addEventListener("pagehide", () => {
+  if (state.refreshTimer) window.clearInterval(state.refreshTimer);
+});
+
+initializeArena();

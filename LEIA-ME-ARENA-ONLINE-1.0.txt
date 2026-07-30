@@ -1,0 +1,84 @@
+RETROPLAY ARENA ONLINE 1.0
+==========================
+
+O QUE ESTA ATUALIZACAO FAZ
+--------------------------
+- Cria salas reais pela internet usando o Supabase.
+- Gera um codigo de 6 caracteres e um link de convite.
+- Permite Jogador 1 e Jogador 2 em aparelhos diferentes.
+- Sincroniza os nomes e o estado PRONTO em tempo real.
+- Adiciona chat dentro da sala.
+- Salas privadas aparecem somente pelo link ou codigo.
+- Salas publicas aparecem na lista da Arena.
+- O anfitriao pode abrir o mesmo jogo nos dois aparelhos.
+
+IMPORTANTE SOBRE O COMBATE ONLINE
+---------------------------------
+Esta versao deixa a sala, o convite e o chat realmente online.
+O jogo abre nos dois aparelhos, mas os controles ainda sao locais.
+Para um jogador controlar o Jogador 1 e o outro controlar o Jogador 2
+na mesma partida, sera necessario adicionar um servidor Netplay proprio.
+
+PASSO 1 — ATIVAR NO SUPABASE
+----------------------------
+1. Entre no projeto do RetroPlay no Supabase.
+2. Clique em SQL Editor.
+3. Clique em New query.
+4. Abra o arquivo SUPABASE-ARENA-ONLINE-1.0.sql.
+5. Copie TODO o conteudo e cole no SQL Editor.
+6. Clique em Run.
+7. Espere aparecer Success.
+
+O SQL nao apaga comentarios, contas, favoritos ou saves.
+
+PASSO 2 — ENVIAR OS ARQUIVOS AO GITHUB
+--------------------------------------
+Substitua os arquivos mantendo exatamente estas pastas:
+
+Na raiz do site:
+- salas.html
+- service-worker.js
+
+Na pasta css:
+- style.css
+
+Na pasta js:
+- salas.js
+
+O arquivo SQL e este LEIA-ME nao precisam ficar publicados no site.
+Eles estao no pacote apenas para instalacao e seguranca.
+
+PASSO 3 — TESTAR
+----------------
+1. Abra o RetroPlay e entre em SALAS ONLINE.
+2. Digite seu nome.
+3. Escolha um jogo e crie a sala.
+4. Copie o link.
+5. Envie o link para outro celular ou computador.
+6. No outro aparelho, digite outro nome e clique em ENTRAR NESTA SALA.
+7. Teste o chat e o botao FICAR PRONTO.
+
+LINK E APLICATIVO
+-----------------
+- Quando o link e aberto dentro do aplicativo RetroPlay, ele permanece no app.
+- Quando o link e aberto pelo WhatsApp, normalmente abre no navegador.
+- Para um link externo abrir automaticamente o APK, o aplicativo Android ainda
+  precisa receber a configuracao App Links e a assinatura digital do APK.
+
+SE APARECER A ARENA ANTIGA
+--------------------------
+1. Atualize a pagina duas vezes.
+2. Feche e abra o aplicativo novamente.
+3. Se ainda aparecer a antiga, use LIMPAR MEMORIA no RetroPlay.
+O service-worker.js desta atualizacao troca a versao do cache automaticamente.
+
+ARQUIVOS ALTERADOS
+------------------
+- salas.html
+- js/salas.js
+- css/style.css
+- service-worker.js
+
+ARQUIVO PARA EXECUTAR NO SUPABASE
+---------------------------------
+- SUPABASE-ARENA-ONLINE-1.0.sql
