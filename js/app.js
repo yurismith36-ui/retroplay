@@ -92,9 +92,7 @@ async function loadCatalog() {
     const data = await response.json();
     if (!Array.isArray(data)) throw new Error("games.json não contém uma lista.");
     state.games = data;
-    state.featuredGame = randomFeaturedGame();
     renderAll();
-    scheduleFeaturedRotation();
   } catch (error) {
     console.error(error);
     elements.grid.innerHTML = `
@@ -109,7 +107,6 @@ async function loadCatalog() {
 function renderAll() {
   renderConsoleButtons();
   renderVault();
-  renderFeatured();
   renderGames();
 }
 
@@ -313,7 +310,7 @@ if (clearMemoryButton) {
 }
 
 window.addEventListener("pageshow", event => {
-  if (event.persisted) renderFeatured();
+  if (event.persisted) renderGames();
 });
 
 if ("serviceWorker" in navigator) {

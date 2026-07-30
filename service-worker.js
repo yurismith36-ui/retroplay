@@ -1,26 +1,26 @@
-const CACHE_VERSION = "retroplay-translate-0-4-v1";
+const CACHE_VERSION = "retroplay-community-1-0-v1";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 
 const APP_SHELL = [
   "./",
   "./index.html",
+  "./comunidade.html",
   "./css/style.css?v=auth-1-0",
+  "./css/comunidade.css?v=community-1-0",
+  "./css/comunidade-preview.css?v=community-1-0",
   "./js/boot.js?v=performance-2-1",
   "./js/app.js?v=auth-1-0",
+  "./js/comunidade.js?v=community-1-0",
+  "./js/console-corner.js?v=performance-2-1",
   "./login.html",
   "./conta.html",
   "./js/supabase.js?v=auth-1-0",
   "./js/auth.js?v=auth-1-0",
   "./js/cloud.js?v=auth-1-0",
-  "./js/console-corner.js?v=performance-2-1",
   "./dados/games.json",
   "./assets/icone-controle.svg",
-  "./assets/controle-retro.svg",
-  "./assets/console-retro.svg",
-  "./imagens/backgrounds/galaxia.webp",
-  "./imagens/backgrounds/locadora-moderna.webp",
-  "./imagens/backgrounds/locadora-vintage.webp"
+  "./assets/controle-retro.svg"
 ];
 
 self.addEventListener("install", event => {
@@ -46,9 +46,10 @@ self.addEventListener("fetch", event => {
 
   const isNavigation = request.mode === "navigate";
   const isCatalog = url.pathname.endsWith("/dados/games.json");
+  const isScriptOrStyle = request.destination === "script" || request.destination === "style";
   const isImage = request.destination === "image";
 
-  if (isNavigation || isCatalog) {
+  if (isNavigation || isCatalog || isScriptOrStyle) {
     event.respondWith(networkFirst(request));
     return;
   }
@@ -65,7 +66,7 @@ async function networkFirst(request) {
   try {
     const response = await fetch(request);
     const cache = await caches.open(STATIC_CACHE);
-    cache.put(request, response.clone());
+    if (response.ok) cache.put(request, response.clone());
     return response;
   } catch (error) {
     return (await caches.match(request)) || (await caches.match("./index.html"));

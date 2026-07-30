@@ -1,0 +1,406 @@
+/* RetroPlay Comunidade 1.0 — página isolada e leve */
+.community-page {
+  color: var(--ink);
+}
+
+.community-shell {
+  min-height: 100vh;
+}
+
+.community-nav {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.community-main {
+  display: grid;
+  grid-template-columns: 285px minmax(0, 1fr);
+  gap: 14px;
+  padding: 14px;
+}
+
+.community-sidebar,
+.community-column {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  min-width: 0;
+}
+
+.community-filter-body,
+.community-form-body,
+.community-about-body {
+  padding: 16px;
+}
+
+.community-filter-body label,
+.community-form-body label {
+  display: block;
+  color: #413748;
+  font-weight: 800;
+}
+
+.community-filter-body select,
+.community-form-body select,
+.community-form-body textarea {
+  width: 100%;
+  margin-top: 7px;
+  padding: 11px;
+  border: 3px solid #47414d;
+  border-radius: 2px;
+  outline: 0;
+  background: #fff;
+  box-shadow: inset 2px 2px 0 #c8c5cc;
+}
+
+.community-filter-body select:focus,
+.community-form-body select:focus,
+.community-form-body textarea:focus {
+  border-color: #704398;
+}
+
+.community-about-body p {
+  margin: 0;
+  color: #625d68;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.community-online-box {
+  display: grid;
+  grid-template-columns: 13px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  margin-top: 14px;
+  padding: 11px;
+  border: 2px solid #4b454f;
+  background: #e9e7ec;
+  font-family: var(--pixel-font);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.community-dot {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #2b2830;
+  border-radius: 50%;
+  background: #87838c;
+}
+
+.community-dot.online {
+  background: #28d46b;
+  box-shadow: 0 0 9px rgba(40,212,107,.72);
+}
+
+.community-hero {
+  overflow: hidden;
+}
+
+.community-hero-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 20px;
+  padding: 22px;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(155,120,187,.28), transparent 36%),
+    linear-gradient(#f3f2f5, #dddbe1);
+}
+
+.community-hero h1 {
+  margin: 0 0 8px;
+  color: #3e2552;
+  font-family: var(--pixel-font);
+  font-size: clamp(25px, 4vw, 45px);
+  line-height: 1;
+}
+
+.community-hero p {
+  max-width: 700px;
+  margin: 0;
+  color: #625d68;
+  line-height: 1.55;
+}
+
+.community-hero-icon {
+  font-size: clamp(58px, 9vw, 100px);
+  filter: drop-shadow(5px 5px 0 rgba(69,43,86,.2));
+}
+
+.community-auth-notice {
+  margin-bottom: 14px;
+  padding: 13px;
+  border: 2px dashed #745987;
+  background: #eee7f3;
+  color: #4a3458;
+  line-height: 1.45;
+}
+
+.community-auth-notice a {
+  color: #4d2d68;
+  font-weight: 900;
+  text-decoration: underline;
+}
+
+.community-form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 14px;
+}
+
+.community-reaction-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 7px;
+}
+
+.community-reaction-choice {
+  position: relative;
+}
+
+.community-reaction-choice input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.community-reaction-choice span {
+  min-height: 45px;
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  border: 3px solid #47414d;
+  background: linear-gradient(#fff, #cfccd3);
+  box-shadow: inset 0 0 0 2px #eeeef1, 2px 2px 0 #99949e;
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
+  cursor: pointer;
+}
+
+.community-reaction-choice input:checked + span {
+  color: #fff;
+  background: linear-gradient(#8156a6, #4a2a64);
+  box-shadow: inset 0 0 0 2px #a888c1, 2px 2px 0 #302a36;
+}
+
+.community-message-label {
+  margin-top: 14px;
+}
+
+.community-form-body textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.community-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.community-char-count {
+  color: #6b6570;
+  font-size: 12px;
+}
+
+.community-submit[disabled] {
+  cursor: not-allowed;
+  opacity: .55;
+}
+
+.community-feedback {
+  min-height: 20px;
+  margin-top: 10px;
+  color: #4e3760;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.community-feedback.error { color: #8a274a; }
+.community-feedback.success { color: #246b3e; }
+
+.community-list-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 14px;
+  border-bottom: 2px solid #b8b5bd;
+  background: #dedde2;
+}
+
+.community-list-toolbar strong {
+  color: #412a52;
+  font-family: var(--pixel-font);
+  font-size: 14px;
+}
+
+.community-refresh {
+  min-height: 38px;
+  padding: 7px 12px;
+}
+
+.community-comments {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+}
+
+.community-comment {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 14px;
+  padding: 14px;
+  border: 3px solid #403a46;
+  border-radius: 4px;
+  background: #f6f5f7;
+  box-shadow: inset 0 0 0 2px #dedce1, 4px 4px 0 #aaa6af;
+}
+
+.community-comment-avatar-wrap {
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 7px;
+}
+
+.community-comment-avatar {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border: 3px solid #332d39;
+  background: #bea9cf;
+  image-rendering: pixelated;
+}
+
+.community-status-text {
+  color: #77717b;
+  font-size: 10px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.community-status-text.online { color: #21894a; }
+
+.community-comment-main {
+  min-width: 0;
+}
+
+.community-comment-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.community-comment-user {
+  min-width: 0;
+}
+
+.community-comment-user strong {
+  display: block;
+  overflow: hidden;
+  color: #3c244f;
+  font-family: var(--pixel-font);
+  font-size: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.community-comment-game {
+  display: inline-block;
+  margin-top: 5px;
+  color: #704398;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.community-comment-time {
+  flex: 0 0 auto;
+  color: #7a747e;
+  font-size: 11px;
+}
+
+.community-comment-message {
+  margin: 13px 0 0;
+  color: #302c33;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.community-comment-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 13px;
+}
+
+.community-reaction-badge {
+  padding: 5px 8px;
+  border: 2px solid #8e8792;
+  border-radius: 3px;
+  background: #e9e6ed;
+  color: #4a3c53;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.community-delete {
+  margin-left: auto;
+  padding: 5px 9px;
+  border: 2px solid #6a394d;
+  background: #efe0e6;
+  color: #7b2847;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.community-loading,
+.community-empty,
+.community-error {
+  min-height: 250px;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  color: #625c68;
+  text-align: center;
+}
+
+.community-loading::before {
+  content: "";
+  width: 34px;
+  height: 34px;
+  border: 6px solid #c9bdcf;
+  border-top-color: #5e357c;
+  animation: community-spin .8s steps(8) infinite;
+}
+
+.community-error { color: #822c4c; }
+
+@keyframes community-spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 900px) {
+  .community-main { grid-template-columns: 1fr; }
+  .community-sidebar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .community-form-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 680px) {
+  .community-nav { grid-template-columns: repeat(2, 1fr); }
+  .community-nav .nav-tab:last-child { grid-column: 1 / -1; }
+  .community-sidebar { grid-template-columns: 1fr; }
+  .community-hero-body { grid-template-columns: 1fr; }
+  .community-hero-icon { display: none; }
+  .community-reaction-options { grid-template-columns: 1fr; }
+  .community-comment { grid-template-columns: 52px minmax(0, 1fr); padding: 11px; }
+  .community-comment-avatar { width: 48px; height: 48px; }
+  .community-comment-head { flex-direction: column; gap: 4px; }
+  .community-form-footer { align-items: stretch; flex-direction: column; }
+  .community-submit { width: 100%; }
+}

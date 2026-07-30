@@ -1,0 +1,237 @@
+/* RetroPlay Comunidade 1.0 — prévia leve da página inicial */
+.community-preview-window {
+  overflow: hidden;
+}
+
+.community-preview-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 245px;
+  gap: 14px;
+  padding: 14px;
+  background:
+    linear-gradient(rgba(244,243,245,.96), rgba(222,220,226,.96)),
+    repeating-linear-gradient(0deg, transparent 0 11px, rgba(77,45,104,.05) 11px 12px);
+}
+
+.community-preview-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 11px 15px;
+  border-bottom: 2px solid #b2afb8;
+  background: #e6e4e9;
+}
+
+.community-preview-intro strong {
+  color: #44275d;
+  font-family: var(--pixel-font);
+  font-size: 16px;
+}
+
+.community-preview-intro span {
+  color: #6c6671;
+  font-size: 13px;
+}
+
+.community-preview-list {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.community-preview-card {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 11px;
+  min-width: 0;
+  padding: 11px;
+  border: 2px solid #4a424f;
+  border-radius: 4px;
+  background: rgba(255,255,255,.8);
+  box-shadow: inset 0 0 0 2px #ebe9ed, 3px 3px 0 #a9a5ad;
+}
+
+.community-preview-avatar {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border: 3px solid #332d39;
+  background: #bea9cf;
+  image-rendering: pixelated;
+}
+
+.community-preview-content {
+  min-width: 0;
+}
+
+.community-preview-userline {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 5px;
+}
+
+.community-preview-userline strong {
+  overflow: hidden;
+  max-width: 180px;
+  color: #3d254f;
+  font-family: var(--pixel-font);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.community-status-dot {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 auto;
+  border: 2px solid #2d2931;
+  border-radius: 50%;
+  background: #85818a;
+  box-shadow: 0 0 0 2px rgba(255,255,255,.8);
+}
+
+.community-status-dot.online {
+  background: #28d46b;
+  box-shadow: 0 0 8px rgba(40,212,107,.75);
+}
+
+.community-preview-game {
+  overflow: hidden;
+  color: #704398;
+  font-size: 11px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.community-preview-message {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: #302d34;
+  font-size: 14px;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.community-preview-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 7px;
+  color: #706a74;
+  font-size: 11px;
+}
+
+.community-reaction {
+  padding: 3px 6px;
+  border: 1px solid #89828d;
+  border-radius: 3px;
+  background: #eceaf0;
+  font-weight: 800;
+}
+
+.community-preview-side {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 14px;
+  min-height: 230px;
+  padding: 18px;
+  border: 3px double #514759;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(155,120,187,.3), transparent 42%),
+    #d8d5dc;
+  text-align: center;
+}
+
+.community-preview-icon {
+  font-size: 56px;
+  filter: drop-shadow(3px 3px 0 rgba(63,43,76,.25));
+}
+
+.community-preview-side h2 {
+  margin: 0;
+  color: #3c244f;
+  font-family: var(--pixel-font);
+  font-size: 21px;
+  line-height: 1.1;
+}
+
+.community-preview-side p {
+  margin: 0;
+  color: #625c68;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.community-enter-button {
+  width: 100%;
+}
+
+.community-preview-empty,
+.community-preview-error,
+.community-preview-loading {
+  min-height: 225px;
+  display: grid;
+  place-items: center;
+  padding: 25px;
+  border: 2px dashed #8b8490;
+  background: rgba(255,255,255,.55);
+  color: #5e5764;
+  text-align: center;
+}
+
+.community-preview-loading::before {
+  content: "";
+  width: 30px;
+  height: 30px;
+  border: 5px solid #c1b5cb;
+  border-top-color: #5e357c;
+  animation: community-spin .8s steps(8) infinite;
+}
+
+.community-page-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: rgba(14,11,18,.92);
+  font-family: var(--pixel-font);
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.community-page-loading::before {
+  content: "👾";
+  display: block;
+  margin-right: 10px;
+  font-size: 32px;
+  animation: community-pulse .7s steps(2) infinite;
+}
+
+@keyframes community-spin { to { transform: rotate(360deg); } }
+@keyframes community-pulse { 50% { transform: translateY(-5px); } }
+
+@media (max-width: 850px) {
+  .community-preview-body { grid-template-columns: 1fr; }
+  .community-preview-side { min-height: auto; }
+}
+
+@media (max-width: 560px) {
+  .community-preview-intro {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .community-preview-body { padding: 10px; }
+  .community-preview-card { grid-template-columns: 44px minmax(0, 1fr); }
+  .community-preview-avatar { width: 44px; height: 44px; }
+}

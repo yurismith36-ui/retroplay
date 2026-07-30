@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050506">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Comunidade — RetroPlay</title>
+  <meta name="description" content="Comentários dos jogadores do RetroPlay organizados por jogo.">
+  <meta name="robots" content="index,follow">
+  <link rel="icon" href="assets/icone-controle.svg">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="css/style.css?v=auth-1-0">
+  <link rel="stylesheet" href="css/comunidade.css?v=community-1-0">
+</head>
+<body class="community-page">
+  <div class="page-shell community-shell">
+    <header class="site-header compact-header">
+      <a class="logo-area" href="index.html" aria-label="Página inicial do RetroPlay">
+        <img src="assets/controle-retro.svg" alt="" class="logo-controller">
+        <div>
+          <div class="logo-title">RETROPLAY</div>
+          <div class="logo-subtitle">COMUNIDADE DE JOGADORES</div>
+        </div>
+      </a>
+      <div class="header-tools">
+        <a class="utility-btn" href="index.html">← Voltar ao site</a>
+        <a class="utility-btn account-button" id="account-button" href="login.html">👤 Entrar</a>
+        <span class="welcome">Conectando à comunidade...</span>
+      </div>
+    </header>
+
+    <nav class="main-nav community-nav" aria-label="Menu da comunidade">
+      <a class="nav-tab" href="index.html">HOME</a>
+      <a class="nav-tab" href="index.html#biblioteca">JOGOS</a>
+      <a class="nav-tab active" href="comunidade.html">COMUNIDADE</a>
+      <a class="nav-tab arena-nav" href="salas.html">SALAS ONLINE</a>
+      <a class="nav-tab" href="index.html#consoles">CONSOLES</a>
+    </nav>
+
+    <main class="community-main">
+      <aside class="community-sidebar">
+        <section class="window">
+          <div class="window-title small-title">FILTRAR JOGO</div>
+          <div class="community-filter-body">
+            <label for="community-game-filter">Mostrar comentários de:</label>
+            <select id="community-game-filter">
+              <option value="">Todos os jogos</option>
+            </select>
+            <div class="community-online-box">
+              <span class="community-dot online" aria-hidden="true"></span>
+              <span id="community-online-total">0 jogadores online</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="window">
+          <div class="window-title small-title">COMO FUNCIONA</div>
+          <div class="community-about-body">
+            <p>Esta página carrega somente os comentários. O emulador, a ROM e o catálogo completo não ficam ativos aqui, deixando a conversa mais leve.</p>
+          </div>
+        </section>
+      </aside>
+
+      <section class="community-column">
+        <section class="window community-hero">
+          <div class="community-hero-body">
+            <div>
+              <h1>COMUNIDADE RETROPLAY</h1>
+              <p>Compartilhe sua opinião, diga se gostou do jogo e veja quem está conectado agora.</p>
+            </div>
+            <div class="community-hero-icon" aria-hidden="true">👾</div>
+          </div>
+        </section>
+
+        <section class="window" id="community-write-window">
+          <div class="window-title">
+            <span>✎ ESCREVER COMENTÁRIO</span>
+            <span id="community-current-user">VISITANTE</span>
+          </div>
+          <div class="community-form-body">
+            <div id="community-auth-notice" class="community-auth-notice">
+              Para publicar, <a href="login.html">entre na sua conta RetroPlay</a>. A leitura permanece liberada para todos.
+            </div>
+
+            <form id="community-form">
+              <div class="community-form-grid">
+                <label>
+                  Jogo relacionado
+                  <select id="community-game-select" required>
+                    <option value="">Escolha um jogo</option>
+                  </select>
+                </label>
+
+                <div>
+                  <strong>Sua opinião</strong>
+                  <div class="community-reaction-options" role="radiogroup" aria-label="Opinião sobre o jogo">
+                    <label class="community-reaction-choice">
+                      <input type="radio" name="reaction" value="gostei" checked>
+                      <span>👍 Gostei</span>
+                    </label>
+                    <label class="community-reaction-choice">
+                      <input type="radio" name="reaction" value="nao_gostei">
+                      <span>👎 Não gostei</span>
+                    </label>
+                    <label class="community-reaction-choice">
+                      <input type="radio" name="reaction" value="neutro">
+                      <span>💬 Neutro</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <label class="community-message-label">
+                Seu comentário
+                <textarea id="community-message" maxlength="400" minlength="2" placeholder="Conte o que achou do jogo..." required></textarea>
+              </label>
+
+              <div class="community-form-footer">
+                <span id="community-char-count" class="community-char-count">0/400</span>
+                <button id="community-submit" class="purple-button community-submit" type="submit" disabled>PUBLICAR COMENTÁRIO ▶</button>
+              </div>
+              <div id="community-feedback" class="community-feedback" aria-live="polite"></div>
+            </form>
+          </div>
+        </section>
+
+        <section class="window">
+          <div class="window-title">
+            <span>💬 COMENTÁRIOS DOS JOGADORES</span>
+            <span id="community-comment-total">0 COMENTÁRIOS</span>
+          </div>
+          <div class="community-list-toolbar">
+            <strong id="community-filter-label">TODOS OS JOGOS</strong>
+            <button id="community-refresh" class="gray-button community-refresh" type="button">↻ ATUALIZAR</button>
+          </div>
+          <div id="community-comments" class="community-comments">
+            <div class="community-loading">Carregando comentários...</div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>♥ Comunidade RetroPlay</span>
+      <span>Página leve — sem emulador carregado</span>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js?v=auth-1-0"></script>
+  <script src="js/auth.js?v=auth-1-0"></script>
+  <script src="js/comunidade.js?v=community-1-0"></script>
+</body>
+</html>
