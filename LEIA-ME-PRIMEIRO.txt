@@ -1,53 +1,23 @@
-RETROPLAY — TRADUÇÃO OCR 0.4
-================================
+CORREÇÃO RETROPLAY ARENA — TELA ANTIGA 2.0.2
 
-ESTE É UM PACOTE DE TESTE SEGURO.
+Esta correção é SOMENTE para o site/GitHub.
+O Supabase já está ativado e NÃO precisa executar outro SQL.
 
-Ele NÃO substitui o player.html e não apaga nenhuma função do site.
-Primeiro ele confirma se o texto do diálogo pode ser lido sem fechar o jogo.
+O erro da imagem aconteceu porque o site ainda carregava a Arena Online 1.0.
+A tela correta deve mostrar no topo: "VERSÃO 2.0.2 BETA".
 
-ARQUIVO PARA ENVIAR AO GITHUB:
-- js/retroplay-tradutor.js
+ENVIE AO GITHUB, NA RAIZ DO REPOSITÓRIO:
+- salas.html
+- arena-player.html
+- service-worker.js
+- pasta js
+- pasta css
 
-PASSO 1
--------
-Envie a pasta "js" deste pacote para a raiz do seu repositório.
-Se já existir uma pasta js, coloque apenas o arquivo retroplay-tradutor.js dentro dela.
+Aceite substituir os arquivos existentes e confirme diretamente na branch main/principal.
+Depois aguarde 2 a 5 minutos.
 
-PASSO 2
--------
-Abra o player.html no GitHub e procure:
+TESTE SEM CACHE:
+https://yurismith36-ui.github.io/retroplay/salas.html?v=202
 
-</body>
-
-Imediatamente ANTES de </body>, cole:
-
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script src="js/retroplay-tradutor.js?v=0.4"></script>
-
-PASSO 3
--------
-Salve o player.html, abra o site em aba anônima e inicie um jogo.
-
-Aparecerá o botão:
-🌐 Ativar tradução
-
-Deixe um diálogo em inglês na tela e aperte o botão.
-
-RESULTADO ESPERADO
-------------------
-A tarja deverá mostrar:
-
-OCR: texto reconhecido
-
-Isso ainda NÃO traduz para português. Esta versão testa primeiro o OCR para evitar
-que o jogo feche novamente. Depois que o OCR estiver estável, conectamos a tradução.
-
-IMPORTANTE
-----------
-- O OCR lê somente a parte inferior da tela.
-- A leitura acontece a cada 4,5 segundos.
-- Apenas uma leitura pode acontecer por vez.
-- O OCR só é carregado quando o botão é apertado.
-- Ao sair da página, o leitor é encerrado.
-- Não apague seus outros arquivos.
+Se abrir pelo aplicativo, feche completamente e abra de novo.
+Não execute novamente os arquivos SQL da Arena.
