@@ -107,7 +107,12 @@
             <button id="arena-start" class="arena-start-button" type="button" disabled>INICIAR PARTIDA</button>
             <button id="arena-leave" class="arena-danger-button" type="button">SAIR DA SALA</button>
           </div>
-          <div class="arena-start-help"><strong>Quando todos estiverem prontos:</strong> o dono inicia e todos são enviados ao player online. Dentro do jogo, use o ícone 🌐 do EmulatorJS para criar/entrar na sessão com o mesmo código mostrado acima.</div>
+          <section id="arena-voice" class="arena-voice-box">
+            <div><strong>🎤 CHAT DE VOZ</strong><span id="arena-voice-status">CHAT DE VOZ PRONTO</span></div>
+            <div class="arena-voice-actions"><button id="arena-voice-toggle" class="arena-secondary-button" type="button">ATIVAR VOZ</button><button id="arena-voice-mute" class="arena-secondary-button" type="button" hidden>SILENCIAR MICROFONE</button></div>
+            <audio id="arena-voice-remote" autoplay playsinline></audio>
+          </section>
+          <div class="arena-start-help"><strong>Fluxo simples:</strong> compartilhe o código, espere o adversário entrar, os dois apertam PRONTO e o dono inicia a partida. O chat de voz pode ficar ligado durante todo o jogo.</div>
           <div id="arena-feedback" class="arena-feedback" role="status"></div>
         </div>
       </section>
@@ -120,6 +125,7 @@
   <script src="js/supabase.js?v=arena-2-0-2"></script>
   <script src="js/auth.js?v=arena-2-0-2"></script>
   <script src="js/arena-config.js?v=arena-2-0-2"></script>
-  <script src="js/salas.js?v=arena-2-0-2"></script>
+  <script src="js/salas.js?v=arena-2-0-3"></script>
+  <script src="js/arena-voice.js?v=voice-1-0"></script>
 </body>
 </html>

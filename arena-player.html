@@ -13,7 +13,7 @@
   <header class="arena-player-toolbar">
     <button id="arena-exit" type="button">← SAIR</button>
     <div class="arena-player-title"><strong id="arena-player-title">Carregando...</strong><span id="arena-player-meta">Arena online</span></div>
-    <button id="arena-guide-toggle" type="button" aria-expanded="true">COMO CONECTAR</button>
+    <div class="arena-player-tools"><button id="arena-voice-mini" type="button" onclick="document.querySelector('#arena-voice')?.classList.toggle('open')">🎤 VOZ</button><button id="arena-guide-toggle" type="button" aria-expanded="true">COMO CONECTAR</button></div>
   </header>
 
   <main id="arena-player-stage" class="arena-player-stage">
@@ -24,6 +24,12 @@
     </div>
     <div id="game"></div>
   </main>
+
+  <section id="arena-voice" class="arena-player-voice open">
+    <div><strong>🎤 CHAT DE VOZ</strong><span id="arena-voice-status">PREPARANDO...</span></div>
+    <div><button id="arena-voice-toggle" type="button">ATIVAR VOZ</button><button id="arena-voice-mute" type="button" hidden>SILENCIAR MICROFONE</button></div>
+    <audio id="arena-voice-remote" autoplay playsinline></audio>
+  </section>
 
   <aside id="arena-guide" class="arena-guide" aria-label="Instruções do netplay">
     <span class="arena-beta-badge">EMULATORJS 4.3.0-PRE — BETA</span>
@@ -45,6 +51,7 @@
   <script src="js/supabase.js?v=arena-2-0-2"></script>
   <script src="js/auth.js?v=arena-2-0-2"></script>
   <script src="js/arena-config.js?v=arena-2-0-2"></script>
-  <script src="js/arena-player.js?v=arena-2-0-2"></script>
+  <script src="js/arena-player.js?v=arena-2-0-3"></script>
+  <script src="js/arena-voice.js?v=voice-1-0"></script>
 </body>
 </html>

@@ -1,0 +1,31 @@
+RETROPLAY ARENA 2.1 — SALAS + CHAT DE VOZ
+
+O QUE ESTA ATUALIZAÇÃO ADICIONA
+- Criar sala e entrar usando código de 6 caracteres.
+- Lobby com jogadores, botão PRONTO e início pelo dono.
+- Chat de voz WebRTC sem vídeo, com baixo consumo.
+- Cancelamento de eco, redução de ruído e microfone mono.
+- Botões ATIVAR VOZ, SILENCIAR e DESLIGAR VOZ.
+- Voz disponível no navegador e no aplicativo, após permitir o microfone.
+
+COMO PUBLICAR PELO GITHUB
+1. Abra o repositório RetroPlay.
+2. Envie os arquivos deste pacote mantendo as mesmas pastas.
+3. Confirme a substituição dos arquivos existentes.
+4. Aguarde o GitHub Pages atualizar.
+
+TESTE RECOMENDADO
+1. Entre em duas contas diferentes, em dois aparelhos.
+2. No primeiro aparelho, crie a sala e copie o código.
+3. No segundo, entre com o código.
+4. Os dois apertam PRONTO; o dono inicia.
+5. Permita o microfone nos dois aparelhos.
+6. Teste primeiro em Wi-Fi e depois usando Wi-Fi + internet móvel.
+
+IMPORTANTE
+- O lobby, o código e o chat de voz são simplificados pelo RetroPlay.
+- O netplay do jogo ainda depende do recurso beta do EmulatorJS. O menu técnico do
+  emulador pode continuar aparecendo até existir uma API pública confiável para
+  criar/entrar na sessão automaticamente.
+- TURN não foi adicionado agora. A voz tenta conexão direta e usa STUN. Se falhar
+  em algumas operadoras/redes, poderá ser adicionado TURN como conexão reserva.
