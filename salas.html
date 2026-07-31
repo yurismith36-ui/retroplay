@@ -7,10 +7,10 @@
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://yurismith36-ui.github.io/retroplay/salas.html">
   <meta name="theme-color" content="#2f1d43">
-  <title>RetroPlay Arena 2.0 — Salas Online</title>
+  <title>RetroPlay Arena 3.0 — Convites Diretos</title>
   <link rel="icon" href="assets/icone-controle.svg">
   <link rel="stylesheet" href="css/style.css?v=arena-2-0-2">
-  <link rel="stylesheet" href="css/arena.css?v=arena-2-0-2">
+  <link rel="stylesheet" href="css/arena.css?v=arena-3-0-1">
 </head>
 <body>
   <div class="page-shell">
@@ -35,13 +35,25 @@
     </nav>
 
     <main class="arena-main arena-v2-main">
+      <section id="arena-invite-entry" class="window arena-invite-entry arena-hidden" aria-live="polite">
+        <div class="window-title"><span>🔗 CONVITE PARA PARTIDA</span><span>ARENA 3.0</span></div>
+        <div class="arena-invite-entry-body">
+          <div class="arena-invite-icon">⚔️</div>
+          <div>
+            <span class="arena-kicker">VOCÊ FOI CONVIDADO</span>
+            <h1 id="arena-invite-title">Localizando a sala...</h1>
+            <p id="arena-invite-message">Aguarde. O RetroPlay vai colocar você diretamente no lobby.</p>
+          </div>
+          <a id="arena-invite-login" class="purple-button arena-button arena-hidden" href="login.html">ENTRAR PARA ACEITAR</a>
+        </div>
+      </section>
       <section class="window arena-hero arena-v2-hero">
-        <div class="window-title"><span>🌐 RETROPLAY ARENA</span><span>VERSÃO 2.0.2 BETA</span></div>
+        <div class="window-title"><span>🌐 RETROPLAY ARENA</span><span>VERSÃO 3.0.1</span></div>
         <div class="arena-hero-body">
           <div>
             <span class="arena-kicker">SALAS REAIS ENTRE APARELHOS</span>
             <h1>Duelo 1 × 1 e modo SNES para até 4 jogadores.</h1>
-            <p>As salas agora ficam no Supabase e aparecem em computadores, celulares e no aplicativo. A partida usa o netplay WebRTC do EmulatorJS em uma página isolada.</p>
+            <p>Crie a sala e envie o link. Quem abrir o convite vai direto ao lobby e precisa apenas marcar PRONTO.</p>
           </div>
           <div class="server-status arena-server-online">
             <span class="status-light"></span>
@@ -81,7 +93,7 @@
               <input id="arena-code" type="text" maxlength="6" placeholder="CÓDIGO" autocomplete="off" inputmode="text">
               <button id="arena-join-code" class="purple-button arena-button" type="button">ENTRAR</button>
             </div>
-            <div class="arena-v2-note"><strong>Convite:</strong> o link abre esta página com o código preenchido. Cada jogador precisa estar conectado à própria conta.</div>
+            <div class="arena-v2-note"><strong>Convite direto:</strong> ao abrir o link, o rival entra automaticamente no lobby. Caso não esteja conectado, fará login e retornará para a mesma sala.</div>
             <button id="arena-copy-last" class="arena-secondary-button" type="button" disabled>COPIAR ÚLTIMO CONVITE</button>
           </div>
         </section>
@@ -103,29 +115,23 @@
           <div id="arena-player-grid" class="arena-player-grid"></div>
           <div class="arena-active-actions">
             <button id="arena-ready" class="purple-button arena-button" type="button">FICAR PRONTO</button>
-            <button id="arena-copy" class="arena-secondary-button" type="button">COPIAR CONVITE</button>
+            <button id="arena-copy" class="arena-secondary-button" type="button">COMPARTILHAR CONVITE</button>
             <button id="arena-start" class="arena-start-button" type="button" disabled>INICIAR PARTIDA</button>
             <button id="arena-leave" class="arena-danger-button" type="button">SAIR DA SALA</button>
           </div>
-          <section id="arena-voice" class="arena-voice-box">
-            <div><strong>🎤 CHAT DE VOZ</strong><span id="arena-voice-status">CHAT DE VOZ PRONTO</span></div>
-            <div class="arena-voice-actions"><button id="arena-voice-toggle" class="arena-secondary-button" type="button">ATIVAR VOZ</button><button id="arena-voice-mute" class="arena-secondary-button" type="button" hidden>SILENCIAR MICROFONE</button></div>
-            <audio id="arena-voice-remote" autoplay playsinline></audio>
-          </section>
-          <div class="arena-start-help"><strong>Fluxo simples:</strong> compartilhe o código, espere o adversário entrar, os dois apertam PRONTO e o dono inicia a partida. O chat de voz pode ficar ligado durante todo o jogo.</div>
+          <div class="arena-start-help"><strong>Etapa atual:</strong> convite direto e lobby estão automatizados. A conexão dos controles ainda usa o Netplay do EmulatorJS; não considere apenas o lobby como confirmação de que os controles já estão sincronizados.</div>
           <div id="arena-feedback" class="arena-feedback" role="status"></div>
         </div>
       </section>
     </main>
 
-    <footer class="site-footer"><span>♥ RetroPlay Arena — lobby em tempo real.</span><span>2.0.2 Beta</span></footer>
+    <footer class="site-footer"><span>♥ RetroPlay Arena — lobby em tempo real.</span><span>3.0.1 — Convite direto</span></footer>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js?v=arena-2-0-2"></script>
-  <script src="js/auth.js?v=arena-2-0-2"></script>
-  <script src="js/arena-config.js?v=arena-2-0-2"></script>
-  <script src="js/salas.js?v=arena-2-0-3"></script>
-  <script src="js/arena-voice.js?v=voice-1-0"></script>
+  <script src="js/supabase.js?v=arena-3-0-1"></script>
+  <script src="js/auth.js?v=arena-3-0-1"></script>
+  <script src="js/arena-config.js?v=arena-3-0-1"></script>
+  <script src="js/salas.js?v=arena-3-0-1"></script>
 </body>
 </html>

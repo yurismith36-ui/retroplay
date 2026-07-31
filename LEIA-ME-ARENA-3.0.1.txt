@@ -1,0 +1,21 @@
+RETROPLAY ARENA 3.0.1 — CONVITE DIRETO
+
+O QUE ESTA ATUALIZAÇÃO FAZ
+- O host cria a sala e usa COMPARTILHAR CONVITE.
+- O rival abre o link e vai direto para a tela da sala.
+- Se não estiver conectado, faz login e retorna para o mesmo convite.
+- Depois do login, o RetroPlay entra automaticamente no lobby.
+- O rival precisa apenas tocar em FICAR PRONTO.
+- Em celulares compatíveis, o botão abre o compartilhamento do sistema/WhatsApp.
+- Como alternativa, copia uma mensagem pronta com o link.
+
+IMPORTANTE
+Esta etapa automatiza convite e lobby. Ela NÃO afirma que os controles do jogo já estão sincronizados. A conexão real da partida ainda depende do Netplay do EmulatorJS até a próxima integração técnica.
+
+ARQUIVOS ALTERADOS
+- salas.html
+- css/arena.css
+- js/salas.js
+
+COMO ENVIAR
+Envie os três arquivos acima para os mesmos locais no GitHub, substituindo os antigos.

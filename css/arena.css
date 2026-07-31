@@ -3,5 +3,20 @@
 @media(max-width:1000px){.arena-v2-rooms{grid-template-columns:repeat(2,minmax(0,1fr))}.arena-player-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.arena-active-summary{grid-template-columns:100px minmax(0,1fr)}.arena-code-large{grid-column:1/-1}.arena-active-summary img{width:100px;height:128px}}
 @media(max-width:760px){.arena-v2-tools,.arena-v2-hero .arena-hero-body{grid-template-columns:1fr}.arena-v2-rooms{grid-template-columns:1fr}.arena-mode-grid{grid-template-columns:1fr}.arena-room-browser-head{display:grid}.arena-active-summary{grid-template-columns:82px minmax(0,1fr)}.arena-active-summary img{width:82px;height:106px}.arena-player-grid{grid-template-columns:1fr 1fr}.arena-active-actions{display:grid;grid-template-columns:1fr}.arena-active-actions>*{width:100%}}
 @media(max-width:420px){.arena-player-grid{grid-template-columns:1fr}.arena-active-summary{grid-template-columns:1fr;text-align:center;justify-items:center}.arena-code-large{width:100%}}
-/* Arena Voice 1.0 */
-.arena-voice-box{margin-top:14px;padding:12px;border:2px solid #6f4b83;background:#17101d;display:grid;gap:10px}.arena-voice-box>div:first-child{display:flex;justify-content:space-between;gap:12px;align-items:center}.arena-voice-box strong{color:#e1b5fa}.arena-voice-box span{font:800 11px monospace;color:#bbb}.arena-voice-box span[data-kind="ok"]{color:#51e889}.arena-voice-box span[data-kind="error"]{color:#ff8ca1}.arena-voice-box span[data-kind="wait"]{color:#ffd37a}.arena-voice-actions{display:flex;gap:8px;flex-wrap:wrap}.arena-voice-actions button{flex:1;min-width:180px}.arena-voice-box.active{box-shadow:0 0 18px rgba(167,100,204,.25)}
+
+
+/* Arena 3.0.1 — entrada direta por convite */
+.arena-invite-entry { border: 2px solid rgba(129, 85, 255, .72); box-shadow: 0 0 34px rgba(102, 54, 255, .18); }
+.arena-invite-entry-body { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 18px; padding: 22px; }
+.arena-invite-entry-body h1 { margin: 5px 0 8px; font-size: clamp(1.25rem, 3vw, 2rem); }
+.arena-invite-entry-body p { margin: 0; opacity: .86; }
+.arena-invite-icon { width: 62px; height: 62px; display: grid; place-items: center; border-radius: 18px; font-size: 2rem; background: rgba(113, 67, 255, .16); border: 1px solid rgba(151, 121, 255, .5); }
+body.arena-invite-mode .arena-v2-tools,
+body.arena-invite-mode .arena-v2-main > .window:not(.arena-invite-entry):not(.arena-active-v2),
+body.arena-invite-mode .arena-hero { display: none; }
+body.arena-invite-mode .arena-login-box { margin-top: 14px; }
+body.arena-invite-mode .arena-active-v2 { margin-top: 14px; }
+@media (max-width: 720px) {
+  .arena-invite-entry-body { grid-template-columns: auto 1fr; }
+  .arena-invite-entry-body .arena-button { grid-column: 1 / -1; width: 100%; }
+}

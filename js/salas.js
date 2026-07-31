@@ -19,7 +19,9 @@
     reloadTimer: null,
     heartbeatTimer: null,
     navigating: false,
-    lastInvite: localStorage.getItem("retroplay-arena-last-invite") || ""
+    lastInvite: localStorage.getItem("retroplay-arena-last-invite") || "",
+    inviteCode: new URLSearchParams(location.search).get("codigo")?.toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 6) || "",
+    inviteAttempted: false
   };
 
   const el = {
@@ -49,7 +51,11 @@
     copy: document.querySelector("#arena-copy"),
     start: document.querySelector("#arena-start"),
     leave: document.querySelector("#arena-leave"),
-    feedback: document.querySelector("#arena-feedback")
+    feedback: document.querySelector("#arena-feedback"),
+    inviteEntry: document.querySelector("#arena-invite-entry"),
+    inviteTitle: document.querySelector("#arena-invite-title"),
+    inviteMessage: document.querySelector("#arena-invite-message"),
+    inviteLogin: document.querySelector("#arena-invite-login")
   };
 
   function escapeHtml(value = "") {
@@ -313,6 +319,49 @@
     startHeartbeat();
   }
 
+
+  function configureInviteEntry() {
+    if (!state.inviteCode || !el.inviteEntry) return;
+    document.body.classList.add("arena-invite-mode");
+    el.inviteEntry.classList.remove("arena-hidden");
+    el.inviteTitle.textContent = `Convite para a sala ${state.inviteCode}`;
+
+    const returnPath = `${location.pathname.split("/").pop() || "salas.html"}?codigo=${encodeURIComponent(state.inviteCode)}`;
+    el.inviteLogin.href = `login.html?voltar=${encodeURIComponent(returnPath)}`;
+
+    if (!state.user) {
+      el.inviteMessage.textContent = "Entre na sua conta. Depois do login você voltará diretamente para esta sala.";
+      el.inviteLogin.classList.remove("arena-hidden");
+      return;
+    }
+
+    el.inviteLogin.classList.add("arena-hidden");
+    if (state.activeCode === state.inviteCode && state.activeRoom) {
+      el.inviteTitle.textContent = state.activeRoom.game_name || `Sala ${state.inviteCode}`;
+      el.inviteMessage.textContent = "Você já está no lobby. Toque em FICAR PRONTO para confirmar sua participação.";
+      return;
+    }
+
+    el.inviteMessage.textContent = "Entrando automaticamente no lobby...";
+  }
+
+  async function acceptInviteAutomatically() {
+    configureInviteEntry();
+    if (!state.inviteCode || !state.user || state.inviteAttempted) return;
+    if (state.activeCode === state.inviteCode && state.activeRoom) return;
+    state.inviteAttempted = true;
+    try {
+      await joinRoom(state.inviteCode);
+      el.inviteTitle.textContent = state.activeRoom?.game_name || `Sala ${state.inviteCode}`;
+      el.inviteMessage.textContent = "Convite aceito! Agora toque em FICAR PRONTO.";
+      history.replaceState({}, "", "salas.html");
+    } catch (error) {
+      state.inviteAttempted = false;
+      el.inviteMessage.textContent = errorMessage(error);
+      throw error;
+    }
+  }
+
   function render() {
     const logged = Boolean(state.user);
     el.loginBox.classList.toggle("arena-hidden", logged);
@@ -324,6 +373,7 @@
     fillNames();
     renderRooms();
     renderActive();
+    configureInviteEntry();
   }
 
   async function createRoom(event) {
@@ -439,13 +489,28 @@
     setFeedback(success, "ok");
   }
 
-  function copyActiveInvite() {
+  async function copyActiveInvite() {
     if (!state.activeCode) return;
     const invite = inviteUrl(state.activeCode);
     state.lastInvite = invite;
     localStorage.setItem("retroplay-arena-last-invite", invite);
     el.copyLast.disabled = false;
-    copyText(invite);
+    const roomName = state.activeRoom?.game_name || "um jogo";
+    const shareData = {
+      title: "Convite RetroPlay Arena",
+      text: `🎮 Bora jogar ${roomName} no RetroPlay? Abra o convite, entre na sua conta e toque em PRONTO.`,
+      url: invite
+    };
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        setFeedback("Convite compartilhado!", "ok");
+        return;
+      } catch (error) {
+        if (error?.name === "AbortError") return;
+      }
+    }
+    await copyText(`${shareData.text}\n\n${invite}`, "Convite copiado!");
   }
 
   function maybeOpenPlayer() {
@@ -510,8 +575,9 @@
 
   async function initialize() {
     bind();
-    const inviteCode = new URLSearchParams(location.search).get("codigo");
-    if (inviteCode) el.code.value = inviteCode.toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 6);
+    const inviteCode = state.inviteCode;
+    if (inviteCode) el.code.value = inviteCode;
+    configureInviteEntry();
     await loadCatalog();
     setupRealtime();
 
@@ -519,12 +585,13 @@
       window.RetroPlayAuth.onChange(user => {
         state.user = user;
         fillNames();
-        loadArena().catch(handleError);
+        loadArena().then(acceptInviteAutomatically).catch(handleError);
       });
     } else {
       const { data } = await client.auth.getSession();
       state.user = data?.session?.user || null;
       await loadArena();
+      await acceptInviteAutomatically();
     }
   }
 
