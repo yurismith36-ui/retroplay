@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#000000">
   <title>RetroPlay — Naya Engine</title>
   <link rel="icon" href="assets/icone-controle.svg">
-  <link rel="stylesheet" href="css/arena-player.css?v=naya-0-4-1">
+  <link rel="stylesheet" href="css/arena-player.css?v=naya-0-4-2">
 </head>
 <body class="arena-player-page">
   <header class="arena-player-toolbar">
@@ -34,6 +34,31 @@
       <button id="naya-retry" class="naya-secondary-action" type="button" hidden>TENTAR NOVAMENTE</button>
     </div>
 
+    <section id="naya-remote-controls" class="naya-remote-controls" hidden aria-label="Controle remoto do Jogador 2">
+      <div class="naya-dpad" aria-label="Direcional">
+        <button class="naya-control-button naya-up" type="button" data-naya-button="4" aria-label="Cima">▲</button>
+        <button class="naya-control-button naya-left" type="button" data-naya-button="6" aria-label="Esquerda">◀</button>
+        <span class="naya-dpad-center" aria-hidden="true"></span>
+        <button class="naya-control-button naya-right" type="button" data-naya-button="7" aria-label="Direita">▶</button>
+        <button class="naya-control-button naya-down" type="button" data-naya-button="5" aria-label="Baixo">▼</button>
+      </div>
+
+      <div class="naya-system-buttons">
+        <button class="naya-control-button naya-small-button" type="button" data-naya-button="2">SELECT</button>
+        <button class="naya-control-button naya-small-button" type="button" data-naya-button="3">START</button>
+        <span id="naya-controls-state" class="naya-controls-state">Conectando Controle 2...</span>
+      </div>
+
+      <div class="naya-action-pad" aria-label="Botões do controle">
+        <button class="naya-control-button naya-shoulder naya-l" type="button" data-naya-button="10">L</button>
+        <button class="naya-control-button naya-face naya-y" type="button" data-naya-button="1">Y</button>
+        <button class="naya-control-button naya-face naya-x" type="button" data-naya-button="9">X</button>
+        <button class="naya-control-button naya-face naya-b" type="button" data-naya-button="0">B</button>
+        <button class="naya-control-button naya-face naya-a" type="button" data-naya-button="8">A</button>
+        <button class="naya-control-button naya-shoulder naya-r" type="button" data-naya-button="11">R</button>
+      </div>
+    </section>
+
     <div class="naya-watermark">
       <strong>RETROPLAY</strong>
       <span>Powered by Naya Engine</span>
@@ -43,9 +68,9 @@
   <div id="naya-status" class="naya-status" aria-live="polite">Conectando...</div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js?v=naya-0-4-1"></script>
-  <script src="js/auth.js?v=naya-0-4-1"></script>
-  <script src="js/arena-config.js?v=naya-0-4-1"></script>
-  <script src="js/arena-player.js?v=naya-0-4-1"></script>
+  <script src="js/supabase.js?v=naya-0-4-2"></script>
+  <script src="js/auth.js?v=naya-0-4-2"></script>
+  <script src="js/arena-config.js?v=naya-0-4-2"></script>
+  <script src="js/arena-player.js?v=naya-0-4-2"></script>
 </body>
 </html>

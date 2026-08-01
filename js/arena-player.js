@@ -1,4 +1,4 @@
-// Naya Engine 0.4.1 — encerra e exclui a sala quando qualquer jogador sai.
+// Naya Engine 0.4.2 — transmissão automática + Controle 2 remoto.
 (() => {
   "use strict";
 
@@ -23,7 +23,10 @@
     status: document.querySelector("#naya-status"),
     game: document.querySelector("#game"),
     transmitButton: document.querySelector("#naya-start-transmission"),
-    retryButton: document.querySelector("#naya-retry")
+    retryButton: document.querySelector("#naya-retry"),
+    remoteControls: document.querySelector("#naya-remote-controls"),
+    controlsState: document.querySelector("#naya-controls-state"),
+    controlButtons: [...document.querySelectorAll("[data-naya-button]")]
   };
 
   let user = null;
@@ -39,9 +42,17 @@
   let offerInProgress = false;
   let emulatorStarted = false;
   let remoteDescriptionReady = false;
+  let controlChannel = null;
+  let controlHeartbeatTimer = null;
+  let transmissionInProgress = false;
+  let remoteVideoReceived = false;
   let exitInProgress = false;
   let roomClosedRedirecting = false;
   const queuedCandidates = [];
+  const guestPressedButtons = new Set();
+  const hostRemoteButtons = new Set();
+  const REMOTE_PLAYER_INDEX = 1;
+  const REMOTE_BUTTON_COUNT = 12;
 
   function setMessage(title, message, type = "") {
     if (el.loadingTitle) el.loadingTitle.textContent = title;
@@ -67,6 +78,191 @@
     if (!el.retryButton) return;
     el.retryButton.hidden = !show;
     el.retryButton.textContent = text;
+  }
+
+
+  function setControlsState(message, enabled = false) {
+    if (el.controlsState) el.controlsState.textContent = message;
+    el.controlButtons.forEach(button => {
+      button.disabled = !enabled;
+    });
+    el.remoteControls?.classList.toggle("is-ready", enabled);
+  }
+
+  function showRemoteControls(show) {
+    if (!el.remoteControls) return;
+    el.remoteControls.hidden = !show;
+  }
+
+  function focusEmulatorCanvas() {
+    const canvas = findEmulatorCanvas();
+    if (!canvas) return null;
+    if (!canvas.hasAttribute("tabindex")) canvas.tabIndex = -1;
+    try { canvas.focus({ preventScroll: true }); } catch (_error) { try { canvas.focus(); } catch (_ignored) {} }
+    return canvas;
+  }
+
+  function applyRemoteButton(button, pressed) {
+    const manager = window.EJS_emulator?.gameManager;
+    if (!manager || typeof manager.simulateInput !== "function") {
+      throw new Error("O Controle 2 ainda não está disponível no emulador do host.");
+    }
+    focusEmulatorCanvas();
+    manager.simulateInput(REMOTE_PLAYER_INDEX, Number(button), pressed ? 1 : 0);
+  }
+
+  function releaseHostRemoteButtons() {
+    if (!isHost || !hostRemoteButtons.size) return;
+    for (const button of [...hostRemoteButtons]) {
+      try { applyRemoteButton(button, false); } catch (_error) {}
+    }
+    hostRemoteButtons.clear();
+  }
+
+  function applyRemoteControlState(buttons) {
+    if (!isHost || !emulatorStarted) return;
+    const next = new Set(
+      Array.isArray(buttons)
+        ? buttons.map(Number).filter(button => Number.isInteger(button) && button >= 0 && button < REMOTE_BUTTON_COUNT)
+        : []
+    );
+
+    for (let button = 0; button < REMOTE_BUTTON_COUNT; button += 1) {
+      const wasPressed = hostRemoteButtons.has(button);
+      const isPressed = next.has(button);
+      if (wasPressed === isPressed) continue;
+      applyRemoteButton(button, isPressed);
+    }
+
+    hostRemoteButtons.clear();
+    next.forEach(button => hostRemoteButtons.add(button));
+  }
+
+  function sendControlState() {
+    if (isHost || !controlChannel || controlChannel.readyState !== "open") return;
+    try {
+      controlChannel.send(JSON.stringify({
+        type: "controls",
+        buttons: [...guestPressedButtons],
+        at: performance.now()
+      }));
+    } catch (_error) {}
+  }
+
+  function releaseGuestControls() {
+    if (isHost) return;
+    guestPressedButtons.clear();
+    el.controlButtons.forEach(button => button.classList.remove("is-pressed"));
+    sendControlState();
+  }
+
+  function updateGuestControlAvailability() {
+    if (isHost) return;
+    showRemoteControls(true);
+    const channelReady = controlChannel?.readyState === "open";
+    if (channelReady && remoteVideoReceived) {
+      setControlsState("CONTROLE 2 CONECTADO", true);
+    } else if (channelReady) {
+      setControlsState("Controle 2 conectado — aguardando imagem...", true);
+    } else {
+      setControlsState("Conectando Controle 2...", false);
+    }
+  }
+
+  function bindControlChannel(nextChannel) {
+    if (!nextChannel) return;
+    controlChannel = nextChannel;
+    controlChannel.binaryType = "arraybuffer";
+
+    controlChannel.addEventListener("open", () => {
+      if (!isHost) {
+        updateGuestControlAvailability();
+        sendControlState();
+        clearInterval(controlHeartbeatTimer);
+        controlHeartbeatTimer = setInterval(sendControlState, 150);
+      }
+    });
+
+    controlChannel.addEventListener("message", event => {
+      if (!isHost) return;
+      try {
+        const message = JSON.parse(String(event.data || "{}"));
+        if (message.type === "controls") applyRemoteControlState(message.buttons);
+      } catch (error) {
+        console.warn("Naya Controle 2:", error);
+      }
+    });
+
+    const handleClosed = () => {
+      if (isHost) releaseHostRemoteButtons();
+      else {
+        clearInterval(controlHeartbeatTimer);
+        controlHeartbeatTimer = null;
+        releaseGuestControls();
+        updateGuestControlAvailability();
+      }
+    };
+    controlChannel.addEventListener("close", handleClosed);
+    controlChannel.addEventListener("error", handleClosed);
+  }
+
+  function bindGuestControls() {
+    if (isHost) return;
+
+    const setButton = (buttonElement, pressed) => {
+      const button = Number(buttonElement.dataset.nayaButton);
+      if (!Number.isInteger(button) || buttonElement.disabled) return;
+      if (pressed) {
+        guestPressedButtons.add(button);
+        buttonElement.classList.add("is-pressed");
+      } else {
+        guestPressedButtons.delete(button);
+        buttonElement.classList.remove("is-pressed");
+      }
+      sendControlState();
+    };
+
+    el.controlButtons.forEach(button => {
+      button.addEventListener("contextmenu", event => event.preventDefault());
+      button.addEventListener("pointerdown", event => {
+        event.preventDefault();
+        try { button.setPointerCapture(event.pointerId); } catch (_error) {}
+        setButton(button, true);
+      });
+      ["pointerup", "pointercancel", "lostpointercapture"].forEach(type => {
+        button.addEventListener(type, event => {
+          event.preventDefault();
+          setButton(button, false);
+        });
+      });
+    });
+
+    const keyboardMap = new Map([
+      ["ArrowUp", 4], ["ArrowDown", 5], ["ArrowLeft", 6], ["ArrowRight", 7],
+      ["z", 0], ["a", 1], ["Shift", 2], ["Enter", 3],
+      ["x", 8], ["s", 9], ["q", 10], ["w", 11]
+    ]);
+
+    const keyboardButton = event => keyboardMap.get(event.key) ?? keyboardMap.get(String(event.key || "").toLowerCase());
+    window.addEventListener("keydown", event => {
+      const button = keyboardButton(event);
+      if (button === undefined || event.repeat || controlChannel?.readyState !== "open") return;
+      event.preventDefault();
+      guestPressedButtons.add(button);
+      sendControlState();
+    });
+    window.addEventListener("keyup", event => {
+      const button = keyboardButton(event);
+      if (button === undefined) return;
+      event.preventDefault();
+      guestPressedButtons.delete(button);
+      sendControlState();
+    });
+
+    window.addEventListener("blur", releaseGuestControls);
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) releaseGuestControls();
+    });
   }
 
   function numericGameId(text) {
@@ -114,6 +310,9 @@
   }
 
   function closePeer() {
+    try { controlChannel?.close(); } catch (_error) {}
+    controlChannel = null;
+    releaseHostRemoteButtons();
     try { peer?.close(); } catch (_error) {}
     peer = null;
     offerInProgress = false;
@@ -135,6 +334,14 @@
         sendSignal("ice", event.candidate.toJSON()).catch(console.error);
       }
     });
+
+    if (isHost) {
+      bindControlChannel(peer.createDataChannel("naya-controls", { ordered: false, maxRetransmits: 0 }));
+    } else {
+      peer.addEventListener("datachannel", event => {
+        if (event.channel?.label === "naya-controls") bindControlChannel(event.channel);
+      });
+    }
 
     peer.addEventListener("connectionstatechange", () => {
       const state = peer?.connectionState || "closed";
@@ -161,7 +368,9 @@
         el.remoteVideo.play().catch(() => {
           setMessage("Toque na tela", "O navegador bloqueou a reprodução automática.", "");
         });
-        setMessage("Imagem recebida", "Você está vendo o mesmo jogo do host.", "ok");
+        remoteVideoReceived = true;
+        updateGuestControlAvailability();
+        setMessage("Imagem recebida", "Você está vendo e controlando o Jogador 2 no mesmo jogo.", "ok");
       });
     }
 
@@ -198,8 +407,8 @@
       if (data.payload?.retry) closePeer();
       if (localStream) await createOffer();
       else if (emulatorStarted) {
-        showTransmitButton(true);
-        setMessage("Rival conectado", "Toque em INICIAR TRANSMISSÃO.", "ok");
+        setMessage("Rival conectado", "Ativando a transmissão automaticamente...", "ok");
+        await beginTransmission();
       } else {
         setMessage("Rival conectado", "Inicie o jogo no botão azul do EmulatorJS.", "ok");
       }
@@ -288,12 +497,23 @@
     return canvases[0] || null;
   }
 
+
+  async function waitForEmulatorCanvas(timeoutMs = 5000) {
+    const startedAt = performance.now();
+    while (performance.now() - startedAt < timeoutMs) {
+      const canvas = findEmulatorCanvas();
+      if (canvas) return canvas;
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    return null;
+  }
+
   async function captureGameVideo() {
     if (!emulatorStarted) {
       throw new Error("Primeiro aperte Play no emulador e espere o jogo aparecer.");
     }
 
-    const canvas = findEmulatorCanvas();
+    const canvas = await waitForEmulatorCanvas();
     if (!canvas) {
       throw new Error("A tela do jogo ainda não apareceu. Aguarde um instante e tente novamente.");
     }
@@ -331,7 +551,8 @@
   }
 
   async function beginTransmission() {
-    if (!isHost) return;
+    if (!isHost || transmissionInProgress) return;
+    transmissionInProgress = true;
     showTransmitButton(false);
     showRetry(false);
     setMessage("Preparando transmissão", "Capturando a tela do jogo...", "");
@@ -349,6 +570,8 @@
       setMessage("Falha na captura", error.message, "error");
       showTransmitButton(true, "TENTAR TRANSMITIR NOVAMENTE");
       throw error;
+    } finally {
+      transmissionInProgress = false;
     }
   }
 
@@ -381,9 +604,14 @@
     window.EJS_onGameStart = () => {
       emulatorStarted = true;
       showLoading(false);
-      showTransmitButton(true);
-      setMessage("Jogo iniciado", "Agora toque em INICIAR TRANSMISSÃO.", "ok");
+      showTransmitButton(false);
+      setMessage("Jogo iniciado", "Naya ativando a transmissão automaticamente...", "ok");
       refreshEmulatorSize();
+      setTimeout(() => {
+        beginTransmission().catch(error => {
+          console.error("Transmissão automática:", error);
+        });
+      }, 150);
     };
 
     loaderScript = document.createElement("script");
@@ -426,6 +654,10 @@
     clearInterval(heartbeatTimer);
     clearInterval(guestAnnounceTimer);
     clearTimeout(gameReadyTimer);
+    clearInterval(controlHeartbeatTimer);
+    controlHeartbeatTimer = null;
+    releaseGuestControls();
+    releaseHostRemoteButtons();
     localStream?.getTracks().forEach(track => track.stop());
     closePeer();
     try { channel?.unsubscribe(); } catch (_error) {}
@@ -485,11 +717,18 @@
   async function start() {
     if (!gameId || !roomCode) throw new Error("O convite da partida está incompleto.");
 
-    el.role.textContent = isHost ? "HOST · CONTROLE 1" : "CONVIDADO · TELA REMOTA";
+    document.body.classList.toggle("is-host", isHost);
+    document.body.classList.toggle("is-guest", !isHost);
+    el.role.textContent = isHost ? "HOST · CONTROLE 1" : "CONVIDADO · CONTROLE 2";
     el.game.hidden = !isHost;
     el.remoteVideo.hidden = isHost;
     showTransmitButton(false);
     showRetry(false);
+    showRemoteControls(!isHost);
+    if (!isHost) {
+      setControlsState("Conectando Controle 2...", false);
+      bindGuestControls();
+    }
 
     await requireUser();
     await heartbeatRoom();
