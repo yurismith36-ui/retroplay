@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#000000">
   <title>RetroPlay — Naya Engine</title>
   <link rel="icon" href="assets/icone-controle.svg">
-  <link rel="stylesheet" href="css/arena-player.css?v=naya-0-1-0">
+  <link rel="stylesheet" href="css/arena-player.css?v=naya-0-2-0">
 </head>
 <body class="arena-player-page">
   <header class="arena-player-toolbar">
@@ -29,6 +29,11 @@
     <div id="game" class="naya-host-game"></div>
     <video id="naya-remote-video" class="naya-remote-video" autoplay playsinline></video>
 
+    <div class="naya-actions" aria-live="polite">
+      <button id="naya-start-transmission" class="naya-primary-action" type="button" hidden>INICIAR TRANSMISSÃO</button>
+      <button id="naya-retry" class="naya-secondary-action" type="button" hidden>TENTAR NOVAMENTE</button>
+    </div>
+
     <div class="naya-watermark">
       <strong>RETROPLAY</strong>
       <span>Powered by Naya Engine</span>
@@ -38,9 +43,9 @@
   <div id="naya-status" class="naya-status" aria-live="polite">Conectando...</div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js?v=naya-0-1-0"></script>
-  <script src="js/auth.js?v=naya-0-1-0"></script>
-  <script src="js/arena-config.js?v=naya-0-1-0"></script>
-  <script src="js/arena-player.js?v=naya-0-1-0"></script>
+  <script src="js/supabase.js?v=naya-0-2-0"></script>
+  <script src="js/auth.js?v=naya-0-2-0"></script>
+  <script src="js/arena-config.js?v=naya-0-2-0"></script>
+  <script src="js/arena-player.js?v=naya-0-2-0"></script>
 </body>
 </html>

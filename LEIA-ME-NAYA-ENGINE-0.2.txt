@@ -1,0 +1,19 @@
+RETROPLAY — NAYA ENGINE 0.2
+
+CORREÇÃO PRINCIPAL
+- A Naya não tenta mais capturar a tela antes do jogo existir.
+- O host aperta Play no EmulatorJS e depois toca em INICIAR TRANSMISSÃO.
+- A procura pelo canvas agora verifica a página, Shadow DOM e iframes acessíveis.
+- Se a captura falhar, o host pode tentar novamente sem fechar a sala.
+- Se o rival entrar antes da transmissão, a Naya guarda esse estado e conecta assim que o vídeo estiver pronto.
+
+TESTE
+1. Host cria a sala e envia o convite.
+2. Convidado entra e fica aguardando.
+3. Host inicia a partida.
+4. Host aperta Play dentro do emulador.
+5. Quando aparecer o botão, toca em INICIAR TRANSMISSÃO.
+6. O convidado deve receber a mesma tela.
+
+IMPORTANTE
+Esta versão testa somente o vídeo remoto. O Controle 2 ainda não foi ativado.

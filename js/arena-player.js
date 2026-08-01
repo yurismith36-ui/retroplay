@@ -1,4 +1,4 @@
-// Naya Engine 0.1 — protótipo real de Remote Play (vídeo do host para o convidado).
+// Naya Engine 0.2 — Remote Play: um emulador no host e vídeo no convidado.
 (() => {
   "use strict";
 
@@ -21,23 +21,47 @@
     role: document.querySelector("#naya-role"),
     remoteVideo: document.querySelector("#naya-remote-video"),
     status: document.querySelector("#naya-status"),
-    game: document.querySelector("#game")
+    game: document.querySelector("#game"),
+    transmitButton: document.querySelector("#naya-start-transmission"),
+    retryButton: document.querySelector("#naya-retry")
   };
 
   let loader = null;
   let heartbeat = null;
+  let canvasObserver = null;
+  let canvasPoll = null;
   let user = null;
   let channel = null;
   let peer = null;
   let localStream = null;
+  let capturedCanvas = null;
   let offerStarted = false;
+  let guestWaiting = false;
+  let captureInProgress = false;
   const pendingCandidates = [];
 
   function setMessage(title, message, type = "") {
-    el.loadingTitle.textContent = title;
-    el.loadingMessage.textContent = message;
-    el.serverDot.className = `arena-online-dot${type === "error" ? " error" : type === "ok" ? " ok" : ""}`;
-    el.status.textContent = `${title} — ${message}`;
+    if (el.loadingTitle) el.loadingTitle.textContent = title;
+    if (el.loadingMessage) el.loadingMessage.textContent = message;
+    if (el.serverDot) {
+      el.serverDot.className = `arena-online-dot${type === "error" ? " error" : type === "ok" ? " ok" : ""}`;
+    }
+    if (el.status) el.status.textContent = `${title} — ${message}`;
+  }
+
+  function showLoading(show) {
+    el.loading?.classList.toggle("hidden", !show);
+  }
+
+  function showTransmitButton(show, text = "INICIAR TRANSMISSÃO") {
+    if (!el.transmitButton) return;
+    el.transmitButton.textContent = text;
+    el.transmitButton.hidden = !show;
+    el.transmitButton.disabled = false;
+  }
+
+  function showRetry(show) {
+    if (el.retryButton) el.retryButton.hidden = !show;
   }
 
   async function getUser() {
@@ -52,34 +76,52 @@
     try { await client.rpc("arena_heartbeat", { p_code: roomCode }); } catch (_error) {}
   }
 
+  function resetPeer() {
+    try { peer?.close(); } catch (_error) {}
+    peer = null;
+    offerStarted = false;
+    pendingCandidates.length = 0;
+  }
+
   function makePeer() {
-    if (peer) return peer;
-    peer = new RTCPeerConnection({ iceServers: config.iceServers || [] });
+    if (peer && peer.connectionState !== "closed") return peer;
+
+    peer = new RTCPeerConnection({
+      iceServers: config.iceServers?.length
+        ? config.iceServers
+        : [{ urls: "stun:stun.l.google.com:19302" }]
+    });
 
     peer.onicecandidate = event => {
-      if (!event.candidate) return;
-      sendSignal("ice", event.candidate.toJSON());
+      if (event.candidate) sendSignal("ice", event.candidate.toJSON()).catch(console.error);
     };
 
     peer.onconnectionstatechange = () => {
-      const state = peer.connectionState;
+      const state = peer?.connectionState || "closed";
       if (state === "connected") {
         setMessage("Naya conectada", "Os dois jogadores estão vendo o mesmo emulador.", "ok");
-        el.loading.classList.add("hidden");
-      } else if (["failed", "disconnected"].includes(state)) {
-        setMessage("Conexão instável", "Naya está tentando manter a sessão.", "error");
+        showLoading(false);
+        showRetry(false);
+      } else if (state === "failed") {
+        setMessage("A conexão falhou", "Toque em tentar novamente.", "error");
+        showRetry(true);
+        offerStarted = false;
+      } else if (state === "disconnected") {
+        setMessage("Conexão oscilando", "A Naya está tentando reconectar.", "error");
       }
     };
 
     if (!isHost) {
       peer.ontrack = event => {
-        const [stream] = event.streams;
-        if (!stream) return;
+        const stream = event.streams?.[0] || new MediaStream([event.track]);
         el.remoteVideo.srcObject = stream;
         el.remoteVideo.hidden = false;
         el.game.hidden = true;
-        el.remoteVideo.play().catch(() => {});
-        setMessage("Imagem recebida", "Você está assistindo ao emulador do host em tempo real.", "ok");
+        showLoading(false);
+        el.remoteVideo.play().catch(() => {
+          setMessage("Toque para assistir", "O navegador bloqueou a reprodução automática.", "");
+        });
+        setMessage("Imagem recebida", "Você está vendo o mesmo emulador do host.", "ok");
       };
     }
 
@@ -106,8 +148,7 @@
 
   async function flushCandidates() {
     while (pendingCandidates.length) {
-      const candidate = pendingCandidates.shift();
-      await peer.addIceCandidate(candidate);
+      await peer.addIceCandidate(pendingCandidates.shift());
     }
   }
 
@@ -116,17 +157,21 @@
     if (!data || data.sender === user?.id || data.room !== roomCode) return;
 
     if (data.type === "guest-ready" && isHost) {
-      await createOffer();
+      guestWaiting = true;
+      if (localStream) await createOffer();
+      else setMessage("Rival conectado", "Abra o jogo e toque em INICIAR TRANSMISSÃO.", "ok");
       return;
     }
 
     if (data.type === "offer" && !isHost) {
+      resetPeer();
       makePeer();
       await peer.setRemoteDescription(data.payload);
       await flushCandidates();
       const answer = await peer.createAnswer();
       await peer.setLocalDescription(answer);
       await sendSignal("answer", peer.localDescription);
+      setMessage("Conectando ao host", "Negociando a transmissão de vídeo...", "");
       return;
     }
 
@@ -148,7 +193,10 @@
     });
 
     channel.on("broadcast", { event: "naya-signal" }, payload => {
-      onSignal(payload).catch(error => console.error("Naya signal:", error));
+      onSignal(payload).catch(error => {
+        console.error("Naya signal:", error);
+        setMessage("Erro de conexão", error.message || "Falha na sinalização.", "error");
+      });
     });
 
     await new Promise((resolve, reject) => {
@@ -158,52 +206,145 @@
       });
     });
 
-    await channel.track({ user_id: user.id, role: isHost ? "host" : "guest", slot, online_at: new Date().toISOString() });
+    await channel.track({
+      user_id: user.id,
+      role: isHost ? "host" : "guest",
+      slot,
+      online_at: new Date().toISOString()
+    });
 
     if (!isHost) {
-      setMessage("Sala encontrada", "Aguardando a imagem do host...", "");
-      await sendSignal("guest-ready", { slot });
-      setTimeout(() => sendSignal("guest-ready", { slot }).catch(() => {}), 1500);
+      setMessage("Sala encontrada", "Aguardando o host iniciar a transmissão...", "");
+      const announce = () => sendSignal("guest-ready", { slot }).catch(() => {});
+      await announce();
+      setTimeout(announce, 1200);
       setInterval(() => {
-        if (!peer || ["new", "connecting", "disconnected"].includes(peer.connectionState)) {
-          sendSignal("guest-ready", { slot }).catch(() => {});
-        }
-      }, 5000);
+        if (!peer || ["new", "connecting", "disconnected", "failed"].includes(peer.connectionState)) announce();
+      }, 4000);
     }
   }
 
-  async function waitForCanvas(timeoutMs = 30000) {
-    const start = Date.now();
-    while (Date.now() - start < timeoutMs) {
-      const canvases = [...document.querySelectorAll("#game canvas")];
-      const canvas = canvases.find(item => item.width > 160 && item.height > 100) || canvases[0];
-      if (canvas?.captureStream) return canvas;
-      await new Promise(resolve => setTimeout(resolve, 250));
-    }
-    throw new Error("A tela do emulador não ficou disponível para transmissão.");
+  function collectCanvases(root, output = [], visited = new Set()) {
+    if (!root || visited.has(root)) return output;
+    visited.add(root);
+
+    try {
+      if (root instanceof HTMLCanvasElement) output.push(root);
+      root.querySelectorAll?.("canvas").forEach(canvas => output.push(canvas));
+
+      root.querySelectorAll?.("*").forEach(node => {
+        if (node.shadowRoot) collectCanvases(node.shadowRoot, output, visited);
+      });
+
+      root.querySelectorAll?.("iframe").forEach(frame => {
+        try {
+          if (frame.contentDocument) collectCanvases(frame.contentDocument, output, visited);
+        } catch (_error) {
+          // Um iframe de outro domínio não pode ser lido pelo navegador.
+        }
+      });
+    } catch (_error) {}
+
+    return [...new Set(output)];
+  }
+
+  function findEmulatorCanvas() {
+    const roots = [el.game, document];
+    const canvases = roots.flatMap(root => collectCanvases(root));
+    const usable = canvases.filter(canvas => typeof canvas.captureStream === "function");
+    usable.sort((a, b) => ((b.width || b.clientWidth) * (b.height || b.clientHeight)) - ((a.width || a.clientWidth) * (a.height || a.clientHeight)));
+    return usable.find(canvas => (canvas.width || canvas.clientWidth) > 0 && (canvas.height || canvas.clientHeight) > 0) || usable[0] || null;
+  }
+
+  function watchForCanvas() {
+    const check = () => {
+      const canvas = findEmulatorCanvas();
+      if (!canvas) return false;
+      capturedCanvas = canvas;
+      showTransmitButton(true);
+      setMessage("Emulador encontrado", "Aperte Play no jogo e depois INICIAR TRANSMISSÃO.", "ok");
+      return true;
+    };
+
+    if (check()) return;
+
+    canvasObserver?.disconnect();
+    canvasObserver = new MutationObserver(check);
+    canvasObserver.observe(document.body, { childList: true, subtree: true });
+    clearInterval(canvasPoll);
+    canvasPoll = setInterval(check, 750);
+  }
+
+  async function captureCanvasStream() {
+    capturedCanvas = findEmulatorCanvas() || capturedCanvas;
+    if (!capturedCanvas) throw new Error("A tela do emulador ainda não apareceu. Aperte Play e tente novamente.");
+
+    localStream?.getTracks().forEach(track => track.stop());
+    localStream = capturedCanvas.captureStream(30);
+    const videoTrack = localStream.getVideoTracks()[0];
+    if (!videoTrack) throw new Error("O navegador não conseguiu capturar o vídeo do jogo.");
+
+    try {
+      videoTrack.contentHint = "motion";
+      await videoTrack.applyConstraints({ frameRate: { ideal: 30, max: 45 } });
+    } catch (_error) {}
+
+    return localStream;
   }
 
   async function prepareHostStream() {
-    const canvas = await waitForCanvas();
-    localStream = canvas.captureStream(60);
-    if (!localStream.getVideoTracks().length) throw new Error("Não foi possível capturar o vídeo do jogo.");
-    setMessage("Emulador pronto", "Aguardando o rival entrar na transmissão.", "ok");
-    if (channel) await sendSignal("host-ready", { video: true });
+    if (!isHost || captureInProgress) return;
+    captureInProgress = true;
+    showRetry(false);
+    if (el.transmitButton) {
+      el.transmitButton.disabled = true;
+      el.transmitButton.textContent = "PREPARANDO...";
+    }
+
+    try {
+      await captureCanvasStream();
+      showTransmitButton(false);
+      setMessage("Transmissão pronta", guestWaiting ? "Conectando o rival agora..." : "Aguardando o rival entrar.", "ok");
+      await sendSignal("host-ready", { video: true });
+      if (guestWaiting) await createOffer();
+    } catch (error) {
+      showTransmitButton(true, "TENTAR TRANSMITIR NOVAMENTE");
+      setMessage("Falha na captura", error.message, "error");
+      throw error;
+    } finally {
+      captureInProgress = false;
+    }
   }
 
   async function createOffer() {
     if (!isHost || !localStream || offerStarted) return;
     offerStarted = true;
+
     try {
+      resetPeer();
+      offerStarted = true;
       makePeer();
       localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
-      const offer = await peer.createOffer({ offerToReceiveAudio: false, offerToReceiveVideo: false });
+      const offer = await peer.createOffer();
       await peer.setLocalDescription(offer);
       await sendSignal("offer", peer.localDescription);
-      setMessage("Conectando rival", "Enviando a imagem do mesmo emulador.", "");
+      setMessage("Conectando rival", "Enviando a tela do mesmo emulador.", "");
     } catch (error) {
       offerStarted = false;
       throw error;
+    }
+  }
+
+  async function retryConnection() {
+    showRetry(false);
+    resetPeer();
+    if (isHost) {
+      guestWaiting = true;
+      if (!localStream) await prepareHostStream();
+      else await createOffer();
+    } else {
+      setMessage("Tentando novamente", "Procurando o emulador do host...", "");
+      await sendSignal("guest-ready", { slot, retry: true });
     }
   }
 
@@ -214,41 +355,55 @@
     window.EJS_gameName = game.nome;
     window.EJS_startOnLoaded = false;
     window.EJS_disableAutoUnload = false;
-    window.EJS_pathtodata = `https://cdn.emulatorjs.org/${config.emulatorVersion || "4.3.0-pre"}/data/`;
+    window.EJS_pathtodata = `https://cdn.emulatorjs.org/${config.emulatorVersion || "stable"}/data/`;
+
     window.EJS_ready = () => {
-      setMessage("Emulador carregado", "Aperte Play. A Naya transmitirá esta mesma tela ao rival.", "ok");
-      prepareHostStream().catch(error => setMessage("Falha na captura", error.message, "error"));
+      showLoading(false);
+      setMessage("Emulador carregado", "Aperte Play. A Naya detectará a tela automaticamente.", "ok");
+      watchForCanvas();
       window.dispatchEvent(new Event("resize"));
     };
+
     window.EJS_onGameStart = () => {
-      prepareHostStream().catch(error => setMessage("Falha na captura", error.message, "error"));
+      watchForCanvas();
+      setTimeout(() => {
+        if (findEmulatorCanvas()) {
+          showTransmitButton(true);
+          setMessage("Jogo iniciado", "Toque em INICIAR TRANSMISSÃO.", "ok");
+        }
+      }, 500);
     };
 
     loader = document.createElement("script");
-    loader.src = `https://cdn.emulatorjs.org/${config.emulatorVersion || "4.3.0-pre"}/data/loader.js`;
+    loader.src = `https://cdn.emulatorjs.org/${config.emulatorVersion || "stable"}/data/loader.js`;
     loader.async = true;
+    loader.onload = watchForCanvas;
     loader.onerror = () => setMessage("Falha ao carregar", "O emulador não pôde ser baixado.", "error");
     document.body.appendChild(loader);
   }
 
   function cleanup() {
     clearInterval(heartbeat);
+    clearInterval(canvasPoll);
+    canvasObserver?.disconnect();
     localStream?.getTracks().forEach(track => track.stop());
-    peer?.close();
+    resetPeer();
     channel?.unsubscribe();
     loader?.remove();
   }
 
-  async function exitRoom() {
+  function exitRoom() {
     cleanup();
     location.replace(`salas.html?codigo=${encodeURIComponent(roomCode)}`);
   }
 
   async function start() {
     if (!gameId || !roomCode) throw new Error("Convite incompleto.");
-    el.role.textContent = isHost ? "HOST · CONTROLE 1" : "CONVIDADO · CONTROLE 2";
+    el.role.textContent = isHost ? "HOST · CONTROLE 1" : "CONVIDADO · TELA REMOTA";
     el.game.hidden = !isHost;
     el.remoteVideo.hidden = isHost;
+    showTransmitButton(false);
+    showRetry(false);
 
     await getUser();
     heartbeatRoom();
@@ -262,7 +417,7 @@
 
     document.title = `${game.nome} — Naya Engine`;
     el.title.textContent = game.nome;
-    el.meta.textContent = `Sala ${roomCode} · ${isHost ? "um emulador principal" : "acesso remoto ao host"}`;
+    el.meta.textContent = `Sala ${roomCode} · ${isHost ? "emulador principal" : "mesma tela do host"}`;
 
     await connectSignaling();
 
@@ -274,12 +429,16 @@
     }
   }
 
-  el.exit.addEventListener("click", exitRoom);
+  el.exit?.addEventListener("click", exitRoom);
+  el.transmitButton?.addEventListener("click", () => prepareHostStream().catch(console.error));
+  el.retryButton?.addEventListener("click", () => retryConnection().catch(error => setMessage("Falha ao reconectar", error.message, "error")));
+  el.remoteVideo?.addEventListener("click", () => el.remoteVideo.play().catch(() => {}));
   window.addEventListener("pagehide", cleanup);
   window.addEventListener("beforeunload", cleanup);
 
   start().catch(error => {
     console.error(error);
     setMessage("Não foi possível iniciar", error.message || "Falha desconhecida.", "error");
+    showRetry(true);
   });
 })();
