@@ -1,8 +1,8 @@
-// RetroPlay Arena 2.0 — configuração isolada do netplay beta.
-// O player normal continua usando a versão estável do EmulatorJS.
+// Naya Engine — configuração segura para produção.
+// A Arena usa a mesma versão estável do player normal do RetroPlay.
 window.RETROPLAY_ARENA_CONFIG = Object.freeze({
   emulatorVersion: "stable",
-  netplayServer: "https://netplay.emulatorjs.org/",
+  videoFps: 30,
   iceServers: [
     { urls: "stun:stun.l.google.com:19302" },
     { urls: "stun:stun1.l.google.com:19302" }

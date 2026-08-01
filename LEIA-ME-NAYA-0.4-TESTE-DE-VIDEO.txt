@@ -1,0 +1,24 @@
+RETROPLAY — NAYA ENGINE 0.4
+TESTE SEGURO: UM EMULADOR NO HOST + MESMA IMAGEM NO CONVIDADO
+
+O QUE ESTA VERSAO TESTA
+- O host abre o EmulatorJS stable, usando a mesma configuracao do player normal.
+- O convidado nao abre outra ROM.
+- Depois que o host aperta Play e o jogo aparece, surge INICIAR TRANSMISSAO.
+- O video do canvas do host e enviado ao convidado por WebRTC.
+
+AINDA NAO INCLUI
+- Som do jogo.
+- Controle 2 remoto.
+- Chat de voz.
+
+COMO TESTAR
+1. Crie uma sala e compartilhe o convite.
+2. O convidado entra e aperta PRONTO.
+3. O host inicia a partida.
+4. No host, aperte o botao azul Play do EmulatorJS.
+5. Espere o jogo aparecer.
+6. Toque em INICIAR TRANSMISSAO.
+7. O convidado deve ver exatamente a tela do host.
+
+Se o jogo nao abrir no host, nao avance para o teste da transmissao.

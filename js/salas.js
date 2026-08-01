@@ -139,10 +139,9 @@
 
   function fillNames() {
     if (!state.user) return;
-    // Migração única: remove o apelido antigo que parecia nome de sala (ex.: “BRIGA DE RUGAL”).
-    if (!localStorage.getItem("retroplay-arena-nickname-reset-20260801")) {
+    // Limpeza única do apelido antigo que foi confundido com uma sala presa.
+    if ((localStorage.getItem("retroplay-arena-nickname-v2") || "").trim().toUpperCase() === "BRIGA DE RUGAL") {
       localStorage.removeItem("retroplay-arena-nickname-v2");
-      localStorage.setItem("retroplay-arena-nickname-reset-20260801", "1");
     }
     const saved = localStorage.getItem("retroplay-arena-nickname-v2") || displayName(state.user);
     if (!el.name.value) el.name.value = saved;
