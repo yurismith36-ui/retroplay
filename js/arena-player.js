@@ -1,4 +1,4 @@
-// Naya Engine 0.4 — um único EmulatorJS no host, transmitido ao convidado.
+// Naya Engine 0.4.1 — encerra e exclui a sala quando qualquer jogador sai.
 (() => {
   "use strict";
 
@@ -39,6 +39,8 @@
   let offerInProgress = false;
   let emulatorStarted = false;
   let remoteDescriptionReady = false;
+  let exitInProgress = false;
+  let roomClosedRedirecting = false;
   const queuedCandidates = [];
 
   function setMessage(title, message, type = "") {
@@ -85,9 +87,12 @@
   }
 
   async function heartbeatRoom() {
-    if (!client || !user || !roomCode) return;
+    if (!client || !user || !roomCode || roomClosedRedirecting) return;
     try {
-      await client.rpc("arena_heartbeat", { p_code: roomCode });
+      const { error } = await client.rpc("arena_heartbeat", { p_code: roomCode });
+      if (error && /ROOM_NOT_FOUND|SALA_NAO_ENCONTRADA/i.test(String(error.message || error))) {
+        await handleRoomClosed("A sala foi encerrada pelo outro jogador.");
+      }
     } catch (_error) {
       // Uma queda curta do Supabase não deve fechar o jogo.
     }
@@ -182,6 +187,11 @@
   async function onSignal(message) {
     const data = message?.payload;
     if (!data || data.sender === user?.id || data.room !== roomCode) return;
+
+    if (data.type === "room-closed") {
+      await handleRoomClosed(data.payload?.message || "A sala foi encerrada pelo outro jogador.");
+      return;
+    }
 
     if (data.type === "guest-ready" && isHost) {
       guestWaiting = true;
@@ -421,9 +431,55 @@
     try { channel?.unsubscribe(); } catch (_error) {}
   }
 
-  function exitRoom() {
+  function clearLocalRoomState() {
+    sessionStorage.removeItem("retroplay-arena-active-code");
+  }
+
+  async function handleRoomClosed(message = "A sala foi encerrada.") {
+    if (roomClosedRedirecting) return;
+    roomClosedRedirecting = true;
+    setMessage("Sala encerrada", message, "error");
+    showLoading(true);
+    clearLocalRoomState();
     cleanup();
-    location.replace(`salas.html?codigo=${encodeURIComponent(roomCode)}`);
+    await new Promise(resolve => setTimeout(resolve, 700));
+    location.replace("salas.html?encerrada=1");
+  }
+
+  async function exitRoom() {
+    if (exitInProgress) return;
+    const confirmed = window.confirm("Sair e encerrar esta sala para todos os jogadores?");
+    if (!confirmed) return;
+
+    exitInProgress = true;
+    if (el.exit) {
+      el.exit.disabled = true;
+      el.exit.textContent = "ENCERRANDO...";
+    }
+    setMessage("Encerrando sala", "A partida será fechada para os dois jogadores...", "");
+
+    try {
+      // Avisa primeiro o outro aparelho para ele sair imediatamente.
+      await sendSignal("room-closed", {
+        message: "O outro jogador saiu. A sala foi encerrada para todos."
+      });
+      await new Promise(resolve => setTimeout(resolve, 250));
+
+      const { error } = await client.rpc("arena_leave_room", { p_code: roomCode });
+      if (error) throw error;
+
+      clearLocalRoomState();
+      cleanup();
+      location.replace("salas.html?encerrada=1");
+    } catch (error) {
+      console.error("Falha ao encerrar sala:", error);
+      exitInProgress = false;
+      if (el.exit) {
+        el.exit.disabled = false;
+        el.exit.textContent = "← SAIR E ENCERRAR";
+      }
+      setMessage("Não foi possível encerrar", error.message || "Tente novamente.", "error");
+    }
   }
 
   async function start() {
@@ -459,7 +515,7 @@
     }
   }
 
-  el.exit?.addEventListener("click", exitRoom);
+  el.exit?.addEventListener("click", () => exitRoom().catch(console.error));
   el.transmitButton?.addEventListener("click", () => beginTransmission().catch(console.error));
   el.retryButton?.addEventListener("click", () => retry().catch(error => {
     setMessage("Falha ao tentar novamente", error.message || "Erro desconhecido.", "error");

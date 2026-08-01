@@ -1,4 +1,4 @@
-// RetroPlay Arena 2.0 — lobby real no Supabase + lançamento do netplay beta.
+// RetroPlay Arena 2.0.1 — qualquer jogador encerra a sala para todos ao sair.
 (() => {
   "use strict";
 
@@ -465,16 +465,28 @@
 
   async function leaveRoom() {
     if (!state.activeCode) return;
-    const message = isHost() ? "Encerrar a sala para todos?" : "Sair desta sala?";
+    const message = "Sair e encerrar esta sala para todos os jogadores?";
     if (!confirm(message)) return;
+
     const code = state.activeCode;
-    state.activeCode = "";
-    sessionStorage.removeItem("retroplay-arena-active-code");
+    el.leave.disabled = true;
+    el.leave.textContent = "ENCERRANDO...";
     stopHeartbeat();
-    const { error } = await client.rpc("arena_leave_room", { p_code: code });
-    if (error) throw error;
-    setFeedback("Você saiu da sala.", "ok");
-    await loadArena();
+
+    try {
+      const { error } = await client.rpc("arena_leave_room", { p_code: code });
+      if (error) throw error;
+
+      state.activeCode = "";
+      state.activeRoom = null;
+      state.activePlayers = [];
+      sessionStorage.removeItem("retroplay-arena-active-code");
+      setFeedback("Sala encerrada para todos os jogadores.", "ok");
+      await loadArena();
+    } finally {
+      el.leave.disabled = false;
+      el.leave.textContent = "SAIR DA SALA";
+    }
   }
 
   async function copyText(text, success = "Convite copiado!") {
@@ -579,6 +591,13 @@
 
   async function initialize() {
     bind();
+    const pageParams = new URLSearchParams(location.search);
+    if (pageParams.get("encerrada") === "1") {
+      setFeedback("Sala encerrada para todos os jogadores.", "ok");
+      pageParams.delete("encerrada");
+      const cleanQuery = pageParams.toString();
+      history.replaceState({}, "", `${location.pathname}${cleanQuery ? `?${cleanQuery}` : ""}`);
+    }
     const inviteCode = state.inviteCode;
     if (inviteCode) el.code.value = inviteCode;
     configureInviteEntry();

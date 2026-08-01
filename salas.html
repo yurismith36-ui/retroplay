@@ -10,7 +10,7 @@
   <title>RetroPlay Arena 3.0 — Convites Diretos</title>
   <link rel="icon" href="assets/icone-controle.svg">
   <link rel="stylesheet" href="css/style.css?v=arena-2-0-2">
-  <link rel="stylesheet" href="css/arena.css?v=arena-3-0-1">
+  <link rel="stylesheet" href="css/arena.css?v=arena-3-0-2">
 </head>
 <body>
   <div class="page-shell">
@@ -117,21 +117,21 @@
             <button id="arena-ready" class="purple-button arena-button" type="button">FICAR PRONTO</button>
             <button id="arena-copy" class="arena-secondary-button" type="button">COMPARTILHAR CONVITE</button>
             <button id="arena-start" class="arena-start-button" type="button" disabled>INICIAR PARTIDA</button>
-            <button id="arena-leave" class="arena-danger-button" type="button">SAIR DA SALA</button>
+            <button id="arena-leave" class="arena-danger-button" type="button">SAIR E ENCERRAR SALA</button>
           </div>
-          <div class="arena-start-help"><strong>Etapa atual:</strong> convite direto e lobby estão automatizados. A conexão dos controles ainda usa o Netplay do EmulatorJS; não considere apenas o lobby como confirmação de que os controles já estão sincronizados.</div>
+          <div class="arena-start-help"><strong>Ao sair:</strong> a sala é encerrada para todos, o código é excluído e nenhum jogador ficará preso procurando o host.</div>
           <div id="arena-feedback" class="arena-feedback" role="status"></div>
         </div>
       </section>
     </main>
 
-    <footer class="site-footer"><span>♥ RetroPlay Arena — lobby em tempo real.</span><span>3.0.1 — Convite direto</span></footer>
+    <footer class="site-footer"><span>♥ RetroPlay Arena — lobby em tempo real.</span><span>3.0.2 — Encerramento automático</span></footer>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js?v=arena-3-0-1"></script>
-  <script src="js/auth.js?v=arena-3-0-1"></script>
-  <script src="js/arena-config.js?v=arena-3-0-1"></script>
-  <script src="js/salas.js?v=arena-3-0-1"></script>
+  <script src="js/supabase.js?v=arena-3-0-2"></script>
+  <script src="js/auth.js?v=arena-3-0-2"></script>
+  <script src="js/arena-config.js?v=arena-3-0-2"></script>
+  <script src="js/salas.js?v=arena-3-0-2"></script>
 </body>
 </html>

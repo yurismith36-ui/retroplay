@@ -1,0 +1,18 @@
+NAYA ENGINE 0.4.1 — ENCERRAR SALA AO SAIR
+
+O QUE MUDA
+- Se o host OU o convidado clicar em SAIR, a sala inteira é excluída.
+- O outro aparelho recebe o aviso e volta automaticamente para Salas Online.
+- O código antigo deixa de existir e não fica mais procurando host.
+- O botão do player agora mostra SAIR E ENCERRAR.
+
+COMO INSTALAR
+1. Envie arena-player.html, js/arena-player.js e js/salas.js ao GitHub, mantendo as pastas.
+2. No Supabase, abra SQL Editor > New query.
+3. Cole todo o conteúdo de NAYA-0.4.1-ENCERRAR-SALA-AO-SAIR.sql e clique em Run.
+4. Espere o GitHub Pages atualizar e use Ctrl + F5.
+
+TESTE
+1. Crie a sala e inicie a partida com dois aparelhos.
+2. Em qualquer aparelho, toque em SAIR E ENCERRAR.
+3. Os dois devem voltar para Salas Online e a sala deve desaparecer.
