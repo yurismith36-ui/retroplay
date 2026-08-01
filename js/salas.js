@@ -139,6 +139,11 @@
 
   function fillNames() {
     if (!state.user) return;
+    // Migração única: remove o apelido antigo que parecia nome de sala (ex.: “BRIGA DE RUGAL”).
+    if (!localStorage.getItem("retroplay-arena-nickname-reset-20260801")) {
+      localStorage.removeItem("retroplay-arena-nickname-v2");
+      localStorage.setItem("retroplay-arena-nickname-reset-20260801", "1");
+    }
     const saved = localStorage.getItem("retroplay-arena-nickname-v2") || displayName(state.user);
     if (!el.name.value) el.name.value = saved;
     if (!el.joinName.value) el.joinName.value = saved;

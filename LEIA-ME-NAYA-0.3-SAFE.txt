@@ -1,0 +1,21 @@
+RETROPLAY — NAYA ENGINE 0.3 SAFE
+
+OBJETIVO DESTA VERSÃO
+1. Restaurar o carregamento normal do EmulatorJS no Arena Player.
+2. Usar a versão STABLE do EmulatorJS, não a 4.3.0-pre.
+3. Tentar capturar o canvas automaticamente.
+4. Se a captura direta falhar, abrir o compartilhamento de tela do navegador.
+
+COMO PUBLICAR
+Envie os arquivos mantendo exatamente as pastas e substitua os existentes.
+
+COMO TESTAR
+1. Host cria a sala e inicia.
+2. Host aperta Play.
+3. Host clica INICIAR TRANSMISSÃO.
+4. Se o navegador abrir a janela de compartilhamento, selecione A ABA DO RETROPLAY e marque COMPARTILHAR ÁUDIO.
+5. O convidado deve receber a mesma imagem.
+
+IMPORTANTE
+Esta versão testa vídeo remoto. O controle 2 ainda não está incluído.
+O player normal (player.html) não foi alterado.

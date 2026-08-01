@@ -1,4 +1,4 @@
-// Naya Engine 0.2 — Remote Play: um emulador no host e vídeo no convidado.
+// Naya Engine 0.3 SAFE — player estável + captura do canvas com fallback de compartilhamento da aba.
 (() => {
   "use strict";
 
@@ -277,12 +277,16 @@
 
   async function captureCanvasStream() {
     capturedCanvas = findEmulatorCanvas() || capturedCanvas;
-    if (!capturedCanvas) throw new Error("A tela do emulador ainda não apareceu. Aperte Play e tente novamente.");
+    if (!capturedCanvas) throw new Error("CANVAS_NOT_FOUND");
+
+    const width = capturedCanvas.width || capturedCanvas.clientWidth || 0;
+    const height = capturedCanvas.height || capturedCanvas.clientHeight || 0;
+    if (width < 16 || height < 16) throw new Error("CANVAS_NOT_READY");
 
     localStream?.getTracks().forEach(track => track.stop());
     localStream = capturedCanvas.captureStream(30);
     const videoTrack = localStream.getVideoTracks()[0];
-    if (!videoTrack) throw new Error("O navegador não conseguiu capturar o vídeo do jogo.");
+    if (!videoTrack) throw new Error("CANVAS_NO_VIDEO");
 
     try {
       videoTrack.contentHint = "motion";
@@ -302,15 +306,24 @@
     }
 
     try {
-      await captureCanvasStream();
+      try {
+        await captureCanvasStream();
+        setMessage("Canvas capturado", "A imagem do jogo será enviada diretamente.", "ok");
+      } catch (canvasError) {
+        console.warn("Captura direta indisponível; usando compartilhamento da aba.", canvasError);
+        localStream?.getTracks().forEach(track => track.stop());
+        localStream = await captureCurrentTabFallback();
+      }
       showTransmitButton(false);
       setMessage("Transmissão pronta", guestWaiting ? "Conectando o rival agora..." : "Aguardando o rival entrar.", "ok");
       await sendSignal("host-ready", { video: true });
       if (guestWaiting) await createOffer();
     } catch (error) {
-      showTransmitButton(true, "TENTAR TRANSMITIR NOVAMENTE");
-      setMessage("Falha na captura", error.message, "error");
-      throw error;
+      showTransmitButton(true, "COMPARTILHAR ESTA ABA");
+      const message = error?.name === "NotAllowedError"
+        ? "O compartilhamento foi cancelado. Clique e escolha esta aba do RetroPlay."
+        : (error.message || "Não foi possível capturar a imagem.");
+      setMessage("Transmissão não iniciada", message, "error");
     } finally {
       captureInProgress = false;
     }
@@ -348,14 +361,51 @@
     }
   }
 
+  function numericGameId(text) {
+    let hash = 0;
+    const value = String(text || "game");
+    for (let index = 0; index < value.length; index += 1) {
+      hash = ((hash << 5) - hash + value.charCodeAt(index)) | 0;
+    }
+    return Math.abs(hash) || 1;
+  }
+
+  async function captureCurrentTabFallback() {
+    if (!navigator.mediaDevices?.getDisplayMedia) {
+      throw new Error("Este navegador não oferece compartilhamento de tela.");
+    }
+
+    setMessage("Selecione esta aba", "Na janela que abrir, escolha a aba do RetroPlay e marque compartilhar áudio.", "");
+    const stream = await navigator.mediaDevices.getDisplayMedia({
+      video: { frameRate: { ideal: 30, max: 45 } },
+      audio: true,
+      preferCurrentTab: true,
+      selfBrowserSurface: "include",
+      surfaceSwitching: "include"
+    });
+
+    const track = stream.getVideoTracks()[0];
+    if (!track) throw new Error("Nenhuma imagem foi compartilhada.");
+    track.contentHint = "motion";
+    track.addEventListener("ended", () => {
+      localStream = null;
+      offerStarted = false;
+      showTransmitButton(true, "COMPARTILHAR ESTA ABA");
+      setMessage("Transmissão encerrada", "Clique para compartilhar novamente.", "error");
+    }, { once: true });
+    return stream;
+  }
+
   async function loadHostGame(game) {
     window.EJS_player = "#game";
     window.EJS_core = game.core;
     window.EJS_gameUrl = game.rom;
     window.EJS_gameName = game.nome;
+    window.EJS_gameID = numericGameId(game.id);
     window.EJS_startOnLoaded = false;
     window.EJS_disableAutoUnload = false;
     window.EJS_pathtodata = `https://cdn.emulatorjs.org/${config.emulatorVersion || "stable"}/data/`;
+    if (game.bios) window.EJS_biosUrl = game.bios;
 
     window.EJS_ready = () => {
       showLoading(false);
@@ -377,7 +427,11 @@
     loader = document.createElement("script");
     loader.src = `https://cdn.emulatorjs.org/${config.emulatorVersion || "stable"}/data/loader.js`;
     loader.async = true;
-    loader.onload = watchForCanvas;
+    loader.onload = () => {
+      setMessage("Emulador carregado", "Aperte Play para iniciar o jogo.", "ok");
+      watchForCanvas();
+      window.dispatchEvent(new Event("resize"));
+    };
     loader.onerror = () => setMessage("Falha ao carregar", "O emulador não pôde ser baixado.", "error");
     document.body.appendChild(loader);
   }
