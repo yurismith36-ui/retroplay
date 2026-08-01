@@ -1,0 +1,27 @@
+RETROPLAY — NAYA ENGINE 0.1
+================================
+LEMA: Jogue junto. Como se estivessem no mesmo sofá.
+
+O QUE ESTA VERSÃO FAZ DE VERDADE
+- O jogo abre somente no aparelho do HOST.
+- O convidado não abre uma segunda ROM.
+- A tela do canvas do emulador do host é capturada.
+- Essa mesma tela é enviada ao convidado por WebRTC.
+- A sinalização é feita pelo Supabase Realtime já usado no projeto.
+
+O QUE AINDA NÃO ESTÁ NESTA PRIMEIRA ETAPA
+- Comandos do Controle 2 enviados ao host.
+- Áudio do jogo para o convidado.
+- Chat de voz.
+- TURN para redes que bloqueiam conexão direta.
+
+COMO TESTAR
+1. Publique os 4 arquivos mantendo as pastas.
+2. Crie a sala normalmente e envie o convite.
+3. Os dois jogadores ficam prontos e o host inicia.
+4. No host, aperte Play no emulador.
+5. O convidado deve ver a MESMA tela do host.
+
+RESULTADO ESPERADO
+Esta versão prova a arquitetura correta: UM emulador no host e uma tela remota no convidado.
+A próxima etapa será o Controle 2 remoto.

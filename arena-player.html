@@ -5,53 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow">
   <meta name="theme-color" content="#000000">
-  <title>RetroPlay Arena — Partida Online</title>
+  <title>RetroPlay — Naya Engine</title>
   <link rel="icon" href="assets/icone-controle.svg">
-  <link rel="stylesheet" href="css/arena-player.css?v=arena-2-0-2">
+  <link rel="stylesheet" href="css/arena-player.css?v=naya-0-1-0">
 </head>
 <body class="arena-player-page">
   <header class="arena-player-toolbar">
     <button id="arena-exit" type="button">← SAIR</button>
-    <div class="arena-player-title"><strong id="arena-player-title">Carregando...</strong><span id="arena-player-meta">Arena online</span></div>
-    <div class="arena-player-tools"><button id="arena-voice-mini" type="button" onclick="document.querySelector('#arena-voice')?.classList.toggle('open')">🎤 VOZ</button><button id="arena-guide-toggle" type="button" aria-expanded="true">COMO CONECTAR</button></div>
+    <div class="arena-player-title">
+      <strong id="arena-player-title">Naya Engine</strong>
+      <span id="arena-player-meta">Jogue junto. Como se estivessem no mesmo sofá.</span>
+    </div>
+    <span id="naya-role" class="naya-role">...</span>
   </header>
 
   <main id="arena-player-stage" class="arena-player-stage">
     <div id="arena-player-loading" class="arena-player-loading">
       <span id="arena-server-dot" class="arena-online-dot"></span>
-      <strong id="arena-loading-title">Preparando o netplay...</strong>
-      <span id="arena-loading-message" class="arena-player-message">Carregando a versão multiplayer do emulador.</span>
+      <strong id="arena-loading-title">Naya está preparando a conexão...</strong>
+      <span id="arena-loading-message" class="arena-player-message">Aguarde.</span>
     </div>
-    <div id="game"></div>
+
+    <div id="game" class="naya-host-game"></div>
+    <video id="naya-remote-video" class="naya-remote-video" autoplay playsinline></video>
+
+    <div class="naya-watermark">
+      <strong>RETROPLAY</strong>
+      <span>Powered by Naya Engine</span>
+    </div>
   </main>
 
-  <section id="arena-voice" class="arena-player-voice open">
-    <div><strong>🎤 CHAT DE VOZ</strong><span id="arena-voice-status">PREPARANDO...</span></div>
-    <div><button id="arena-voice-toggle" type="button">ATIVAR VOZ</button><button id="arena-voice-mute" type="button" hidden>SILENCIAR MICROFONE</button></div>
-    <audio id="arena-voice-remote" autoplay playsinline></audio>
-  </section>
-
-  <aside id="arena-guide" class="arena-guide" aria-label="Instruções do netplay">
-    <span class="arena-beta-badge">EMULATORJS 4.3.0-PRE — BETA</span>
-    <h2>Conectar os controles</h2>
-    <p id="arena-role-hint" class="arena-role-hint"></p>
-    <p>Primeiro aperte <strong>Play</strong>. Depois toque no ícone <strong>🌐 Netplay</strong> dentro do emulador.</p>
-    <div class="arena-guide-code"><strong id="arena-room-code">------</strong><button id="arena-copy-code" type="button">COPIAR</button></div>
-    <ol>
-      <li><strong>Dono da sala:</strong> escolha “Create a Room”, coloque o código acima em <em>Room Name</em> e <em>Password</em> e selecione <span id="arena-max-players">2</span> jogadores.</li>
-      <li><strong>Demais jogadores:</strong> na lista de salas, localize esse código, toque em “Join” e digite o mesmo código como senha.</li>
-      <li>Use um controle Bluetooth/USB ou os botões na tela. Cada aparelho receberá seu próprio jogador.</li>
-      <li id="arena-multitap-step" hidden><strong>Modo 4 jogadores:</strong> o RetroPlay tentará ativar o Multitap na Porta 2 automaticamente. Caso o jogo reconheça só duas pessoas, abra Configurações → Controller Port Devices → Port 2 e selecione Multitap.</li>
-    </ol>
-    <p class="arena-guide-note">Todos precisam usar exatamente a mesma ROM. O RetroPlay já carrega o mesmo arquivo do catálogo para todos. Jogos SNES de quatro pessoas precisam ser compatíveis com Multitap.</p>
-    <div class="arena-guide-actions"><button id="arena-hide-guide" type="button">FECHAR GUIA</button><button id="arena-end-match" class="danger" type="button">ENCERRAR E SAIR</button></div>
-  </aside>
+  <div id="naya-status" class="naya-status" aria-live="polite">Conectando...</div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js?v=arena-2-0-2"></script>
-  <script src="js/auth.js?v=arena-2-0-2"></script>
-  <script src="js/arena-config.js?v=arena-2-0-2"></script>
-  <script src="js/arena-player.js?v=arena-2-0-3"></script>
-  <script src="js/arena-voice.js?v=voice-1-0"></script>
+  <script src="js/supabase.js?v=naya-0-1-0"></script>
+  <script src="js/auth.js?v=naya-0-1-0"></script>
+  <script src="js/arena-config.js?v=naya-0-1-0"></script>
+  <script src="js/arena-player.js?v=naya-0-1-0"></script>
 </body>
 </html>
