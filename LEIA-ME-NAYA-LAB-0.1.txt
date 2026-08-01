@@ -1,0 +1,33 @@
+NAYA ENGINE LAB 0.1 — PRIMEIRO TESTE
+=====================================
+
+OBJETIVO
+Comprovar que um aparelho (Host) transmite UMA ÚNICA tela e que outro aparelho (Convidado) consegue controlar um objeto nessa tela em tempo real.
+
+INSTALAÇÃO
+1. Abra este ZIP.
+2. Envie a pasta "naya-lab" para a raiz do repositório RetroPlay.
+3. Envie também este arquivo de instruções, se desejar.
+4. Aguarde o GitHub Pages atualizar.
+
+LINK DO TESTE
+https://yurismith36-ui.github.io/retroplay/naya-lab/
+
+COMO TESTAR
+1. No primeiro aparelho, abra o link e toque em "Criar teste como Host".
+2. Toque em "Copiar convite" ou "Compartilhar".
+3. Abra o convite em outro aparelho e navegador.
+4. Aguarde a mensagem "Vídeo do Host recebido".
+5. No convidado, pressione as setas e o botão A.
+6. Confira se o MESMO quadrado se move na tela do Host e do convidado.
+
+RESULTADO ESPERADO
+- Só o Host cria a animação.
+- O convidado recebe vídeo do canvas do Host.
+- O convidado envia comandos por WebRTC DataChannel.
+- As duas telas mostram o mesmo resultado.
+
+LIMITAÇÕES DESTA VERSÃO
+- Ainda não contém EmulatorJS, ROM, áudio ou Controle 2 real.
+- Usa STUN público e pode falhar em redes muito restritas, caso em que testaremos TURN.
+- É um laboratório separado e não altera as salas atuais do RetroPlay.

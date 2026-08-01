@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#080812" />
+  <title>Naya Engine Lab 0.1</title>
+  <style>
+    :root{color-scheme:dark;--bg:#080812;--card:#131326;--line:#2e2e51;--text:#f7f7ff;--muted:#aaaac3;--accent:#b76cff;--ok:#57e389;--warn:#ffd866;--bad:#ff6b7a}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at top,#24123d 0,#080812 46%);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--text);padding:20px}
+    main{width:min(920px,100%);margin:auto}.brand{text-align:center;margin:10px 0 22px}.brand h1{margin:0;font-size:clamp(28px,7vw,48px)}.brand p{margin:6px 0;color:var(--muted)}.powered{font-weight:800;color:#d9b6ff;letter-spacing:.04em}
+    .card{background:rgba(19,19,38,.94);border:1px solid var(--line);border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 18px 55px #0007}.hidden{display:none!important}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}button,input{font:inherit}button{border:0;border-radius:14px;padding:14px 16px;font-weight:800;cursor:pointer;background:var(--accent);color:#fff}button.secondary{background:#292943}button.danger{background:#6a2632}button:disabled{opacity:.45;cursor:not-allowed}
+    input{width:100%;border:1px solid var(--line);background:#090916;color:#fff;border-radius:14px;padding:14px;text-transform:uppercase;font-weight:800;letter-spacing:.14em}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.grow{flex:1}.code{font-size:clamp(30px,9vw,55px);font-weight:950;letter-spacing:.16em;text-align:center;color:#d9b6ff;margin:12px 0}.status{padding:11px 13px;border-radius:12px;background:#0b0b19;color:var(--muted);font-weight:700}.status.ok{color:var(--ok)}.status.warn{color:var(--warn)}.status.bad{color:var(--bad)}
+    .stage{position:relative;aspect-ratio:16/9;background:#030308;border:1px solid var(--line);border-radius:16px;overflow:hidden}canvas,video{display:block;width:100%;height:100%;object-fit:contain;background:#000}.badge{position:absolute;top:10px;left:10px;background:#000b;padding:7px 10px;border-radius:999px;font-size:12px;font-weight:900}
+    .controls{display:grid;grid-template-columns:repeat(3,68px);justify-content:center;gap:8px;margin-top:16px;touch-action:none}.controls button{height:60px;padding:0;font-size:25px;background:#292943}.controls .empty{visibility:hidden}.controls .action{background:#6b3fa0}.small{font-size:13px;color:var(--muted);line-height:1.45}.log{max-height:135px;overflow:auto;background:#090916;border-radius:12px;padding:10px;font:12px ui-monospace,monospace;color:#bbb}.link{word-break:break-all;background:#090916;padding:10px;border-radius:10px;color:#d9b6ff}.metric{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #ffffff12}.metric:last-child{border-bottom:0}
+    @media(max-width:600px){body{padding:12px}.actions{grid-template-columns:1fr}.card{padding:14px}.controls{grid-template-columns:repeat(3,62px)}.controls button{height:56px}}
+  </style>
+</head>
+<body>
+<main>
+  <header class="brand"><h1>🎮 Naya Engine Lab</h1><p class="powered">Powered by Naya Engine</p><p>Primeiro teste: uma tela, dois aparelhos, controle remoto.</p></header>
+
+  <section id="startCard" class="card">
+    <h2>Escolha como entrar</h2>
+    <div class="actions"><button id="hostBtn">🖥️ Criar teste como Host</button><button id="guestBtn" class="secondary">📱 Entrar com código</button></div>
+    <div id="joinBox" class="hidden" style="margin-top:14px"><div class="row"><input id="roomInput" class="grow" maxlength="6" placeholder="CÓDIGO" autocomplete="off"><button id="joinBtn">Entrar</button></div></div>
+    <p class="small">O Host cria a animação. O convidado recebe a imagem e movimenta o quadrado do Host pelos botões.</p>
+  </section>
+
+  <section id="roomCard" class="card hidden">
+    <div id="roleTitle" class="powered"></div>
+    <div id="roomCode" class="code"></div>
+    <div id="inviteWrap" class="hidden"><div id="inviteLink" class="link"></div><div class="actions" style="margin-top:10px"><button id="copyBtn">📋 Copiar convite</button><button id="shareBtn" class="secondary">📤 Compartilhar</button></div></div>
+    <div id="status" class="status warn">Preparando...</div>
+  </section>
+
+  <section id="screenCard" class="card hidden">
+    <div class="stage">
+      <canvas id="hostCanvas" width="960" height="540" class="hidden"></canvas>
+      <video id="guestVideo" autoplay playsinline muted class="hidden"></video>
+      <div id="screenBadge" class="badge">NAYA LAB</div>
+    </div>
+    <div id="guestControls" class="controls hidden" aria-label="Controle remoto">
+      <span class="empty"></span><button data-key="up">▲</button><span class="empty"></span>
+      <button data-key="left">◀</button><button class="action" data-key="action">A</button><button data-key="right">▶</button>
+      <span class="empty"></span><button data-key="down">▼</button><span class="empty"></span>
+    </div>
+    <p id="controlHelp" class="small"></p>
+  </section>
+
+  <section id="debugCard" class="card hidden">
+    <h3>Diagnóstico</h3>
+    <div class="metric"><span>Conexão</span><strong id="iceState">—</strong></div>
+    <div class="metric"><span>Canal do controle</span><strong id="dataState">—</strong></div>
+    <div class="metric"><span>Vídeo recebido</span><strong id="videoState">—</strong></div>
+    <div id="log" class="log"></div>
+    <button id="resetBtn" class="danger" style="margin-top:12px">Encerrar teste</button>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(() => {
+  'use strict';
+  const SUPABASE_URL = 'https://acxxqfzrftxzwlxcxfen.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_BAwQTbTCbJw89rx7fWUwvQ_5_D4cFzF';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {auth:{persistSession:false}});
+  const $ = id => document.getElementById(id);
+  const els = Object.fromEntries(['startCard','hostBtn','guestBtn','joinBox','roomInput','joinBtn','roomCard','roleTitle','roomCode','inviteWrap','inviteLink','copyBtn','shareBtn','status','screenCard','hostCanvas','guestVideo','guestControls','controlHelp','debugCard','iceState','dataState','videoState','log','resetBtn'].map(id=>[id,$(id)]));
+  let role=null, room=null, channel=null, pc=null, dc=null, animationId=null, localStream=null;
+  let square={x:430,y:235,size:70,vx:2.3,vy:1.7,flash:0};
+  const rtcConfig={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}],iceCandidatePoolSize:4};
+
+  function log(msg){const t=new Date().toLocaleTimeString();els.log.textContent += `[${t}] ${msg}\n`;els.log.scrollTop=els.log.scrollHeight;}
+  function setStatus(msg,type='warn'){els.status.textContent=msg;els.status.className='status '+type;log(msg);}
+  function randomCode(){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';return Array.from({length:6},()=>chars[Math.floor(Math.random()*chars.length)]).join('');}
+  function normalizeCode(v){return (v||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6)}
+  function showRoom(){els.startCard.classList.add('hidden');els.roomCard.classList.remove('hidden');els.screenCard.classList.remove('hidden');els.debugCard.classList.remove('hidden');els.roomCode.textContent=room;}
+  function inviteUrl(){const u=new URL(location.href);u.search='';u.hash='';u.searchParams.set('room',room);return u.toString();}
+  async function send(event,payload){if(!channel) return;await channel.send({type:'broadcast',event,payload:{...payload,from:role,ts:Date.now()}})}
+
+  async function setupSignal(){
+    channel=sb.channel('naya-lab-'+room,{config:{broadcast:{self:false,ack:true},presence:{key:role+'-'+Math.random().toString(36).slice(2)}}});
+    channel.on('broadcast',{event:'signal'},async({payload})=>{
+      if(!payload || payload.from===role) return;
+      try{
+        if(payload.kind==='guest-ready' && role==='host'){setStatus('Convidado encontrado. Criando conexão...','warn');await createOffer();}
+        if(payload.kind==='offer' && role==='guest'){await ensurePeer();await pc.setRemoteDescription(payload.sdp);const answer=await pc.createAnswer();await pc.setLocalDescription(answer);await send('signal',{kind:'answer',sdp:pc.localDescription});setStatus('Respondendo ao Host...','warn');}
+        if(payload.kind==='answer' && role==='host'){await pc.setRemoteDescription(payload.sdp);setStatus('Resposta recebida. Finalizando conexão...','warn');}
+        if(payload.kind==='ice' && payload.candidate){await ensurePeer();await pc.addIceCandidate(payload.candidate).catch(e=>log('ICE aguardando: '+e.message));}
+      }catch(e){setStatus('Erro de sinalização: '+e.message,'bad');}
+    });
+    channel.on('broadcast',{event:'ping'},()=>{});
+    await channel.subscribe(async status=>{
+      log('Supabase Realtime: '+status);
+      if(status==='SUBSCRIBED'){
+        if(role==='guest'){setStatus('Sala encontrada. Chamando o Host...','warn');await send('signal',{kind:'guest-ready'});setTimeout(()=>send('signal',{kind:'guest-ready'}),1200);}
+        else setStatus('Sala criada. Envie o convite ao segundo aparelho.','ok');
+      }
+    });
+  }
+
+  async function ensurePeer(){
+    if(pc) return pc;
+    pc=new RTCPeerConnection(rtcConfig);
+    pc.onicecandidate=e=>{if(e.candidate) send('signal',{kind:'ice',candidate:e.candidate.toJSON()});};
+    pc.onconnectionstatechange=()=>{els.iceState.textContent=pc.connectionState;log('Peer: '+pc.connectionState);if(pc.connectionState==='connected')setStatus(role==='host'?'Convidado conectado à mesma tela!':'Conectado! Esta é a tela do Host.','ok');if(['failed','disconnected'].includes(pc.connectionState))setStatus('Conexão interrompida. Reabra o convite.','bad');};
+    pc.oniceconnectionstatechange=()=>{els.iceState.textContent=pc.iceConnectionState};
+    if(role==='guest'){
+      pc.ontrack=e=>{els.guestVideo.srcObject=e.streams[0];els.videoState.textContent='SIM';els.guestVideo.play().catch(()=>{});setStatus('Vídeo do Host recebido. Use o controle abaixo.','ok');};
+      pc.ondatachannel=e=>{dc=e.channel;wireDataChannel();};
+    }
+    return pc;
+  }
+
+  function wireDataChannel(){
+    if(!dc)return;
+    dc.onopen=()=>{els.dataState.textContent='ABERTO';log('Canal de controle aberto');if(role==='guest')els.guestControls.classList.remove('hidden');};
+    dc.onclose=()=>{els.dataState.textContent='FECHADO'};
+    dc.onerror=e=>log('DataChannel erro: '+(e.message||'desconhecido'));
+    if(role==='host')dc.onmessage=e=>{try{applyRemote(JSON.parse(e.data))}catch(err){log('Comando inválido')}};
+  }
+
+  async function createOffer(){
+    await ensurePeer();
+    if(!localStream) startHostCanvas();
+    for(const track of localStream.getTracks()) if(!pc.getSenders().some(s=>s.track===track)) pc.addTrack(track,localStream);
+    if(!dc){dc=pc.createDataChannel('naya-controller',{ordered:false,maxRetransmits:0});wireDataChannel();}
+    const offer=await pc.createOffer({offerToReceiveAudio:false,offerToReceiveVideo:false});
+    await pc.setLocalDescription(offer);
+    await send('signal',{kind:'offer',sdp:pc.localDescription});
+  }
+
+  function startHostCanvas(){
+    els.hostCanvas.classList.remove('hidden');els.guestVideo.classList.add('hidden');
+    const c=els.hostCanvas,ctx=c.getContext('2d');let last=performance.now(),fps=0,count=0,stamp=last;
+    function draw(now){
+      const dt=Math.min(2.5,(now-last)/16.667);last=now;
+      square.x+=square.vx*dt;square.y+=square.vy*dt;
+      if(square.x<0||square.x+square.size>c.width){square.vx*=-1;square.x=Math.max(0,Math.min(c.width-square.size,square.x));}
+      if(square.y<0||square.y+square.size>c.height){square.vy*=-1;square.y=Math.max(0,Math.min(c.height-square.size,square.y));}
+      if(square.flash>0)square.flash--;
+      const g=ctx.createLinearGradient(0,0,c.width,c.height);g.addColorStop(0,'#100523');g.addColorStop(1,'#241349');ctx.fillStyle=g;ctx.fillRect(0,0,c.width,c.height);
+      ctx.strokeStyle='#ffffff16';ctx.lineWidth=1;for(let x=0;x<c.width;x+=48){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,c.height);ctx.stroke()}for(let y=0;y<c.height;y+=48){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(c.width,y);ctx.stroke()}
+      ctx.fillStyle=square.flash?'#ffffff':'#b76cff';ctx.shadowColor='#b76cff';ctx.shadowBlur=30;ctx.fillRect(square.x,square.y,square.size,square.size);ctx.shadowBlur=0;
+      ctx.fillStyle='#fff';ctx.font='800 30px system-ui';ctx.fillText('NAYA ENGINE — HOST',28,48);ctx.font='20px system-ui';ctx.fillStyle='#c9bdd8';ctx.fillText('O convidado deve mover este mesmo quadrado.',28,82);
+      count++;if(now-stamp>=1000){fps=count;count=0;stamp=now}ctx.fillStyle='#57e389';ctx.font='700 18px system-ui';ctx.fillText('Canvas: '+fps+' FPS',28,c.height-28);
+      animationId=requestAnimationFrame(draw);
+    }
+    animationId=requestAnimationFrame(draw);
+    localStream=c.captureStream(30);els.videoState.textContent='TRANSMITINDO';els.controlHelp.textContent='Host: esta é a tela original. Observe o convidado movimentar o quadrado.';
+  }
+
+  function applyRemote(cmd){const step=24;if(cmd.type!=='press')return;if(cmd.key==='left')square.x-=step;if(cmd.key==='right')square.x+=step;if(cmd.key==='up')square.y-=step;if(cmd.key==='down')square.y+=step;if(cmd.key==='action')square.flash=12;square.x=Math.max(0,Math.min(890,square.x));square.y=Math.max(0,Math.min(470,square.y));}
+  function sendControl(key){if(dc?.readyState==='open')dc.send(JSON.stringify({type:'press',key,t:performance.now()}));}
+
+  async function beginHost(){role='host';room=randomCode();showRoom();els.roleTitle.textContent='VOCÊ É O HOST';els.inviteWrap.classList.remove('hidden');els.inviteLink.textContent=inviteUrl();startHostCanvas();await setupSignal();}
+  async function beginGuest(code){role='guest';room=normalizeCode(code);if(room.length!==6){alert('Digite um código válido de 6 caracteres.');return}showRoom();els.roleTitle.textContent='VOCÊ É O CONVIDADO';els.hostCanvas.classList.add('hidden');els.guestVideo.classList.remove('hidden');els.controlHelp.textContent='Convidado: quando conectar, use os botões para controlar o quadrado no aparelho do Host.';setStatus('Procurando a sala...','warn');await ensurePeer();await setupSignal();}
+  async function copyInvite(){const text=inviteUrl();try{await navigator.clipboard.writeText(text);setStatus('✅ Convite copiado! Envie ao segundo aparelho.','ok')}catch{prompt('Copie este convite:',text)}}
+  async function shareInvite(){const data={title:'Naya Engine Lab',text:'Entre no meu primeiro teste da Naya Engine:',url:inviteUrl()};if(navigator.share)try{await navigator.share(data);return}catch{}await copyInvite();}
+  async function reset(){try{if(animationId)cancelAnimationFrame(animationId);localStream?.getTracks().forEach(t=>t.stop());dc?.close();pc?.close();if(channel)await sb.removeChannel(channel)}finally{location.href=location.pathname}}
+
+  els.hostBtn.onclick=beginHost;els.guestBtn.onclick=()=>els.joinBox.classList.toggle('hidden');els.joinBtn.onclick=()=>beginGuest(els.roomInput.value);els.roomInput.oninput=e=>e.target.value=normalizeCode(e.target.value);els.roomInput.onkeydown=e=>{if(e.key==='Enter')els.joinBtn.click()};els.copyBtn.onclick=copyInvite;els.shareBtn.onclick=shareInvite;els.resetBtn.onclick=reset;
+  document.querySelectorAll('[data-key]').forEach(btn=>{const fire=e=>{e.preventDefault();sendControl(btn.dataset.key)};btn.addEventListener('pointerdown',fire);});
+  const incoming=new URLSearchParams(location.search).get('room');if(incoming){els.joinBox.classList.remove('hidden');els.roomInput.value=normalizeCode(incoming);setTimeout(()=>beginGuest(incoming),250)}
+  window.addEventListener('beforeunload',()=>{dc?.close();pc?.close();if(channel)sb.removeChannel(channel)});
+})();
+</script>
+</body>
+</html>
