@@ -1,0 +1,18 @@
+RETROPLAY CONTA 2.0
+
+1. Envie ao GitHub os arquivos do pacote mantendo as mesmas pastas.
+2. No Supabase, abra SQL Editor > New query.
+3. Abra RETROPLAY-CONTA-2.0.sql, copie tudo, cole no Supabase e clique em Run.
+4. Aguarde o GitHub Pages atualizar.
+5. Feche as abas antigas e abra novamente a página Minha conta.
+
+A atualização:
+- corrige a tela presa em “Carregando…”;
+- cria Visão geral, Troféus, Online e Jogos;
+- registra automaticamente jogos iniciados no player normal;
+- permite marcar jogos como finalizados;
+- mostra vitórias, derrotas, empates e histórico online;
+- mantém favoritos e saves existentes.
+
+OBSERVAÇÃO:
+Nesta primeira versão, o resultado online é registrado pelo jogador na página da conta. A detecção automática do vencedor será ligada à Arena em uma atualização separada, porque cada jogo precisa informar corretamente quando a luta terminou.

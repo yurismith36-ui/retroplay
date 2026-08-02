@@ -1,4 +1,4 @@
-const CACHE_VERSION = "retroplay-naya-0-4-3-v1";
+const CACHE_VERSION = "retroplay-account-2-0-v1";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 
@@ -22,9 +22,14 @@ const APP_SHELL = [
   "./js/arena-player.js?v=naya-0-4-3",
   "./login.html",
   "./conta.html",
+  "./player.html",
+  "./css/conta.css?v=account-2-0",
   "./js/supabase.js?v=auth-1-0",
   "./js/auth.js?v=auth-1-0",
   "./js/cloud.js?v=auth-1-0",
+  "./js/stats.js?v=account-2-0",
+  "./js/conta.js?v=account-2-0",
+  "./js/player.js?v=account-2-0",
   "./dados/games.json",
   "./assets/icone-controle.svg",
   "./assets/controle-retro.svg"

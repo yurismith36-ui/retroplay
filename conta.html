@@ -1,2 +1,230 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="robots" content="noindex,follow"><meta name="theme-color" content="#050506"><title>Minha conta — RetroPlay</title><link rel="icon" href="assets/icone-controle.svg"><link rel="stylesheet" href="css/style.css?v=auth-1-0"></head><body class="auth-page"><main class="auth-shell"><a class="auth-logo" href="index.html"><img src="assets/controle-retro.svg" alt=""><span>RETROPLAY</span></a><section class="auth-card"><h1>Minha conta</h1><div id="account-loading">Carregando…</div><div id="account-content" class="hidden"><div class="profile-avatar">👤</div><h2 id="profile-name"></h2><p id="profile-email"></p><div class="account-stats"><div><strong id="favorite-count">0</strong><span>favoritos na nuvem</span></div><div><strong id="save-count">0</strong><span>saves na nuvem</span></div></div><button id="logout-button" class="purple-button auth-submit" type="button">SAIR DA CONTA</button></div><a class="auth-back" href="index.html">← Voltar ao RetroPlay</a></section></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/supabase.js?v=auth-1-0"></script><script src="js/auth.js?v=auth-1-0"></script><script src="js/cloud.js?v=auth-1-0"></script><script src="js/conta.js?v=auth-1-0"></script></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,follow">
+  <meta name="theme-color" content="#050506">
+  <title>Minha conta — RetroPlay</title>
+  <link rel="icon" href="assets/icone-controle.svg">
+  <link rel="stylesheet" href="css/style.css?v=account-2-0">
+  <link rel="stylesheet" href="css/conta.css?v=account-2-0">
+</head>
+<body class="account-page">
+  <main class="account-shell">
+    <a class="account-logo" href="index.html" aria-label="Voltar para o RetroPlay">
+      <img src="assets/controle-retro.svg" alt="">
+      <span>RETROPLAY</span>
+    </a>
+
+    <section class="account-panel" aria-labelledby="account-title">
+      <div id="account-loading" class="account-loading" role="status">
+        <div class="account-spinner" aria-hidden="true"></div>
+        <strong>Carregando sua conta...</strong>
+        <span>Buscando troféus, partidas e jogos finalizados.</span>
+      </div>
+
+      <div id="account-error" class="account-alert error hidden" role="alert"></div>
+      <div id="account-setup-warning" class="account-alert warning hidden" role="status"></div>
+
+      <div id="account-content" class="hidden">
+        <header class="account-profile-header">
+          <div id="profile-avatar" class="account-avatar" aria-hidden="true">RP</div>
+          <div class="account-profile-copy">
+            <small>PERFIL DO JOGADOR</small>
+            <h1 id="account-title"><span id="profile-name">Jogador</span></h1>
+            <p id="profile-email"></p>
+          </div>
+          <button id="logout-button" class="account-logout" type="button">SAIR DA CONTA</button>
+        </header>
+
+        <section class="account-level-card" aria-label="Nível e experiência">
+          <div>
+            <small>NÍVEL</small>
+            <strong id="profile-level">1</strong>
+          </div>
+          <div class="account-level-progress">
+            <div class="account-level-labels">
+              <span id="profile-xp">0 XP</span>
+              <span id="profile-next-level">500 XP para o próximo nível</span>
+            </div>
+            <div class="account-progress-track" aria-hidden="true">
+              <span id="profile-xp-bar"></span>
+            </div>
+          </div>
+        </section>
+
+        <nav class="account-tabs" role="tablist" aria-label="Seções da conta">
+          <button class="active" type="button" role="tab" aria-selected="true" aria-controls="tab-overview" data-account-tab="overview">VISÃO GERAL</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="tab-trophies" data-account-tab="trophies">TROFÉUS</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="tab-online" data-account-tab="online">ONLINE</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="tab-games" data-account-tab="games">JOGOS</button>
+        </nav>
+
+        <section id="tab-overview" class="account-tab-panel active" role="tabpanel">
+          <div class="account-stat-grid account-stat-grid-main">
+            <article><span>🏆</span><strong id="overview-trophies">0</strong><small>TROFÉUS</small></article>
+            <article><span>⚔️</span><strong id="overview-wins">0</strong><small>VITÓRIAS ONLINE</small></article>
+            <article><span>🎮</span><strong id="overview-started">0</strong><small>JOGOS INICIADOS</small></article>
+            <article><span>✅</span><strong id="overview-completed">0</strong><small>JOGOS FINALIZADOS</small></article>
+          </div>
+
+          <div class="account-two-columns">
+            <article class="account-card-section">
+              <div class="account-section-title">
+                <div>
+                  <small>ATIVIDADE</small>
+                  <h2>Resumo da conta</h2>
+                </div>
+              </div>
+              <div class="account-mini-stats">
+                <div><strong id="favorite-count">0</strong><span>Favoritos na nuvem</span></div>
+                <div><strong id="save-count">0</strong><span>Saves na nuvem</span></div>
+                <div><strong id="overview-online-total">0</strong><span>Partidas online</span></div>
+                <div><strong id="overview-draws">0</strong><span>Empates</span></div>
+              </div>
+            </article>
+
+            <article class="account-card-section">
+              <div class="account-section-title">
+                <div>
+                  <small>ÚLTIMAS CONQUISTAS</small>
+                  <h2>Troféus recentes</h2>
+                </div>
+                <button type="button" class="account-link-button" data-open-tab="trophies">VER TODOS</button>
+              </div>
+              <div id="overview-recent-trophies" class="account-compact-list"></div>
+            </article>
+          </div>
+
+          <article class="account-card-section">
+            <div class="account-section-title">
+              <div>
+                <small>HISTÓRICO</small>
+                <h2>Atividade recente</h2>
+              </div>
+            </div>
+            <div id="overview-recent-activity" class="account-activity-list"></div>
+          </article>
+        </section>
+
+        <section id="tab-trophies" class="account-tab-panel" role="tabpanel" hidden>
+          <div class="account-section-title account-section-heading">
+            <div>
+              <small>COLEÇÃO</small>
+              <h2>Seus troféus</h2>
+              <p id="trophy-summary">0 de 0 desbloqueados</p>
+            </div>
+          </div>
+          <div id="trophy-grid" class="account-trophy-grid"></div>
+        </section>
+
+        <section id="tab-online" class="account-tab-panel" role="tabpanel" hidden>
+          <div class="account-stat-grid account-stat-grid-online">
+            <article class="win"><span>🏆</span><strong id="online-wins">0</strong><small>VITÓRIAS</small></article>
+            <article class="loss"><span>💥</span><strong id="online-losses">0</strong><small>DERROTAS</small></article>
+            <article class="draw"><span>🤝</span><strong id="online-draws">0</strong><small>EMPATES</small></article>
+            <article><span>📊</span><strong id="online-rate">0%</strong><small>APROVEITAMENTO</small></article>
+          </div>
+
+          <div class="account-two-columns account-online-columns">
+            <article class="account-card-section">
+              <div class="account-section-title">
+                <div>
+                  <small>RESULTADOS</small>
+                  <h2>Últimas partidas</h2>
+                </div>
+              </div>
+              <div id="online-history" class="account-match-list"></div>
+            </article>
+
+            <article class="account-card-section account-form-card">
+              <div class="account-section-title">
+                <div>
+                  <small>VERSÃO INICIAL</small>
+                  <h2>Registrar resultado</h2>
+                  <p>Enquanto a Arena ainda não detecta o vencedor automaticamente, o resultado pode ser salvo aqui.</p>
+                </div>
+              </div>
+              <form id="online-result-form" class="account-form">
+                <label>Jogo
+                  <select id="online-game" required></select>
+                </label>
+                <label>Nome do rival
+                  <input id="online-opponent" type="text" maxlength="40" placeholder="Ex.: Kaio" required>
+                </label>
+                <label>Resultado
+                  <select id="online-result" required>
+                    <option value="win">Vitória</option>
+                    <option value="loss">Derrota</option>
+                    <option value="draw">Empate</option>
+                  </select>
+                </label>
+                <button type="submit" class="account-primary-button">SALVAR RESULTADO</button>
+                <p id="online-form-message" class="account-form-message" aria-live="polite"></p>
+              </form>
+            </article>
+          </div>
+        </section>
+
+        <section id="tab-games" class="account-tab-panel" role="tabpanel" hidden>
+          <div class="account-stat-grid account-stat-grid-games">
+            <article><span>▶️</span><strong id="games-started">0</strong><small>INICIADOS</small></article>
+            <article><span>✅</span><strong id="games-completed">0</strong><small>FINALIZADOS</small></article>
+            <article><span>☁️</span><strong id="games-saves">0</strong><small>COM SAVE</small></article>
+            <article><span>❤️</span><strong id="games-favorites">0</strong><small>FAVORITOS</small></article>
+          </div>
+
+          <div class="account-two-columns account-games-columns">
+            <article class="account-card-section account-form-card">
+              <div class="account-section-title">
+                <div>
+                  <small>PROGRESSO</small>
+                  <h2>Marcar jogo como finalizado</h2>
+                  <p>Escolha um jogo quando chegar ao final da campanha.</p>
+                </div>
+              </div>
+              <form id="complete-game-form" class="account-form account-inline-form">
+                <label>Jogo
+                  <select id="complete-game" required></select>
+                </label>
+                <button type="submit" class="account-primary-button">MARCAR COMO FINALIZADO</button>
+                <p id="complete-form-message" class="account-form-message" aria-live="polite"></p>
+              </form>
+            </article>
+
+            <article class="account-card-section">
+              <div class="account-section-title">
+                <div>
+                  <small>RECENTES</small>
+                  <h2>Jogos iniciados</h2>
+                </div>
+              </div>
+              <div id="started-games-list" class="account-game-list compact"></div>
+            </article>
+          </div>
+
+          <article class="account-card-section">
+            <div class="account-section-title">
+              <div>
+                <small>CONCLUÍDOS</small>
+                <h2>Jogos finalizados</h2>
+              </div>
+            </div>
+            <div id="completed-games-list" class="account-game-list"></div>
+          </article>
+        </section>
+      </div>
+
+      <a class="account-back" href="index.html">← Voltar ao RetroPlay</a>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js?v=account-2-0"></script>
+  <script src="js/auth.js?v=account-2-0"></script>
+  <script src="js/cloud.js?v=account-2-0"></script>
+  <script src="js/stats.js?v=account-2-0"></script>
+  <script src="js/conta.js?v=account-2-0"></script>
+</body>
+</html>

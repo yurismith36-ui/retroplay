@@ -228,6 +228,9 @@ async function startPlayer() {
       statusBox.classList.add("hidden");
       refreshEmulatorSize();
       window.RetroPlayAutoSave?.start();
+      window.RetroPlayStats?.recordGameStarted(game).catch(error => {
+        console.warn("Não foi possível registrar o jogo na conta.", error);
+      });
       window.dispatchEvent(new CustomEvent("retroplay:emulator-ready"));
     };
 
