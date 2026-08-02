@@ -1,4 +1,4 @@
-// Naya Engine 0.4.3 — Controle 2 no padrão do Player 1 + chat de voz WebRTC.
+// Naya Engine 0.4.4 — Player 2 completo, voz recolhível e início automático.
 (() => {
   "use strict";
 
@@ -32,7 +32,18 @@
     micToggle: document.querySelector("#naya-mic-toggle"),
     speakerToggle: document.querySelector("#naya-speaker-toggle"),
     voiceState: document.querySelector("#naya-voice-state"),
-    remoteVoice: document.querySelector("#naya-remote-voice")
+    remoteVoice: document.querySelector("#naya-remote-voice"),
+    voiceMenuToggle: document.querySelector("#naya-voice-menu-toggle"),
+    voiceClose: document.querySelector("#naya-voice-close"),
+    fullscreenToggle: document.querySelector("#naya-fullscreen-toggle"),
+    controlsToggle: document.querySelector("#naya-controls-toggle"),
+    audioToggle: document.querySelector("#naya-audio-toggle"),
+    stage: document.querySelector("#arena-player-stage"),
+    playOverlay: document.querySelector("#naya-play-overlay"),
+    playNow: document.querySelector("#naya-play-now"),
+    playGame: document.querySelector("#naya-play-game"),
+    playHint: document.querySelector("#naya-play-hint"),
+    watermark: document.querySelector(".naya-watermark")
   };
 
   let user = null;
@@ -63,6 +74,12 @@
   let microphoneMuted = false;
   let speakerMuted = false;
   let remoteVoiceReceived = false;
+  let statusHideTimer = null;
+  let voicePanelTimer = null;
+  let controlsVisible = true;
+  let audioMuted = false;
+  let pseudoFullscreen = false;
+  let playActivationInProgress = false;
   const queuedCandidates = [];
   const guestPressedButtons = new Set();
   const hostRemoteButtons = new Set();
@@ -75,7 +92,14 @@
     if (el.serverDot) {
       el.serverDot.className = `arena-online-dot${type === "error" ? " error" : type === "ok" ? " ok" : ""}`;
     }
-    if (el.status) el.status.textContent = `${title} — ${message}`;
+    if (el.status) {
+      clearTimeout(statusHideTimer);
+      el.status.textContent = `${title} — ${message}`;
+      el.status.classList.remove("is-hidden");
+      if (type === "ok") {
+        statusHideTimer = setTimeout(() => el.status?.classList.add("is-hidden"), 4200);
+      }
+    }
   }
 
   function showLoading(show) {
@@ -93,6 +117,100 @@
     if (!el.retryButton) return;
     el.retryButton.hidden = !show;
     el.retryButton.textContent = text;
+  }
+
+  function showPlayOverlay(show) {
+    if (!el.playOverlay || !isHost) return;
+    el.playOverlay.hidden = !show;
+    if (show) {
+      el.playNow.disabled = false;
+      el.playNow.textContent = "▶ JOGAR";
+      if (el.playHint) el.playHint.textContent = "Ao tocar, o jogo e a transmissão serão iniciados juntos.";
+    }
+  }
+
+  function openVoicePanel(open = true) {
+    if (!el.voicePanel) return;
+    clearTimeout(voicePanelTimer);
+    el.voicePanel.hidden = !open;
+    el.voiceMenuToggle?.setAttribute("aria-expanded", String(open));
+    if (open) {
+      voicePanelTimer = setTimeout(() => {
+        if (!voiceEnabled && !remoteVoiceReceived) openVoicePanel(false);
+      }, 8000);
+    }
+  }
+
+  function toggleVoicePanel() {
+    openVoicePanel(Boolean(el.voicePanel?.hidden));
+  }
+
+  function fullscreenElement() {
+    return document.fullscreenElement || document.webkitFullscreenElement || null;
+  }
+
+  function updateFullscreenUi() {
+    const active = Boolean(fullscreenElement()) || pseudoFullscreen;
+    document.body.classList.toggle("naya-fullscreen-active", active);
+    if (el.fullscreenToggle) {
+      el.fullscreenToggle.textContent = active ? "⤢" : "⛶";
+      el.fullscreenToggle.setAttribute("aria-label", active ? "Sair da tela cheia" : "Tela cheia");
+      el.fullscreenToggle.title = active ? "Sair da tela cheia" : "Tela cheia";
+    }
+  }
+
+  async function toggleFullscreen() {
+    try {
+      if (fullscreenElement()) {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (exit) await exit.call(document);
+      } else if (pseudoFullscreen) {
+        pseudoFullscreen = false;
+      } else {
+        const root = document.documentElement;
+        const request = root.requestFullscreen || root.webkitRequestFullscreen;
+        if (request) {
+          const result = request.call(root);
+          if (result && typeof result.then === "function") await result;
+        } else {
+          pseudoFullscreen = true;
+        }
+      }
+    } catch (_error) {
+      pseudoFullscreen = !pseudoFullscreen;
+    }
+    updateFullscreenUi();
+    refreshEmulatorSize();
+  }
+
+  function toggleControlsVisibility() {
+    if (isHost || !el.remoteControls) return;
+    controlsVisible = !controlsVisible;
+    showRemoteControls(controlsVisible);
+    if (el.controlsToggle) {
+      el.controlsToggle.textContent = controlsVisible ? "🎮" : "◉";
+      el.controlsToggle.setAttribute("aria-label", controlsVisible ? "Ocultar controles" : "Mostrar controles");
+      el.controlsToggle.title = controlsVisible ? "Ocultar controles" : "Mostrar controles";
+    }
+  }
+
+  function updateAudioUi() {
+    if (el.remoteVideo) el.remoteVideo.muted = audioMuted;
+    if (el.remoteVoice) el.remoteVoice.muted = audioMuted || speakerMuted;
+    if (el.audioToggle) {
+      el.audioToggle.textContent = audioMuted ? "🔇" : "🔊";
+      el.audioToggle.setAttribute("aria-label", audioMuted ? "Ativar áudio" : "Silenciar áudio");
+      el.audioToggle.title = audioMuted ? "Ativar áudio" : "Silenciar áudio";
+    }
+  }
+
+  function toggleAudio() {
+    audioMuted = !audioMuted;
+    updateAudioUi();
+    if (!audioMuted) {
+      el.remoteVideo?.play().catch(() => {});
+      el.remoteVoice?.play().catch(() => {});
+    }
   }
 
   function updateVoiceUi() {
@@ -124,6 +242,11 @@
       else if (voiceEnabled) el.voiceState.textContent = "PREPARANDO";
       else el.voiceState.textContent = "DESLIGADO";
     }
+
+    if (el.voiceMenuToggle) {
+      el.voiceMenuToggle.classList.toggle("is-active", voiceEnabled || remoteVoiceReceived);
+      el.voiceMenuToggle.textContent = microphoneMuted ? "🔇" : "🎤";
+    }
   }
 
   function findVoiceTransceiver() {
@@ -150,7 +273,7 @@
     remoteVoiceReceived = true;
     if (el.remoteVoice) {
       el.remoteVoice.srcObject = remoteVoiceStream;
-      el.remoteVoice.muted = speakerMuted;
+      el.remoteVoice.muted = speakerMuted || audioMuted;
       el.remoteVoice.volume = 1;
       el.remoteVoice.play().catch(() => {
         if (el.voiceState) el.voiceState.textContent = "TOQUE EM OUVIR RIVAL";
@@ -233,10 +356,8 @@
 
   function toggleSpeaker() {
     speakerMuted = !speakerMuted;
-    if (el.remoteVoice) {
-      el.remoteVoice.muted = speakerMuted;
-      if (!speakerMuted) el.remoteVoice.play().catch(() => {});
-    }
+    updateAudioUi();
+    if (!speakerMuted && !audioMuted) el.remoteVoice?.play().catch(() => {});
     updateVoiceUi();
   }
 
@@ -318,7 +439,7 @@
 
   function updateGuestControlAvailability() {
     if (isHost) return;
-    showRemoteControls(true);
+    showRemoteControls(controlsVisible);
     const channelReady = controlChannel?.readyState === "open";
     if (channelReady && remoteVideoReceived) {
       setControlsState("CONTROLE 2 CONECTADO", true);
@@ -423,6 +544,63 @@
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) releaseGuestControls();
     });
+  }
+
+  function findEmulatorStartButton() {
+    if (!el.game) return null;
+    const candidates = [...el.game.querySelectorAll("button, [role='button'], input[type='button'], input[type='submit']")];
+    return candidates.find(node => {
+      const text = String(node.textContent || node.value || "").trim().toUpperCase();
+      const className = String(node.className || "").toLowerCase();
+      return text === "JOGAR" || text === "START GAME" || text === "PLAY NOW" || className.includes("start");
+    }) || null;
+  }
+
+  async function activateEmulatorPlay() {
+    if (!isHost || playActivationInProgress || emulatorStarted) return;
+    playActivationInProgress = true;
+    if (el.playNow) {
+      el.playNow.disabled = true;
+      el.playNow.textContent = "INICIANDO...";
+    }
+    if (el.playHint) el.playHint.textContent = "Abrindo o jogo e preparando a transmissão...";
+
+    try {
+      let startButton = findEmulatorStartButton();
+      if (!startButton) {
+        await new Promise(resolve => setTimeout(resolve, 350));
+        startButton = findEmulatorStartButton();
+      }
+
+      if (startButton) {
+        startButton.click();
+      } else {
+        showPlayOverlay(false);
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        const rect = el.game?.getBoundingClientRect();
+        const centerX = rect ? rect.left + rect.width / 2 : innerWidth / 2;
+        const centerY = rect ? rect.top + rect.height / 2 : innerHeight / 2;
+        const underneath = document.elementFromPoint(centerX, centerY);
+        if (underneath && underneath !== el.game && !el.playOverlay?.contains(underneath)) {
+          underneath.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
+        } else {
+          throw new Error("O botão interno do emulador ainda não ficou pronto.");
+        }
+      }
+
+      setTimeout(() => {
+        if (!emulatorStarted) {
+          showPlayOverlay(true);
+          if (el.playHint) el.playHint.textContent = "O jogo demorou para iniciar. Toque novamente em JOGAR.";
+        }
+        playActivationInProgress = false;
+      }, 6000);
+    } catch (error) {
+      console.error("Naya iniciar jogo:", error);
+      playActivationInProgress = false;
+      showPlayOverlay(true);
+      if (el.playHint) el.playHint.textContent = "Não foi possível iniciar. Toque novamente em JOGAR.";
+    }
   }
 
   function numericGameId(text) {
@@ -541,6 +719,7 @@
         remoteVideoStream.addTrack(event.track);
         el.remoteVideo.srcObject = remoteVideoStream;
         el.remoteVideo.hidden = false;
+        updateAudioUi();
         el.game.hidden = true;
         showLoading(false);
         el.remoteVideo.play().catch(() => {
@@ -777,18 +956,26 @@
     window.EJS_gameID = numericGameId(selectedGame.id);
     window.EJS_disableAutoUnload = false;
     window.EJS_fixedSaveInterval = 86400000;
+    window.EJS_startButtonName = "JOGAR";
+    window.EJS_alignStartButton = "center";
+    window.EJS_backgroundColor = "#000000";
+    window.EJS_color = "#1473e6";
 
     if (selectedGame.bios) window.EJS_biosUrl = selectedGame.bios;
 
     window.EJS_ready = () => {
       clearTimeout(gameReadyTimer);
       showLoading(false);
-      setMessage("Emulador pronto", "Aperte o botão azul Play para iniciar o jogo.", "ok");
+      if (el.playGame) el.playGame.textContent = selectedGame.nome;
+      showPlayOverlay(true);
+      setMessage("Tudo pronto", "Toque em JOGAR para abrir a partida.", "ok");
       refreshEmulatorSize();
     };
 
     window.EJS_onGameStart = () => {
       emulatorStarted = true;
+      playActivationInProgress = false;
+      showPlayOverlay(false);
       showLoading(false);
       showTransmitButton(false);
       setMessage("Jogo iniciado", "Naya ativando a transmissão automaticamente...", "ok");
@@ -797,7 +984,7 @@
         beginTransmission().catch(error => {
           console.error("Transmissão automática:", error);
         });
-      }, 150);
+      }, 180);
     };
 
     loaderScript = document.createElement("script");
@@ -840,6 +1027,8 @@
     clearInterval(heartbeatTimer);
     clearInterval(guestAnnounceTimer);
     clearTimeout(gameReadyTimer);
+    clearTimeout(statusHideTimer);
+    clearTimeout(voicePanelTimer);
     clearInterval(controlHeartbeatTimer);
     controlHeartbeatTimer = null;
     releaseGuestControls();
@@ -850,6 +1039,8 @@
     localVoiceTrack = null;
     voiceEnabled = false;
     closePeer();
+    pseudoFullscreen = false;
+    document.body.classList.remove("naya-fullscreen-active");
     try { channel?.unsubscribe(); } catch (_error) {}
   }
 
@@ -898,7 +1089,7 @@
       exitInProgress = false;
       if (el.exit) {
         el.exit.disabled = false;
-        el.exit.textContent = "← SAIR E ENCERRAR";
+        el.exit.textContent = "← SAIR";
       }
       setMessage("Não foi possível encerrar", error.message || "Tente novamente.", "error");
     }
@@ -910,12 +1101,18 @@
     document.body.classList.toggle("is-host", isHost);
     document.body.classList.toggle("is-guest", !isHost);
     updateVoiceUi();
-    el.role.textContent = isHost ? "HOST · CONTROLE 1" : "CONVIDADO · CONTROLE 2";
+    updateFullscreenUi();
+    updateAudioUi();
+    el.role.textContent = isHost ? "P1" : "P2";
     el.game.hidden = !isHost;
     el.remoteVideo.hidden = isHost;
+    showPlayOverlay(false);
     showTransmitButton(false);
     showRetry(false);
+    controlsVisible = true;
     showRemoteControls(!isHost);
+    if (el.controlsToggle) el.controlsToggle.hidden = isHost;
+    if (el.audioToggle) el.audioToggle.hidden = isHost;
     if (!isHost) {
       setControlsState("Conectando Controle 2...", false);
       bindGuestControls();
@@ -933,7 +1130,8 @@
 
     document.title = `${game.nome} — Naya Engine`;
     el.title.textContent = game.nome;
-    el.meta.textContent = `Sala ${roomCode} · ${isHost ? "um emulador principal" : "acesso remoto ao host"}`;
+    if (el.playGame) el.playGame.textContent = game.nome;
+    el.meta.textContent = `Sala ${roomCode} · ${isHost ? "Jogador 1" : "Jogador 2"}`;
 
     await connectSignaling();
 
@@ -946,6 +1144,12 @@
   }
 
   el.exit?.addEventListener("click", () => exitRoom().catch(console.error));
+  el.playNow?.addEventListener("click", () => activateEmulatorPlay());
+  el.fullscreenToggle?.addEventListener("click", () => toggleFullscreen());
+  el.controlsToggle?.addEventListener("click", toggleControlsVisibility);
+  el.voiceMenuToggle?.addEventListener("click", toggleVoicePanel);
+  el.voiceClose?.addEventListener("click", () => openVoicePanel(false));
+  el.audioToggle?.addEventListener("click", toggleAudio);
   el.transmitButton?.addEventListener("click", () => beginTransmission().catch(console.error));
   el.retryButton?.addEventListener("click", () => retry().catch(error => {
     setMessage("Falha ao tentar novamente", error.message || "Erro desconhecido.", "error");
@@ -954,6 +1158,10 @@
   el.micToggle?.addEventListener("click", toggleMicrophone);
   el.speakerToggle?.addEventListener("click", toggleSpeaker);
   el.remoteVideo?.addEventListener("click", () => el.remoteVideo.play().catch(() => {}));
+  document.addEventListener("fullscreenchange", updateFullscreenUi);
+  document.addEventListener("webkitfullscreenchange", updateFullscreenUi);
+  window.addEventListener("orientationchange", refreshEmulatorSize);
+  window.addEventListener("resize", refreshEmulatorSize);
   window.addEventListener("pagehide", cleanup);
   window.addEventListener("beforeunload", cleanup);
 

@@ -5,18 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow">
   <meta name="theme-color" content="#000000">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>RetroPlay — Naya Engine</title>
   <link rel="icon" href="assets/icone-controle.svg">
-  <link rel="stylesheet" href="css/arena-player.css?v=naya-0-4-3">
+  <link rel="stylesheet" href="css/arena-player.css?v=naya-0-4-4">
 </head>
 <body class="arena-player-page">
   <header class="arena-player-toolbar">
-    <button id="arena-exit" type="button">← SAIR E ENCERRAR</button>
+    <button id="arena-exit" class="naya-toolbar-exit" type="button" aria-label="Sair e encerrar a sala">← SAIR</button>
+
     <div class="arena-player-title">
       <strong id="arena-player-title">Naya Engine</strong>
       <span id="arena-player-meta">Jogue junto. Como se estivessem no mesmo sofá.</span>
     </div>
-    <span id="naya-role" class="naya-role">...</span>
+
+    <div class="naya-toolbar-actions" aria-label="Opções da partida">
+      <button id="naya-fullscreen-toggle" class="naya-icon-button" type="button" aria-label="Tela cheia" title="Tela cheia">⛶</button>
+      <button id="naya-controls-toggle" class="naya-icon-button" type="button" aria-label="Ocultar controles" title="Mostrar ou ocultar controles" hidden>🎮</button>
+      <button id="naya-voice-menu-toggle" class="naya-icon-button" type="button" aria-label="Abrir chat de voz" title="Chat de voz">🎤</button>
+      <button id="naya-audio-toggle" class="naya-icon-button" type="button" aria-label="Silenciar áudio" title="Som" hidden>🔊</button>
+      <span id="naya-role" class="naya-role">...</span>
+    </div>
   </header>
 
   <main id="arena-player-stage" class="arena-player-stage">
@@ -29,16 +40,27 @@
     <div id="game" class="naya-host-game"></div>
     <video id="naya-remote-video" class="naya-remote-video" autoplay playsinline></video>
 
+    <section id="naya-play-overlay" class="naya-play-overlay" hidden aria-label="Iniciar jogo">
+      <div class="naya-play-card">
+        <small>RETROPLAY</small>
+        <strong id="naya-play-game">JOGO ONLINE</strong>
+        <span>Powered by Naya Engine</span>
+        <button id="naya-play-now" type="button">▶ JOGAR</button>
+        <p id="naya-play-hint">Ao tocar, o jogo e a transmissão serão iniciados juntos.</p>
+      </div>
+    </section>
+
     <div class="naya-actions" aria-live="polite">
       <button id="naya-start-transmission" class="naya-primary-action" type="button" hidden>INICIAR TRANSMISSÃO</button>
       <button id="naya-retry" class="naya-secondary-action" type="button" hidden>TENTAR NOVAMENTE</button>
     </div>
 
-    <section id="naya-voice-panel" class="naya-voice-panel" aria-label="Chat de voz">
+    <section id="naya-voice-panel" class="naya-voice-panel" hidden aria-label="Chat de voz">
       <div class="naya-voice-heading">
         <span class="naya-voice-icon" aria-hidden="true">🎤</span>
         <span>CHAT DE VOZ</span>
         <small id="naya-voice-state">DESLIGADO</small>
+        <button id="naya-voice-close" class="naya-voice-close" type="button" aria-label="Fechar chat de voz">×</button>
       </div>
       <div class="naya-voice-actions">
         <button id="naya-voice-toggle" type="button">ATIVAR VOZ</button>
@@ -82,9 +104,9 @@
   <div id="naya-status" class="naya-status" aria-live="polite">Conectando...</div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js?v=naya-0-4-3"></script>
-  <script src="js/auth.js?v=naya-0-4-3"></script>
-  <script src="js/arena-config.js?v=naya-0-4-3"></script>
-  <script src="js/arena-player.js?v=naya-0-4-3"></script>
+  <script src="js/supabase.js?v=naya-0-4-4"></script>
+  <script src="js/auth.js?v=naya-0-4-4"></script>
+  <script src="js/arena-config.js?v=naya-0-4-4"></script>
+  <script src="js/arena-player.js?v=naya-0-4-4"></script>
 </body>
 </html>

@@ -1,0 +1,38 @@
+RETROPLAY — NAYA ENGINE 0.4.4
+PLAYER 2 COMPLETO + VOZ RECOLHÍVEL + JOGAR CENTRALIZADO
+
+ARQUIVOS PARA SUBSTITUIR NO GITHUB:
+- arena-player.html
+- css/arena-player.css
+- js/arena-player.js
+- service-worker.js
+
+O QUE MUDA:
+1. Controle do Player 2 redesenhado no mesmo padrão visual do controle táctil do Player 1.
+2. Player 2 recebe atalhos para:
+   - tela cheia;
+   - mostrar/ocultar controles;
+   - abrir chat de voz;
+   - ligar/desligar o áudio;
+   - sair e encerrar a sala.
+3. Chat de voz fica fechado por padrão. Ele abre apenas ao tocar no ícone de microfone.
+4. Mensagens da Naya desaparecem automaticamente para não cobrir os controles.
+5. A tela inicial técnica do EmulatorJS fica coberta por uma tela limpa do RetroPlay.
+6. O botão azul JOGAR fica centralizado.
+7. Ao tocar em JOGAR, o botão interno do emulador é acionado e a transmissão da Naya começa automaticamente quando o jogo inicia.
+8. O cache do aplicativo/site foi atualizado para carregar a nova versão.
+
+NÃO PRECISA EXECUTAR SQL NO SUPABASE.
+
+DEPOIS DE PUBLICAR:
+- aguarde o GitHub Pages atualizar;
+- feche completamente o app/navegador nos dois aparelhos;
+- abra novamente;
+- no computador, também pode usar Ctrl + F5.
+
+TESTE RECOMENDADO:
+1. Host cria a sala e envia o convite.
+2. Rival entra e toca em PRONTO.
+3. Host toca em JOGAR no centro da tela.
+4. Confirme que a transmissão inicia sozinha.
+5. No Player 2, teste tela cheia, ocultar controles e o painel de voz.
