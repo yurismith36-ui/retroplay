@@ -154,59 +154,11 @@ body.arena-player-page {
 .arena-online-dot.error { background: #e34c61; }
 .arena-player-message { max-width: 520px; color: #c9c9d2; font-size: 13px; line-height: 1.5; }
 
-/* Tela própria da Naya: cobre as informações técnicas do EmulatorJS. */
-.naya-play-overlay {
-  position: absolute;
-  z-index: 42;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background: #000;
-}
 
-.naya-play-card {
-  width: min(420px, 100%);
-  display: grid;
-  justify-items: center;
-  gap: 9px;
-  text-align: center;
-}
-
-.naya-play-card small {
-  color: #9999a7;
-  font: 900 11px monospace;
-  letter-spacing: .15em;
-}
-
-.naya-play-card strong {
-  max-width: 100%;
-  overflow: hidden;
-  color: #fff;
-  font-size: clamp(20px, 6vw, 34px);
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.naya-play-card span { color: #aaaab5; font-size: 12px; }
-
-.naya-play-card button {
-  min-width: min(260px, 82vw);
-  min-height: 62px;
-  margin-top: 18px;
-  border: 2px solid #65a4ff;
-  border-radius: 14px;
-  background: linear-gradient(180deg, #2584ff, #075ac7);
-  color: #fff;
-  font-size: 22px;
-  font-weight: 900;
-  letter-spacing: .04em;
-  box-shadow: 0 10px 32px rgba(0, 97, 255, .35);
-}
-
-.naya-play-card button:active { transform: scale(.97); }
-.naya-play-card button:disabled { opacity: .7; }
-.naya-play-card p { max-width: 340px; margin: 6px 0 0; color: #858590; font-size: 11px; line-height: 1.45; }
+/* O botão JOGAR volta a ser o botão nativo do EmulatorJS.
+   Assim o toque do usuário chega diretamente ao emulador, inclusive no iPhone. */
+#game { position: relative; z-index: 1; }
+#game canvas { max-width: 100%; max-height: 100%; }
 
 .naya-status {
   position: fixed;

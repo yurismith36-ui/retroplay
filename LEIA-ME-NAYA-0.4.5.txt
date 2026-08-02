@@ -1,0 +1,23 @@
+NAYA ENGINE 0.4.5 — CORREÇÃO DO JOGO PRESO EM “INICIANDO”
+
+O problema da versão 0.4.4 era o botão JOGAR personalizado tentando clicar,
+por código, no botão interno do EmulatorJS. Em iPhone/Brave/alguns Androids
+o toque não chegava ao emulador e a tela ficava em INICIANDO.
+
+Esta correção:
+- remove o botão intermediário que travava;
+- restaura o botão azul JOGAR nativo do EmulatorJS, centralizado;
+- mantém a transmissão automática quando EJS_onGameStart confirmar o jogo;
+- mantém tela cheia, chat de voz e Controle 2;
+- esconde o Controle 2 enquanto o rival ainda não recebeu a imagem;
+- atualiza o cache do site e do app.
+
+ENVIO AO GITHUB
+Substitua mantendo as pastas:
+- arena-player.html
+- js/arena-player.js
+- css/arena-player.css
+- service-worker.js
+
+Não execute SQL.
+Depois, feche todas as abas/app nos dois aparelhos e abra novamente.

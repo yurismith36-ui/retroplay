@@ -1,4 +1,4 @@
-// Naya Engine 0.4.4 — Player 2 completo, voz recolhível e início automático.
+// Naya Engine 0.4.5 — restauração segura do botão nativo JOGAR e transmissão automática.
 (() => {
   "use strict";
 
@@ -39,10 +39,6 @@
     controlsToggle: document.querySelector("#naya-controls-toggle"),
     audioToggle: document.querySelector("#naya-audio-toggle"),
     stage: document.querySelector("#arena-player-stage"),
-    playOverlay: document.querySelector("#naya-play-overlay"),
-    playNow: document.querySelector("#naya-play-now"),
-    playGame: document.querySelector("#naya-play-game"),
-    playHint: document.querySelector("#naya-play-hint"),
     watermark: document.querySelector(".naya-watermark")
   };
 
@@ -79,7 +75,6 @@
   let controlsVisible = true;
   let audioMuted = false;
   let pseudoFullscreen = false;
-  let playActivationInProgress = false;
   const queuedCandidates = [];
   const guestPressedButtons = new Set();
   const hostRemoteButtons = new Set();
@@ -117,16 +112,6 @@
     if (!el.retryButton) return;
     el.retryButton.hidden = !show;
     el.retryButton.textContent = text;
-  }
-
-  function showPlayOverlay(show) {
-    if (!el.playOverlay || !isHost) return;
-    el.playOverlay.hidden = !show;
-    if (show) {
-      el.playNow.disabled = false;
-      el.playNow.textContent = "▶ JOGAR";
-      if (el.playHint) el.playHint.textContent = "Ao tocar, o jogo e a transmissão serão iniciados juntos.";
-    }
   }
 
   function openVoicePanel(open = true) {
@@ -439,7 +424,8 @@
 
   function updateGuestControlAvailability() {
     if (isHost) return;
-    showRemoteControls(controlsVisible);
+    showRemoteControls(remoteVideoReceived && controlsVisible);
+    if (el.controlsToggle) el.controlsToggle.hidden = !remoteVideoReceived;
     const channelReady = controlChannel?.readyState === "open";
     if (channelReady && remoteVideoReceived) {
       setControlsState("CONTROLE 2 CONECTADO", true);
@@ -544,63 +530,6 @@
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) releaseGuestControls();
     });
-  }
-
-  function findEmulatorStartButton() {
-    if (!el.game) return null;
-    const candidates = [...el.game.querySelectorAll("button, [role='button'], input[type='button'], input[type='submit']")];
-    return candidates.find(node => {
-      const text = String(node.textContent || node.value || "").trim().toUpperCase();
-      const className = String(node.className || "").toLowerCase();
-      return text === "JOGAR" || text === "START GAME" || text === "PLAY NOW" || className.includes("start");
-    }) || null;
-  }
-
-  async function activateEmulatorPlay() {
-    if (!isHost || playActivationInProgress || emulatorStarted) return;
-    playActivationInProgress = true;
-    if (el.playNow) {
-      el.playNow.disabled = true;
-      el.playNow.textContent = "INICIANDO...";
-    }
-    if (el.playHint) el.playHint.textContent = "Abrindo o jogo e preparando a transmissão...";
-
-    try {
-      let startButton = findEmulatorStartButton();
-      if (!startButton) {
-        await new Promise(resolve => setTimeout(resolve, 350));
-        startButton = findEmulatorStartButton();
-      }
-
-      if (startButton) {
-        startButton.click();
-      } else {
-        showPlayOverlay(false);
-        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-        const rect = el.game?.getBoundingClientRect();
-        const centerX = rect ? rect.left + rect.width / 2 : innerWidth / 2;
-        const centerY = rect ? rect.top + rect.height / 2 : innerHeight / 2;
-        const underneath = document.elementFromPoint(centerX, centerY);
-        if (underneath && underneath !== el.game && !el.playOverlay?.contains(underneath)) {
-          underneath.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
-        } else {
-          throw new Error("O botão interno do emulador ainda não ficou pronto.");
-        }
-      }
-
-      setTimeout(() => {
-        if (!emulatorStarted) {
-          showPlayOverlay(true);
-          if (el.playHint) el.playHint.textContent = "O jogo demorou para iniciar. Toque novamente em JOGAR.";
-        }
-        playActivationInProgress = false;
-      }, 6000);
-    } catch (error) {
-      console.error("Naya iniciar jogo:", error);
-      playActivationInProgress = false;
-      showPlayOverlay(true);
-      if (el.playHint) el.playHint.textContent = "Não foi possível iniciar. Toque novamente em JOGAR.";
-    }
   }
 
   function numericGameId(text) {
@@ -966,16 +895,12 @@
     window.EJS_ready = () => {
       clearTimeout(gameReadyTimer);
       showLoading(false);
-      if (el.playGame) el.playGame.textContent = selectedGame.nome;
-      showPlayOverlay(true);
-      setMessage("Tudo pronto", "Toque em JOGAR para abrir a partida.", "ok");
+      setMessage("Tudo pronto", "Toque no botão azul JOGAR do emulador para abrir a partida.", "ok");
       refreshEmulatorSize();
     };
 
     window.EJS_onGameStart = () => {
       emulatorStarted = true;
-      playActivationInProgress = false;
-      showPlayOverlay(false);
       showLoading(false);
       showTransmitButton(false);
       setMessage("Jogo iniciado", "Naya ativando a transmissão automaticamente...", "ok");
@@ -1106,12 +1031,11 @@
     el.role.textContent = isHost ? "P1" : "P2";
     el.game.hidden = !isHost;
     el.remoteVideo.hidden = isHost;
-    showPlayOverlay(false);
     showTransmitButton(false);
     showRetry(false);
     controlsVisible = true;
-    showRemoteControls(!isHost);
-    if (el.controlsToggle) el.controlsToggle.hidden = isHost;
+    showRemoteControls(false);
+    if (el.controlsToggle) el.controlsToggle.hidden = true;
     if (el.audioToggle) el.audioToggle.hidden = isHost;
     if (!isHost) {
       setControlsState("Conectando Controle 2...", false);
@@ -1130,7 +1054,6 @@
 
     document.title = `${game.nome} — Naya Engine`;
     el.title.textContent = game.nome;
-    if (el.playGame) el.playGame.textContent = game.nome;
     el.meta.textContent = `Sala ${roomCode} · ${isHost ? "Jogador 1" : "Jogador 2"}`;
 
     await connectSignaling();
@@ -1144,7 +1067,6 @@
   }
 
   el.exit?.addEventListener("click", () => exitRoom().catch(console.error));
-  el.playNow?.addEventListener("click", () => activateEmulatorPlay());
   el.fullscreenToggle?.addEventListener("click", () => toggleFullscreen());
   el.controlsToggle?.addEventListener("click", toggleControlsVisibility);
   el.voiceMenuToggle?.addEventListener("click", toggleVoicePanel);
