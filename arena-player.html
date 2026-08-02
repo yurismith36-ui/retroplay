@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#000000">
   <title>RetroPlay — Naya Engine</title>
   <link rel="icon" href="assets/icone-controle.svg">
-  <link rel="stylesheet" href="css/arena-player.css?v=naya-0-4-2">
+  <link rel="stylesheet" href="css/arena-player.css?v=naya-0-4-3">
 </head>
 <body class="arena-player-page">
   <header class="arena-player-toolbar">
@@ -33,6 +33,20 @@
       <button id="naya-start-transmission" class="naya-primary-action" type="button" hidden>INICIAR TRANSMISSÃO</button>
       <button id="naya-retry" class="naya-secondary-action" type="button" hidden>TENTAR NOVAMENTE</button>
     </div>
+
+    <section id="naya-voice-panel" class="naya-voice-panel" aria-label="Chat de voz">
+      <div class="naya-voice-heading">
+        <span class="naya-voice-icon" aria-hidden="true">🎤</span>
+        <span>CHAT DE VOZ</span>
+        <small id="naya-voice-state">DESLIGADO</small>
+      </div>
+      <div class="naya-voice-actions">
+        <button id="naya-voice-toggle" type="button">ATIVAR VOZ</button>
+        <button id="naya-mic-toggle" type="button" hidden>MICROFONE LIGADO</button>
+        <button id="naya-speaker-toggle" type="button" hidden>OUVIR RIVAL</button>
+      </div>
+      <audio id="naya-remote-voice" autoplay playsinline></audio>
+    </section>
 
     <section id="naya-remote-controls" class="naya-remote-controls" hidden aria-label="Controle remoto do Jogador 2">
       <div class="naya-dpad" aria-label="Direcional">
@@ -68,9 +82,9 @@
   <div id="naya-status" class="naya-status" aria-live="polite">Conectando...</div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js?v=naya-0-4-2"></script>
-  <script src="js/auth.js?v=naya-0-4-2"></script>
-  <script src="js/arena-config.js?v=naya-0-4-2"></script>
-  <script src="js/arena-player.js?v=naya-0-4-2"></script>
+  <script src="js/supabase.js?v=naya-0-4-3"></script>
+  <script src="js/auth.js?v=naya-0-4-3"></script>
+  <script src="js/arena-config.js?v=naya-0-4-3"></script>
+  <script src="js/arena-player.js?v=naya-0-4-3"></script>
 </body>
 </html>

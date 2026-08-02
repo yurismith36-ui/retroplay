@@ -1,4 +1,4 @@
-const CACHE_VERSION = "retroplay-naya-0-4-2-v1";
+const CACHE_VERSION = "retroplay-naya-0-4-3-v1";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 
@@ -12,14 +12,14 @@ const APP_SHELL = [
   "./css/comunidade.css?v=community-1-0",
   "./css/comunidade-preview.css?v=community-1-0",
   "./css/arena.css?v=arena-2-0-2",
-  "./css/arena-player.css?v=naya-0-4-2",
+  "./css/arena-player.css?v=naya-0-4-3",
   "./js/boot.js?v=performance-2-1",
   "./js/app.js?v=auth-1-0",
   "./js/comunidade.js?v=community-1-0",
   "./js/console-corner.js?v=performance-2-1",
   "./js/arena-config.js?v=arena-2-0-2",
   "./js/salas.js?v=arena-2-0-2",
-  "./js/arena-player.js?v=naya-0-4-2",
+  "./js/arena-player.js?v=naya-0-4-3",
   "./login.html",
   "./conta.html",
   "./js/supabase.js?v=auth-1-0",

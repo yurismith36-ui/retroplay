@@ -1,4 +1,4 @@
-// Naya Engine 0.4.2 — transmissão automática + Controle 2 remoto.
+// Naya Engine 0.4.3 — Controle 2 no padrão do Player 1 + chat de voz WebRTC.
 (() => {
   "use strict";
 
@@ -26,7 +26,13 @@
     retryButton: document.querySelector("#naya-retry"),
     remoteControls: document.querySelector("#naya-remote-controls"),
     controlsState: document.querySelector("#naya-controls-state"),
-    controlButtons: [...document.querySelectorAll("[data-naya-button]")]
+    controlButtons: [...document.querySelectorAll("[data-naya-button]")],
+    voicePanel: document.querySelector("#naya-voice-panel"),
+    voiceToggle: document.querySelector("#naya-voice-toggle"),
+    micToggle: document.querySelector("#naya-mic-toggle"),
+    speakerToggle: document.querySelector("#naya-speaker-toggle"),
+    voiceState: document.querySelector("#naya-voice-state"),
+    remoteVoice: document.querySelector("#naya-remote-voice")
   };
 
   let user = null;
@@ -48,6 +54,15 @@
   let remoteVideoReceived = false;
   let exitInProgress = false;
   let roomClosedRedirecting = false;
+  let localVoiceStream = null;
+  let localVoiceTrack = null;
+  let voiceTransceiver = null;
+  let remoteVideoStream = new MediaStream();
+  let remoteVoiceStream = new MediaStream();
+  let voiceEnabled = false;
+  let microphoneMuted = false;
+  let speakerMuted = false;
+  let remoteVoiceReceived = false;
   const queuedCandidates = [];
   const guestPressedButtons = new Set();
   const hostRemoteButtons = new Set();
@@ -78,6 +93,151 @@
     if (!el.retryButton) return;
     el.retryButton.hidden = !show;
     el.retryButton.textContent = text;
+  }
+
+  function updateVoiceUi() {
+    const connected = peer?.connectionState === "connected";
+    el.voicePanel?.classList.toggle("is-active", voiceEnabled);
+    el.voicePanel?.classList.toggle("has-remote-voice", remoteVoiceReceived);
+
+    if (el.voiceToggle) {
+      el.voiceToggle.textContent = voiceEnabled ? "ENCERRAR VOZ" : "ATIVAR VOZ";
+      el.voiceToggle.classList.toggle("is-danger", voiceEnabled);
+    }
+
+    if (el.micToggle) {
+      el.micToggle.hidden = !voiceEnabled;
+      el.micToggle.textContent = microphoneMuted ? "MICROFONE DESLIGADO" : "MICROFONE LIGADO";
+      el.micToggle.classList.toggle("is-muted", microphoneMuted);
+    }
+
+    if (el.speakerToggle) {
+      el.speakerToggle.hidden = !(voiceEnabled || remoteVoiceReceived);
+      el.speakerToggle.textContent = speakerMuted ? "RIVAL SILENCIADO" : "OUVIR RIVAL";
+      el.speakerToggle.classList.toggle("is-muted", speakerMuted);
+    }
+
+    if (el.voiceState) {
+      if (remoteVoiceReceived && voiceEnabled && connected) el.voiceState.textContent = "CONECTADO";
+      else if (remoteVoiceReceived) el.voiceState.textContent = "RIVAL CONECTADO";
+      else if (voiceEnabled && connected) el.voiceState.textContent = "AGUARDANDO RIVAL";
+      else if (voiceEnabled) el.voiceState.textContent = "PREPARANDO";
+      else el.voiceState.textContent = "DESLIGADO";
+    }
+  }
+
+  function findVoiceTransceiver() {
+    if (!peer) return null;
+    return peer.getTransceivers().find(transceiver =>
+      transceiver?.receiver?.track?.kind === "audio" || transceiver?.sender?.track?.kind === "audio"
+    ) || null;
+  }
+
+  async function attachLocalVoiceTrack() {
+    if (!peer || !localVoiceTrack) return false;
+    voiceTransceiver = voiceTransceiver && !voiceTransceiver.stopped
+      ? voiceTransceiver
+      : findVoiceTransceiver();
+    if (!voiceTransceiver) return false;
+    try { voiceTransceiver.direction = "sendrecv"; } catch (_error) {}
+    await voiceTransceiver.sender.replaceTrack(localVoiceTrack);
+    return true;
+  }
+
+  function receiveRemoteVoice(track) {
+    remoteVoiceStream.getTracks().forEach(oldTrack => remoteVoiceStream.removeTrack(oldTrack));
+    remoteVoiceStream.addTrack(track);
+    remoteVoiceReceived = true;
+    if (el.remoteVoice) {
+      el.remoteVoice.srcObject = remoteVoiceStream;
+      el.remoteVoice.muted = speakerMuted;
+      el.remoteVoice.volume = 1;
+      el.remoteVoice.play().catch(() => {
+        if (el.voiceState) el.voiceState.textContent = "TOQUE EM OUVIR RIVAL";
+      });
+    }
+    track.addEventListener("ended", () => {
+      remoteVoiceReceived = false;
+      updateVoiceUi();
+    }, { once: true });
+    updateVoiceUi();
+  }
+
+  async function enableVoice() {
+    if (voiceEnabled) return;
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw new Error("Este navegador não permite usar o microfone.");
+    }
+
+    if (el.voiceToggle) {
+      el.voiceToggle.disabled = true;
+      el.voiceToggle.textContent = "LIBERANDO MICROFONE...";
+    }
+
+    try {
+      localVoiceStream = await navigator.mediaDevices.getUserMedia({
+        video: false,
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+          channelCount: 1
+        }
+      });
+      localVoiceTrack = localVoiceStream.getAudioTracks()[0] || null;
+      if (!localVoiceTrack) throw new Error("O microfone não ficou disponível.");
+      localVoiceTrack.enabled = true;
+      localVoiceTrack.contentHint = "speech";
+      voiceEnabled = true;
+      microphoneMuted = false;
+      await attachLocalVoiceTrack();
+      await el.remoteVoice?.play().catch(() => {});
+      updateVoiceUi();
+    } finally {
+      if (el.voiceToggle) el.voiceToggle.disabled = false;
+      updateVoiceUi();
+    }
+  }
+
+  async function disableVoice() {
+    voiceEnabled = false;
+    microphoneMuted = false;
+    try { await voiceTransceiver?.sender?.replaceTrack(null); } catch (_error) {}
+    localVoiceStream?.getTracks().forEach(track => track.stop());
+    localVoiceStream = null;
+    localVoiceTrack = null;
+    updateVoiceUi();
+  }
+
+  async function toggleVoice() {
+    try {
+      if (voiceEnabled) await disableVoice();
+      else await enableVoice();
+    } catch (error) {
+      console.error("Naya voz:", error);
+      if (el.voiceState) el.voiceState.textContent = "MICROFONE BLOQUEADO";
+      if (el.voiceToggle) {
+        el.voiceToggle.disabled = false;
+        el.voiceToggle.textContent = "TENTAR ATIVAR VOZ";
+      }
+      window.alert(`Não foi possível ativar o chat de voz.\n\n${error.message || error}`);
+    }
+  }
+
+  function toggleMicrophone() {
+    if (!localVoiceTrack) return;
+    microphoneMuted = !microphoneMuted;
+    localVoiceTrack.enabled = !microphoneMuted;
+    updateVoiceUi();
+  }
+
+  function toggleSpeaker() {
+    speakerMuted = !speakerMuted;
+    if (el.remoteVoice) {
+      el.remoteVoice.muted = speakerMuted;
+      if (!speakerMuted) el.remoteVoice.play().catch(() => {});
+    }
+    updateVoiceUi();
   }
 
 
@@ -315,9 +475,17 @@
     releaseHostRemoteButtons();
     try { peer?.close(); } catch (_error) {}
     peer = null;
+    voiceTransceiver = null;
     offerInProgress = false;
     remoteDescriptionReady = false;
+    remoteVideoReceived = false;
+    remoteVoiceReceived = false;
     queuedCandidates.length = 0;
+    remoteVideoStream = new MediaStream();
+    remoteVoiceStream = new MediaStream();
+    if (el.remoteVideo && !isHost) el.remoteVideo.srcObject = null;
+    if (el.remoteVoice) el.remoteVoice.srcObject = null;
+    updateVoiceUi();
   }
 
   function createPeer() {
@@ -336,6 +504,9 @@
     });
 
     if (isHost) {
+      const voiceInit = { direction: "sendrecv" };
+      if (localVoiceStream) voiceInit.streams = [localVoiceStream];
+      voiceTransceiver = peer.addTransceiver(localVoiceTrack || "audio", voiceInit);
       bindControlChannel(peer.createDataChannel("naya-controls", { ordered: false, maxRetransmits: 0 }));
     } else {
       peer.addEventListener("datachannel", event => {
@@ -349,6 +520,7 @@
         setMessage("Naya conectada", "A mesma tela está ligada nos dois aparelhos.", "ok");
         showLoading(false);
         showRetry(false);
+        updateVoiceUi();
       } else if (state === "failed") {
         setMessage("A conexão falhou", "Toque em TENTAR NOVAMENTE.", "error");
         showRetry(true);
@@ -358,10 +530,16 @@
       }
     });
 
-    if (!isHost) {
-      peer.addEventListener("track", event => {
-        const stream = event.streams?.[0] || new MediaStream([event.track]);
-        el.remoteVideo.srcObject = stream;
+    peer.addEventListener("track", event => {
+      if (event.track.kind === "audio") {
+        receiveRemoteVoice(event.track);
+        return;
+      }
+
+      if (!isHost && event.track.kind === "video") {
+        remoteVideoStream.getVideoTracks().forEach(oldTrack => remoteVideoStream.removeTrack(oldTrack));
+        remoteVideoStream.addTrack(event.track);
+        el.remoteVideo.srcObject = remoteVideoStream;
         el.remoteVideo.hidden = false;
         el.game.hidden = true;
         showLoading(false);
@@ -371,8 +549,8 @@
         remoteVideoReceived = true;
         updateGuestControlAvailability();
         setMessage("Imagem recebida", "Você está vendo e controlando o Jogador 2 no mesmo jogo.", "ok");
-      });
-    }
+      }
+    });
 
     return peer;
   }
@@ -420,6 +598,11 @@
       createPeer();
       await peer.setRemoteDescription(data.payload);
       remoteDescriptionReady = true;
+      voiceTransceiver = findVoiceTransceiver();
+      if (voiceTransceiver) {
+        try { voiceTransceiver.direction = "sendrecv"; } catch (_error) {}
+        if (localVoiceTrack) await voiceTransceiver.sender.replaceTrack(localVoiceTrack);
+      }
       await flushIceCandidates();
       const answer = await peer.createAnswer();
       await peer.setLocalDescription(answer);
@@ -431,7 +614,9 @@
     if (data.type === "answer" && isHost && peer) {
       await peer.setRemoteDescription(data.payload);
       remoteDescriptionReady = true;
+      await attachLocalVoiceTrack();
       await flushIceCandidates();
+      updateVoiceUi();
       return;
     }
 
@@ -539,6 +724,7 @@
       closePeer();
       offerInProgress = true;
       createPeer();
+      await attachLocalVoiceTrack();
       localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
       const offer = await peer.createOffer();
       await peer.setLocalDescription(offer);
@@ -659,6 +845,10 @@
     releaseGuestControls();
     releaseHostRemoteButtons();
     localStream?.getTracks().forEach(track => track.stop());
+    localVoiceStream?.getTracks().forEach(track => track.stop());
+    localVoiceStream = null;
+    localVoiceTrack = null;
+    voiceEnabled = false;
     closePeer();
     try { channel?.unsubscribe(); } catch (_error) {}
   }
@@ -719,6 +909,7 @@
 
     document.body.classList.toggle("is-host", isHost);
     document.body.classList.toggle("is-guest", !isHost);
+    updateVoiceUi();
     el.role.textContent = isHost ? "HOST · CONTROLE 1" : "CONVIDADO · CONTROLE 2";
     el.game.hidden = !isHost;
     el.remoteVideo.hidden = isHost;
@@ -759,6 +950,9 @@
   el.retryButton?.addEventListener("click", () => retry().catch(error => {
     setMessage("Falha ao tentar novamente", error.message || "Erro desconhecido.", "error");
   }));
+  el.voiceToggle?.addEventListener("click", () => toggleVoice());
+  el.micToggle?.addEventListener("click", toggleMicrophone);
+  el.speakerToggle?.addEventListener("click", toggleSpeaker);
   el.remoteVideo?.addEventListener("click", () => el.remoteVideo.play().catch(() => {}));
   window.addEventListener("pagehide", cleanup);
   window.addEventListener("beforeunload", cleanup);
