@@ -389,3 +389,26 @@
   .arena-player-page.is-guest .naya-status { top: auto; bottom: 6px; }
   .arena-player-page.is-guest .naya-watermark { bottom: 38px; }
 }
+
+/* Naya 0.4.9 — apenas posição do botão nativo JOGAR do EmulatorJS.
+   Não cria botão novo e não altera o clique, a ROM, o player ou a transmissão. */
+.arena-player-page.is-host #game .ejs_start_button {
+  position: absolute !important;
+  top: 58% !important;
+  bottom: auto !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 30 !important;
+}
+
+@media (max-width: 620px) {
+  .arena-player-page.is-host #game .ejs_start_button {
+    top: 55% !important;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 620px) {
+  .arena-player-page.is-host #game .ejs_start_button {
+    top: 53% !important;
+  }
+}

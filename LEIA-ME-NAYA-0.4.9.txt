@@ -1,0 +1,28 @@
+RETROPLAY / NAYA ENGINE 0.4.9 — AJUSTE SEGURO
+
+BASE: Naya 0.4.8 restaurada (a versão que voltou a abrir os jogos corretamente).
+
+ALTERAÇÕES:
+1. O botão azul JOGAR continua sendo o botão NATIVO do EmulatorJS.
+2. Apenas a posição visual dele foi elevada para perto do centro da tela.
+3. O clique, a descompactação, a ROM, a inicialização, a Naya e o WebRTC não foram alterados.
+4. Ao tocar em SAIR E ENCERRAR, qualquer participante apaga a sala inteira.
+
+ARQUIVOS PARA O GITHUB:
+- arena-player.html
+- css/arena-player.css
+- service-worker.js
+
+IMPORTANTE:
+- O arquivo js/arena-player.js NÃO está neste pacote e NÃO deve ser substituído.
+- Não envie novamente versões 0.4.4, 0.4.5, 0.4.6 ou 0.4.7.
+
+SUPABASE:
+- Abra NAYA-0.4.9-APAGAR-SALA-AO-SAIR.sql.
+- Copie todo o conteúdo para SQL Editor > New query > Run.
+- O resultado esperado é: Success. No rows returned.
+
+DEPOIS:
+- Aguarde o GitHub Pages publicar.
+- Feche totalmente o navegador/app nos dois aparelhos.
+- Abra novamente e crie uma sala NOVA para testar.
