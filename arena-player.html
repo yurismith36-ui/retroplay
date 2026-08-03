@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#000000">
   <title>RetroPlay — Naya Engine</title>
   <link rel="icon" href="assets/icone-controle.svg">
-  <link rel="stylesheet" href="css/arena-player.css?v=naya-ui-0-4-7">
+  <link rel="stylesheet" href="css/arena-player.css?v=naya-restore-base10-v1">
 </head>
 <body class="arena-player-page">
   <header class="arena-player-toolbar">
@@ -16,12 +16,7 @@
       <strong id="arena-player-title">Naya Engine</strong>
       <span id="arena-player-meta">Jogue junto. Como se estivessem no mesmo sofá.</span>
     </div>
-    <div class="naya-toolbar-actions" aria-label="Controles da tela">
-      <button id="naya-ui-fullscreen" class="naya-ui-icon-button" type="button" aria-label="Tela cheia" title="Tela cheia">⛶</button>
-      <button id="naya-ui-controls" class="naya-ui-icon-button" type="button" aria-label="Mostrar ou ocultar controles" title="Mostrar ou ocultar controles">🎮</button>
-      <button id="naya-ui-voice" class="naya-ui-icon-button" type="button" aria-label="Abrir chat de voz" title="Abrir chat de voz">🎤</button>
-      <span id="naya-role" class="naya-role">...</span>
-    </div>
+    <span id="naya-role" class="naya-role">...</span>
   </header>
 
   <main id="arena-player-stage" class="arena-player-stage">
@@ -39,7 +34,7 @@
       <button id="naya-retry" class="naya-secondary-action" type="button" hidden>TENTAR NOVAMENTE</button>
     </div>
 
-    <section id="naya-voice-panel" class="naya-voice-panel naya-ui-collapsed" aria-label="Chat de voz">
+    <section id="naya-voice-panel" class="naya-voice-panel" aria-label="Chat de voz">
       <div class="naya-voice-heading">
         <span class="naya-voice-icon" aria-hidden="true">🎤</span>
         <span>CHAT DE VOZ</span>
@@ -90,7 +85,6 @@
   <script src="js/supabase.js?v=naya-0-4-3"></script>
   <script src="js/auth.js?v=naya-0-4-3"></script>
   <script src="js/arena-config.js?v=naya-0-4-3"></script>
-  <script src="js/arena-player.js?v=naya-0-4-3"></script>
-  <script src="js/arena-ui-only.js?v=naya-ui-0-4-7"></script>
+  <script src="js/arena-player.js?v=naya-restore-base10-v1"></script>
 </body>
 </html>

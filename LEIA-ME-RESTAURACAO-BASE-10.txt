@@ -1,0 +1,22 @@
+RETROPLAY / NAYA — RESTAURAÇÃO DA BASE 10
+
+Este pacote restaura a mecânica do player exatamente para a versão do arquivo
+"retroplay-main (10).zip", que foi a última base enviada pelo usuário antes das
+alterações 0.4.4, 0.4.5, 0.4.6 e 0.4.7.
+
+ARQUIVOS:
+- arena-player.html
+- css/arena-player.css
+- js/arena-player.js
+- service-worker.js
+
+IMPORTANTE:
+1. Envie estes arquivos mantendo as pastas e substitua os existentes.
+2. Não envie junto nenhum arquivo de versões 0.4.4, 0.4.5, 0.4.6 ou 0.4.7.
+3. Não precisa executar SQL.
+4. Depois da publicação, feche todas as abas do RetroPlay nos dois aparelhos.
+5. Abra o site novamente. Se necessário, limpe os dados/cache do site.
+
+Esta restauração não adiciona botões novos. Primeiro confirme que o jogo voltou
+a abrir e conectar exatamente como na base 10. As melhorias visuais serão feitas
+depois em um pacote isolado, sem tocar em js/arena-player.js.
