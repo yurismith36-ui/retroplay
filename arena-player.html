@@ -5,27 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow">
   <meta name="theme-color" content="#000000">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>RetroPlay — Naya Engine</title>
   <link rel="icon" href="assets/icone-controle.svg">
-  <link rel="stylesheet" href="css/arena-player.css?v=naya-0-4-5">
+  <link rel="stylesheet" href="css/arena-player.css?v=naya-ui-0-4-7">
 </head>
 <body class="arena-player-page">
   <header class="arena-player-toolbar">
-    <button id="arena-exit" class="naya-toolbar-exit" type="button" aria-label="Sair e encerrar a sala">← SAIR</button>
-
+    <button id="arena-exit" type="button">← SAIR E ENCERRAR</button>
     <div class="arena-player-title">
       <strong id="arena-player-title">Naya Engine</strong>
       <span id="arena-player-meta">Jogue junto. Como se estivessem no mesmo sofá.</span>
     </div>
-
-    <div class="naya-toolbar-actions" aria-label="Opções da partida">
-      <button id="naya-fullscreen-toggle" class="naya-icon-button" type="button" aria-label="Tela cheia" title="Tela cheia">⛶</button>
-      <button id="naya-controls-toggle" class="naya-icon-button" type="button" aria-label="Ocultar controles" title="Mostrar ou ocultar controles" hidden>🎮</button>
-      <button id="naya-voice-menu-toggle" class="naya-icon-button" type="button" aria-label="Abrir chat de voz" title="Chat de voz">🎤</button>
-      <button id="naya-audio-toggle" class="naya-icon-button" type="button" aria-label="Silenciar áudio" title="Som" hidden>🔊</button>
+    <div class="naya-toolbar-actions" aria-label="Controles da tela">
+      <button id="naya-ui-fullscreen" class="naya-ui-icon-button" type="button" aria-label="Tela cheia" title="Tela cheia">⛶</button>
+      <button id="naya-ui-controls" class="naya-ui-icon-button" type="button" aria-label="Mostrar ou ocultar controles" title="Mostrar ou ocultar controles">🎮</button>
+      <button id="naya-ui-voice" class="naya-ui-icon-button" type="button" aria-label="Abrir chat de voz" title="Abrir chat de voz">🎤</button>
       <span id="naya-role" class="naya-role">...</span>
     </div>
   </header>
@@ -45,12 +39,11 @@
       <button id="naya-retry" class="naya-secondary-action" type="button" hidden>TENTAR NOVAMENTE</button>
     </div>
 
-    <section id="naya-voice-panel" class="naya-voice-panel" hidden aria-label="Chat de voz">
+    <section id="naya-voice-panel" class="naya-voice-panel naya-ui-collapsed" aria-label="Chat de voz">
       <div class="naya-voice-heading">
         <span class="naya-voice-icon" aria-hidden="true">🎤</span>
         <span>CHAT DE VOZ</span>
         <small id="naya-voice-state">DESLIGADO</small>
-        <button id="naya-voice-close" class="naya-voice-close" type="button" aria-label="Fechar chat de voz">×</button>
       </div>
       <div class="naya-voice-actions">
         <button id="naya-voice-toggle" type="button">ATIVAR VOZ</button>
@@ -94,9 +87,10 @@
   <div id="naya-status" class="naya-status" aria-live="polite">Conectando...</div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js?v=naya-0-4-5"></script>
-  <script src="js/auth.js?v=naya-0-4-5"></script>
-  <script src="js/arena-config.js?v=naya-0-4-5"></script>
-  <script src="js/arena-player.js?v=naya-0-4-5"></script>
+  <script src="js/supabase.js?v=naya-0-4-3"></script>
+  <script src="js/auth.js?v=naya-0-4-3"></script>
+  <script src="js/arena-config.js?v=naya-0-4-3"></script>
+  <script src="js/arena-player.js?v=naya-0-4-3"></script>
+  <script src="js/arena-ui-only.js?v=naya-ui-0-4-7"></script>
 </body>
 </html>

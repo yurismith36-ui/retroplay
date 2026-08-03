@@ -1,0 +1,26 @@
+RETROPLAY — NAYA UI 0.4.7 (SOMENTE BOTÕES E APARÊNCIA)
+
+BASE UTILIZADA:
+retroplay-main (10).zip enviado pelo usuário.
+
+IMPORTANTE:
+- O arquivo js/arena-player.js NÃO foi alterado.
+- A inicialização do EmulatorJS NÃO foi alterada.
+- A ROM e a descompactação NÃO foram alteradas.
+- A conexão WebRTC NÃO foi alterada.
+- Supabase, salas e sinalização NÃO foram alterados.
+- O botão JOGAR nativo NÃO foi alterado.
+
+ARQUIVOS DESTA ATUALIZAÇÃO:
+- arena-player.html
+- css/arena-player.css
+- js/arena-ui-only.js (novo; apenas interface)
+
+MELHORIAS:
+- Botão de tela cheia para o convidado.
+- Botão para ocultar/mostrar o Controle 2.
+- Chat de voz recolhido em um botão, sem cobrir o jogo.
+- Controle 2 com visual mais próximo do Controle 1.
+- Ajustes de tela no celular.
+
+Não execute SQL.
