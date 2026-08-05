@@ -17,7 +17,6 @@
 <body class="player-page player-isolated-page">
   <header class="isolated-toolbar">
     <a href="index.html" class="player-back isolated-back" aria-label="Voltar para a biblioteca">← BIBLIOTECA</a>
-
     <div class="isolated-title">
       <strong id="player-title">Carregando...</strong>
       <span id="player-console"></span>
@@ -26,7 +25,6 @@
     <button id="isolated-menu-toggle" class="isolated-menu-toggle" type="button"
             aria-expanded="false" aria-controls="isolated-actions">☰</button>
   </header>
-
   <section id="isolated-actions" class="isolated-actions" aria-label="Ferramentas do jogo">
     <div id="cloud-save-status" class="cloud-save-status offline">☁️ Verificando conta...</div>
     <button id="cloud-load-save" type="button" hidden>CARREGAR SAVE</button>
@@ -35,7 +33,6 @@
     <button id="fullscreen-button" type="button" aria-pressed="false">TELA CHEIA</button>
     <button id="clear-player-memory" class="clear-player-memory" type="button">SAIR E LIMPAR</button>
   </section>
-
   <main class="isolated-player-main">
     <section class="emulator-stage isolated-emulator-stage" id="emulator-stage">
       <div id="player-status" class="player-status">
@@ -45,7 +42,6 @@
       <div id="game"></div>
     </section>
   </main>
-
   <div id="translate-panel" class="translate-panel" aria-hidden="true">
     <section class="translate-card" role="dialog" aria-modal="true" aria-labelledby="translate-title">
       <div class="translate-card-header">
@@ -68,14 +64,13 @@
       <p class="translate-hint">O leitor de texto só será baixado quando você tocar em Traduzir.</p>
     </section>
   </div>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js?v=account-2-0"></script>
-  <script src="js/auth.js?v=account-2-0"></script>
-  <script src="js/cloud.js?v=account-2-0"></script>
-  <script src="js/stats.js?v=account-2-0"></script>
+  <script src="js/supabase.js?v=cloud-3-1"></script>
+  <script src="js/auth.js?v=cloud-3-1"></script>
+  <script src="js/cloud.js?v=cloud-3-1"></script>
   <script src="js/cloud-save-state.js?v=cloud-3-1"></script>
-  <script src="js/player.js?v=account-2-0"></script>
+  <script src="js/vs-system-controls.js?v=battle-city-vs-coin-1"></script>
+  <script src="js/player.js?v=captura-interna-3-0"></script>
   <script src="js/translate-screen.js?v=captura-interna-3-0"></script>
 </body>
 </html>
