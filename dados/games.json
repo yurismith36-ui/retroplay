@@ -263,7 +263,7 @@
     "ano": "1985",
     "genero": "Ação / Tiro",
     "desenvolvedora": "Namco",
-    "descricao": "Controle um tanque, destrua as unidades inimigas e proteja sua base nesta versão para o Nintendo VS. System.",
+    "descricao": "Controle um tanque, destrua as unidades inimigas e proteja a base nesta edição de Battle City para o Nintendo VS. System.",
     "destaque": false,
     "core": "nes",
     "rom": "jogos/nes/jogo-001/rom/jogo.nes",
@@ -273,6 +273,9 @@
     "ordem": 16,
     "adicionadoEm": "2026-08-04",
     "sha256": "7442e0bbfbfb49de022e4a163822ba89d4e9cb2c100cf8c82671223b2d6e55fb",
-    "bytes": 49168
+    "bytes": 49168,
+    "artesCorrigidas": true,
+    "tipoRom": "vs-system",
+    "observacao": "Se o site já estiver em cache, use limpar memória/cache após publicar."
   }
 ]

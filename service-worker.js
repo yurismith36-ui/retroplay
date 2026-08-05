@@ -1,4 +1,4 @@
-const CACHE_VERSION = "retroplay-naya-0-4-9-battle-city-nes-v1";
+const CACHE_VERSION = "retroplay-naya-0-4-9-battle-city-nes-v2-artes";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 
