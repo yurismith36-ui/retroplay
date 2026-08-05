@@ -2,6 +2,7 @@
 const SYSTEMS = [
   { name: "Todos", label: "TODOS" },
   { name: "SNES", label: "SNES" },
+  { name: "NES", label: "NES" },
   { name: "Game Boy", label: "GB" },
   { name: "Game Boy Color", label: "GBC" },
   { name: "Game Boy Advance", label: "GBA" },
@@ -52,6 +53,7 @@ function escapeHtml(value = "") {
 function cardConsoleLabel(consoleName = "") {
   const labels = {
     "SNES": "Super Nintendo SNES",
+    "NES": "Nintendo Entertainment System",
     "Game Boy": "Nintendo Game Boy",
     "Game Boy Color": "Game Boy Color",
     "Game Boy Advance": "Game Boy Advance",

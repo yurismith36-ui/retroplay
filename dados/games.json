@@ -255,5 +255,24 @@
     "adicionadoEm": "2026-07-27",
     "sha256": "a1b3a48afefc61d2781c6b1d5f87f24e51b124f9f649a4239c6c73f912f6d675",
     "bytes": 16777216
+  },
+  {
+    "id": "nes-001",
+    "nome": "Battle City (VS)",
+    "console": "NES",
+    "ano": "1985",
+    "genero": "Ação / Tiro",
+    "desenvolvedora": "Namco",
+    "descricao": "Controle um tanque, destrua as unidades inimigas e proteja sua base nesta versão para o Nintendo VS. System.",
+    "destaque": false,
+    "core": "nes",
+    "rom": "jogos/nes/jogo-001/rom/jogo.nes",
+    "capa": "jogos/nes/jogo-001/imagens/capa.jpg",
+    "banner": "jogos/nes/jogo-001/imagens/banner.jpg",
+    "logo": "jogos/nes/jogo-001/imagens/logo.png",
+    "ordem": 16,
+    "adicionadoEm": "2026-08-04",
+    "sha256": "7442e0bbfbfb49de022e4a163822ba89d4e9cb2c100cf8c82671223b2d6e55fb",
+    "bytes": 49168
   }
 ]

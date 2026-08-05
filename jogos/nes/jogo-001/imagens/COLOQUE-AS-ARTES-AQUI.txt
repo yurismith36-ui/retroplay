@@ -1,0 +1,8 @@
+A ROM já funciona sem essas imagens.
+
+Quando tiver as artes, use exatamente estes nomes nesta pasta:
+- capa.jpg
+- banner.jpg
+- logo.png
+
+Enquanto elas não forem adicionadas, o RetroPlay exibirá a capa padrão “SEM IMAGEM”.
