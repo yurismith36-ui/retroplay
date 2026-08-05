@@ -1,0 +1,17 @@
+{
+  "id": "battle-city-4p",
+  "nome": "Battle City – 4 Jogadores",
+  "console": "NES",
+  "core": "nes",
+  "ano": "1985",
+  "genero": "Ação / Estratégia",
+  "desenvolvedora": "Namco (jogo original)",
+  "descricao": "Hack v1.3 de Battle City preparado para partidas com até quatro jogadores.",
+  "capa": "jogos/nes/battle-city-4p/imagens/capa.jpg",
+  "banner": "jogos/nes/battle-city-4p/imagens/banner.jpg",
+  "logo": "jogos/nes/battle-city-4p/imagens/logo.png",
+  "rom": "jogos/nes/battle-city-4p/rom/jogo.nes",
+  "sha256": "cd1feccce1e140badd598ce131f60aa49eaad9eb5af74e241e2932ef5e54127c",
+  "bytes": 40976,
+  "destaque": false
+}

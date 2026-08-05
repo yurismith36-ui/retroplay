@@ -1,0 +1,10 @@
+{
+  "arquivo_rom": "jogos/nes/battle-city-4p/rom/jogo.nes",
+  "formato": "iNES",
+  "cabecalho_valido": true,
+  "tamanho_bytes": 40976,
+  "sha256": "cd1feccce1e140badd598ce131f60aa49eaad9eb5af74e241e2932ef5e54127c",
+  "prg_rom_kb": 32,
+  "chr_rom_kb": 8,
+  "mapper": 0
+}
