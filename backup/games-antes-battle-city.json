@@ -255,24 +255,5 @@
     "adicionadoEm": "2026-07-27",
     "sha256": "a1b3a48afefc61d2781c6b1d5f87f24e51b124f9f649a4239c6c73f912f6d675",
     "bytes": 16777216
-  },
-  {
-    "id": "battle-city-4p",
-    "nome": "Battle City – 4 Jogadores",
-    "console": "NES",
-    "ano": "1985",
-    "genero": "Ação / Estratégia",
-    "desenvolvedora": "Namco (jogo original)",
-    "descricao": "Versão modificada v1.3 de Battle City preparada para partidas com até quatro jogadores.",
-    "destaque": false,
-    "core": "nes",
-    "rom": "jogos/nes/battle-city-4p/rom/jogo.nes",
-    "capa": "jogos/nes/battle-city-4p/imagens/capa.jpg",
-    "banner": "jogos/nes/battle-city-4p/imagens/banner.jpg",
-    "logo": "jogos/nes/battle-city-4p/imagens/logo.png",
-    "ordem": 16,
-    "adicionadoEm": "2026-08-05",
-    "sha256": "cd1feccce1e140badd598ce131f60aa49eaad9eb5af74e241e2932ef5e54127c",
-    "bytes": 40976
   }
 ]

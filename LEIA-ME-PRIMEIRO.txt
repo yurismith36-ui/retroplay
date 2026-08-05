@@ -1,23 +1,24 @@
-CORREÇÃO RETROPLAY ARENA — TELA ANTIGA 2.0.2
+RETROPLAY — BATTLE CITY 4 JOGADORES — PACOTE CORRIGIDO
 
-Esta correção é SOMENTE para o site/GitHub.
-O Supabase já está ativado e NÃO precisa executar outro SQL.
+O pacote anterior não fazia a inclusão automática no catálogo.
+Este pacote já contém o arquivo dados/games.json com todos os jogos que estavam
+publicados no RetroPlay e acrescenta Battle City – 4 Jogadores no final.
 
-O erro da imagem aconteceu porque o site ainda carregava a Arena Online 1.0.
-A tela correta deve mostrar no topo: "VERSÃO 2.0.2 BETA".
+COMO ENVIAR PELO GITHUB:
+1. Extraia este ZIP no computador.
+2. Abra o repositório RetroPlay.
+3. Envie as pastas "dados" e "jogos" para a raiz do repositório.
+4. Confirme a substituição de dados/games.json.
+5. Faça o commit e aguarde o GitHub Pages atualizar.
 
-ENVIE AO GITHUB, NA RAIZ DO REPOSITÓRIO:
-- salas.html
-- arena-player.html
-- service-worker.js
-- pasta js
-- pasta css
+O QUE SERÁ ADICIONADO:
+- dados/games.json atualizado
+- jogos/nes/battle-city-4p/rom/jogo.nes
+- capa, banner e logo do jogo
 
-Aceite substituir os arquivos existentes e confirme diretamente na branch main/principal.
-Depois aguarde 2 a 5 minutos.
-
-TESTE SEM CACHE:
-https://yurismith36-ui.github.io/retroplay/salas.html?v=202
-
-Se abrir pelo aplicativo, feche completamente e abra de novo.
-Não execute novamente os arquivos SQL da Arena.
+SEGURANÇA:
+- Nenhum jogo existente foi removido.
+- O Battle City antigo não é substituído.
+- O novo jogo usa ID exclusivo: battle-city-4p
+- Há um backup do catálogo anterior em:
+  backup/games-antes-battle-city.json
