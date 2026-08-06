@@ -1,0 +1,45 @@
+CORREÇÃO EXATA — BATTLE CITY 2 JOGADORES
+
+O problema confirmado no site online:
+- A ROM nova já existe no repositório.
+- O dados/games.json ainda aponta para a entrada antiga.
+- O service-worker.js ainda usa o cache antigo.
+
+MÉTODO MAIS SEGURO — ENVIAR 2 ARQUIVOS SEPARADOS
+
+1. No GitHub, abra a pasta:
+   dados
+
+2. Envie o arquivo:
+   games_BATTLE_CITY_2P_CORRIGIDO.json
+
+3. Antes de enviar, renomeie-o para:
+   games.json
+
+4. Confirme a substituição do games.json existente.
+
+5. Volte para a raiz do repositório.
+
+6. Envie:
+   service-worker_BATTLE_CITY_2P_CORRIGIDO.js
+
+7. Antes de enviar, renomeie-o para:
+   service-worker.js
+
+8. Confirme a substituição do service-worker.js existente.
+
+9. Aguarde o GitHub Pages terminar a publicação.
+
+10. No iPhone:
+    - Feche todas as abas do RetroPlay.
+    - Abra uma aba privada.
+    - Entre novamente no jogo.
+
+RESULTADO ESPERADO
+
+O cadastro online deverá mostrar:
+- ID: battle-city-2p-japan-v2
+- ROM: jogos/nes/battle-city-2p/rom/battle-city-japan-2p-v2.nes
+- Tamanho: 24592 bytes
+
+O Battle City de 4 jogadores e a capa permanecem intactos.
