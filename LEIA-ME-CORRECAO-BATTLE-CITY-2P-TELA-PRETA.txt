@@ -1,0 +1,44 @@
+CORREÇÃO DEFINITIVA — BATTLE CITY 2 JOGADORES
+
+Esta atualização substitui somente o Battle City de 2 jogadores que ficava
+com a tela preta.
+
+O Battle City de 4 jogadores não foi alterado.
+A capa do Battle City de 2 jogadores não foi alterada.
+O nome visível continua: Battle City – 2 Jogadores.
+
+CORREÇÃO APLICADA
+
+Para impedir que o navegador, o aplicativo e o sistema de saves reutilizem
+a ROM ou os dados da tentativa anterior, foram usados:
+
+Novo ID interno:
+battle-city-2p-japan-v2
+
+Novo endereço da ROM:
+jogos/nes/battle-city-2p/rom/battle-city-japan-2p-v2.nes
+
+ROM:
+Tamanho: 24592 bytes
+SHA-256: a869aead5b6957fc62002ff9636e048cc34baf0100d629b07dc51aa18f220c0c
+
+ARQUIVOS ATUALIZADOS
+
+- dados/games.json
+- jogos/nes/battle-city-2p/rom/battle-city-japan-2p-v2.nes
+- service-worker.js
+
+A capa continua no mesmo endereço:
+jogos/nes/battle-city-2p/capa/battle-city-2p.png
+
+COMO INSTALAR
+
+1. Extraia o pacote.
+2. Envie o conteúdo para a raiz do repositório RetroPlay.
+3. Permita substituir dados/games.json e service-worker.js.
+4. Envie também a nova ROM dentro da pasta indicada.
+5. Aguarde a publicação do GitHub Pages terminar.
+6. Feche todas as abas antigas do RetroPlay.
+7. Abra o site novamente em uma aba anônima.
+
+Não é necessário apagar nem substituir a capa.

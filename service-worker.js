@@ -1,4 +1,4 @@
-const CACHE_VERSION = "retroplay-naya-0-4-9-battle-city-2p-rom-japan-v1";
+const CACHE_VERSION = "retroplay-battle-city-2p-japan-v2-cache-clean";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 
