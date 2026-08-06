@@ -1,0 +1,25 @@
+CORREÇÃO BATTLE CITY — 2 JOGADORES
+
+O catálogo foi corrigido diretamente no arquivo dados/games.json.
+
+RESULTADO
+- Battle City – 4 Jogadores foi preservado.
+- Battle City – 2 Jogadores foi adicionado como outro jogo.
+- ID exclusivo do novo jogo: battle-city-2p
+- Pasta exclusiva: jogos/nes/battle-city-2p/
+- O cache do site foi atualizado para carregar o catálogo novo.
+
+ROM 2P
+- Tamanho: 40976 bytes
+- SHA-256: 5f26b0ed31aee7b8a2cf6e741d34ac57223810134601186cc9d942d51bbb24e1
+
+ARQUIVOS MODIFICADOS
+- dados/games.json
+- service-worker.js
+
+ARQUIVOS PRESERVADOS/ADICIONADOS
+- jogos/nes/battle-city-2p/rom/battle-city-2p.nes
+- jogos/nes/battle-city-2p/capa/battle-city-2p.png
+- backup/games-antes-battle-city-2p.json
+
+Depois de publicar no GitHub Pages, atualize a página usando Ctrl + F5.

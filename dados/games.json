@@ -274,5 +274,24 @@
     "adicionadoEm": "2026-08-05",
     "sha256": "cd1feccce1e140badd598ce131f60aa49eaad9eb5af74e241e2932ef5e54127c",
     "bytes": 40976
+  },
+  {
+    "id": "battle-city-2p",
+    "nome": "Battle City – 2 Jogadores",
+    "console": "NES",
+    "ano": "1985",
+    "genero": "Ação / Estratégia",
+    "desenvolvedora": "Namco / Modificação para 2 jogadores",
+    "descricao": "Versão modificada de Battle City preparada para dois jogadores simultâneos, utilizando somente os controles 1 e 2.",
+    "destaque": false,
+    "core": "nes",
+    "rom": "jogos/nes/battle-city-2p/rom/battle-city-2p.nes",
+    "capa": "jogos/nes/battle-city-2p/capa/battle-city-2p.png",
+    "banner": "jogos/nes/battle-city-2p/capa/battle-city-2p.png",
+    "logo": "",
+    "ordem": 17,
+    "adicionadoEm": "2026-08-06",
+    "sha256": "5f26b0ed31aee7b8a2cf6e741d34ac57223810134601186cc9d942d51bbb24e1",
+    "bytes": 40976
   }
 ]
