@@ -21,6 +21,13 @@ function showError(message) {
     <a href="index.html" class="player-back">VOLTAR AO SITE</a>`;
 }
 
+function buildRomUrl(game) {
+  const url = new URL(String(game.rom || ""), document.baseURI);
+  const version = String(game.sha256 || game.bytes || game.adicionadoEm || "").trim();
+  if (version) url.searchParams.set("retroplay_rom", version.slice(0, 24));
+  return url.href;
+}
+
 function numericGameId(text) {
   let hash = 0;
   for (let index = 0; index < text.length; index += 1) {
@@ -205,7 +212,7 @@ async function startPlayer() {
 
     window.EJS_player = "#game";
     window.EJS_core = game.core;
-    window.EJS_gameUrl = game.rom;
+    window.EJS_gameUrl = buildRomUrl(game);
     window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
     window.EJS_startOnLoaded = false;
     window.EJS_gameName = game.nome;

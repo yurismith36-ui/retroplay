@@ -1,0 +1,21 @@
+VALIDAÇÃO DAS ROMS DO RETROPLAY
+
+Cada ROM cadastrada em dados/games.json foi localizada e teve tamanho e SHA-256 calculados.
+
+OK | snes-001 | 1572864 bytes | jogos/snes/jogo-01/rom/jogo.sfc | 1abee0cc9a8dad54ea8e2d02d00f38e6efaaacad1929e5c639418dd7b182f599
+OK | snes-002 | 1048576 bytes | jogos/snes/jogo-02/rom/jogo.sfc | 57cf08bbeda13b3ac898a21cb9861f945ecad38295662c043de1662f5d8c90e0
+OK | snes-003 | 3145728 bytes | jogos/snes/jogo-03/rom/jogo.sfc | da55823d4d60079b7d3db950cf082e52cb27e4ed3affb469253cbb4be9fdfaff
+OK | snes-004 | 2097152 bytes | jogos/snes/jogo-04/rom/jogo.sfc | 50ffeb7727d8d035f708542e33c86634d8fce4fa7c5eccd31bbff222aab68239
+OK | snes-005 | 2097152 bytes | jogos/snes/jogo-05/rom/jogo.sfc | 44ac43ec9f6a43abbf62b0cd5b217d908bb19b0291ce34b4f1b53f9bdcc2214e
+OK | n64-001 | 8388608 bytes | jogos/n64/jogo-001/rom/jogo.z64 | 17ce077343c6133f8c9f2d6d6d9a4ab62c8cd2aa57c40aea1f490b4c8bb21d91
+OK | snes-006 | 2097152 bytes | jogos/snes/jogo-06/rom/jogo.smc | 6c28e175ea069eef45d8a2169bb5276c6aa4ba53e6dd2d045e070023e6b892b7
+OK | snes-007 | 4194304 bytes | jogos/snes/jogo-07/rom/jogo.sfc | 22ac01022a4f2d5c187ecc0175566130dab236ba9b1e5082b3499ff70db70ccd
+OK | snes-008 | 1048576 bytes | jogos/snes/jogo-08/rom/jogo.sfc | 0587171c4a8c16f11d7c09e18c7e9ba90d38ff3e0694374e6038a2c33288f402
+OK | snes-009 | 1048576 bytes | jogos/snes/jogo-09/rom/jogo.sfc | d728815c92e7e38de86f6fdc1742ad73db124bbdf91d366bc7392f6d4cb5291a
+OK | snes-010 | 3145728 bytes | jogos/snes/jogo-10/rom/jogo.smc | fc80161cfdfec240e884b6ae961639ee3b2f0ad7b1d36c3421eb3ebc7a487562
+OK | snes-011 | 4194816 bytes | jogos/snes/jogo-11/rom/jogo.smc | 8c23069f3a6efc58eb4537665675b5ddeeb3ba4c9bf26fe5b22ebe0cc812ae53
+OK | n64-002 | 12582912 bytes | jogos/n64/jogo-002/rom/jogo.n64 | 4e41e4d0290352db8e71ed523a8c71926dc495c1e68f4eadc403155b31bee37d
+OK | gb-001 | 2097152 bytes | jogos/gb/jogo-001/rom/jogo.gb | 97ade3e3fd20803a8211c6e27dbf61e2f99262d555c069a17b1525b8a2184fa3
+OK | gba-001 | 16777216 bytes | jogos/gba/jogo-001/rom/jogo.gba | a1b3a48afefc61d2781c6b1d5f87f24e51b124f9f649a4239c6c73f912f6d675
+OK | battle-city-4p | 40976 bytes | jogos/nes/battle-city-4p/rom/jogo.nes | cd1feccce1e140badd598ce131f60aa49eaad9eb5af74e241e2932ef5e54127c
+OK | battle-city-2p-japan-v2 | 24592 bytes | jogos/nes/battle-city-2p/rom/battle-city-japan-2p-v2.nes | a869aead5b6957fc62002ff9636e048cc34baf0100d629b07dc51aa18f220c0c

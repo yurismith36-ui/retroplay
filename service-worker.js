@@ -1,4 +1,4 @@
-const CACHE_VERSION = "retroplay-battle-city-2p-japan-v2-cache-clean";
+const CACHE_VERSION = "retroplay-rom-range-fix-1";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 
@@ -29,7 +29,7 @@ const APP_SHELL = [
   "./js/cloud.js?v=auth-1-0",
   "./js/stats.js?v=account-2-0",
   "./js/conta.js?v=account-2-0",
-  "./js/player.js?v=account-2-0",
+  "./js/player.js?v=rom-range-fix-1",
   "./dados/games.json",
   "./assets/icone-controle.svg",
   "./assets/controle-retro.svg"
@@ -60,6 +60,16 @@ self.addEventListener("fetch", event => {
   const isCatalog = url.pathname.endsWith("/dados/games.json");
   const isScriptOrStyle = request.destination === "script" || request.destination === "style";
   const isImage = request.destination === "image";
+  const isRom = /\.(?:nes|sfc|smc|gb|gbc|gba|z64|n64|v64|zip|7z)$/i.test(url.pathname);
+  const isRangeRequest = request.headers.has("range");
+
+  // ROMs e requisições parciais nunca passam pelo Cache Storage.
+  // O servidor recebe o cabeçalho Range original e devolve os bytes corretos.
+  if (isRom || isRangeRequest) {
+    const directRequest = new Request(request, { cache: "no-store" });
+    event.respondWith(fetch(directRequest));
+    return;
+  }
 
   if (isNavigation || isCatalog || isScriptOrStyle) {
     event.respondWith(networkFirst(request));
@@ -77,8 +87,10 @@ self.addEventListener("fetch", event => {
 async function networkFirst(request) {
   try {
     const response = await fetch(request);
-    const cache = await caches.open(STATIC_CACHE);
-    if (response.ok) cache.put(request, response.clone());
+    if (response.status === 200) {
+      const cache = await caches.open(STATIC_CACHE);
+      cache.put(request, response.clone()).catch(() => {});
+    }
     return response;
   } catch (error) {
     return (await caches.match(request)) || (await caches.match("./index.html"));
@@ -89,7 +101,9 @@ async function staleWhileRevalidate(request, cacheName) {
   const cache = await caches.open(cacheName);
   const cached = await cache.match(request);
   const network = fetch(request).then(response => {
-    if (response.ok) cache.put(request, response.clone());
+    if (response.status === 200) {
+      cache.put(request, response.clone()).catch(() => {});
+    }
     return response;
   }).catch(() => cached);
   return cached || network;

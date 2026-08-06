@@ -14,7 +14,9 @@
     "banner": "jogos/snes/jogo-01/imagens/banner.jpg",
     "logo": "jogos/snes/jogo-01/imagens/logo.png",
     "ordem": 1,
-    "adicionadoEm": "2026-07-20"
+    "adicionadoEm": "2026-07-20",
+    "sha256": "1abee0cc9a8dad54ea8e2d02d00f38e6efaaacad1929e5c639418dd7b182f599",
+    "bytes": 1572864
   },
   {
     "id": "snes-002",
@@ -31,7 +33,9 @@
     "banner": "jogos/snes/jogo-02/imagens/banner.jpg",
     "logo": "jogos/snes/jogo-02/imagens/logo.png",
     "ordem": 2,
-    "adicionadoEm": "2026-07-20"
+    "adicionadoEm": "2026-07-20",
+    "sha256": "57cf08bbeda13b3ac898a21cb9861f945ecad38295662c043de1662f5d8c90e0",
+    "bytes": 1048576
   },
   {
     "id": "snes-003",
@@ -48,7 +52,9 @@
     "banner": "jogos/snes/jogo-03/imagens/banner.jpg",
     "logo": "jogos/snes/jogo-03/imagens/logo.png",
     "ordem": 3,
-    "adicionadoEm": "2026-07-20"
+    "adicionadoEm": "2026-07-20",
+    "sha256": "da55823d4d60079b7d3db950cf082e52cb27e4ed3affb469253cbb4be9fdfaff",
+    "bytes": 3145728
   },
   {
     "id": "snes-004",
@@ -65,7 +71,9 @@
     "banner": "jogos/snes/jogo-04/imagens/banner.jpg",
     "logo": "jogos/snes/jogo-04/imagens/logo.png",
     "ordem": 4,
-    "adicionadoEm": "2026-07-20"
+    "adicionadoEm": "2026-07-20",
+    "sha256": "50ffeb7727d8d035f708542e33c86634d8fce4fa7c5eccd31bbff222aab68239",
+    "bytes": 2097152
   },
   {
     "id": "snes-005",
@@ -82,7 +90,9 @@
     "banner": "jogos/snes/jogo-05/imagens/banner.jpg",
     "logo": "jogos/snes/jogo-05/imagens/logo.png",
     "ordem": 5,
-    "adicionadoEm": "2026-07-20"
+    "adicionadoEm": "2026-07-20",
+    "sha256": "44ac43ec9f6a43abbf62b0cd5b217d908bb19b0291ce34b4f1b53f9bdcc2214e",
+    "bytes": 2097152
   },
   {
     "id": "n64-001",
@@ -99,7 +109,9 @@
     "banner": "jogos/n64/jogo-001/imagens/banner.jpg",
     "logo": "jogos/n64/jogo-001/imagens/logo.png",
     "ordem": 6,
-    "adicionadoEm": "2026-07-20"
+    "adicionadoEm": "2026-07-20",
+    "sha256": "17ce077343c6133f8c9f2d6d6d9a4ab62c8cd2aa57c40aea1f490b4c8bb21d91",
+    "bytes": 8388608
   },
   {
     "id": "snes-006",
@@ -116,7 +128,9 @@
     "banner": "jogos/snes/jogo-06/imagens/banner.jpg",
     "logo": "jogos/snes/jogo-06/imagens/logo.png",
     "ordem": 6,
-    "adicionadoEm": "2026-07-22"
+    "adicionadoEm": "2026-07-22",
+    "sha256": "6c28e175ea069eef45d8a2169bb5276c6aa4ba53e6dd2d045e070023e6b892b7",
+    "bytes": 2097152
   },
   {
     "id": "snes-007",
@@ -133,7 +147,9 @@
     "banner": "jogos/snes/jogo-07/imagens/banner.jpg",
     "logo": "jogos/snes/jogo-07/imagens/logo.png",
     "ordem": 7,
-    "adicionadoEm": "2026-07-22"
+    "adicionadoEm": "2026-07-22",
+    "sha256": "22ac01022a4f2d5c187ecc0175566130dab236ba9b1e5082b3499ff70db70ccd",
+    "bytes": 4194304
   },
   {
     "id": "snes-008",
@@ -150,7 +166,9 @@
     "banner": "jogos/snes/jogo-08/imagens/banner.jpg",
     "logo": "jogos/snes/jogo-08/imagens/logo.png",
     "ordem": 8,
-    "adicionadoEm": "2026-07-22"
+    "adicionadoEm": "2026-07-22",
+    "sha256": "0587171c4a8c16f11d7c09e18c7e9ba90d38ff3e0694374e6038a2c33288f402",
+    "bytes": 1048576
   },
   {
     "id": "snes-009",
@@ -167,7 +185,9 @@
     "banner": "jogos/snes/jogo-09/imagens/banner.jpg",
     "logo": "jogos/snes/jogo-09/imagens/logo.png",
     "ordem": 9,
-    "adicionadoEm": "2026-07-22"
+    "adicionadoEm": "2026-07-22",
+    "sha256": "d728815c92e7e38de86f6fdc1742ad73db124bbdf91d366bc7392f6d4cb5291a",
+    "bytes": 1048576
   },
   {
     "id": "snes-010",
@@ -184,7 +204,9 @@
     "banner": "jogos/snes/jogo-10/imagens/banner.jpg",
     "logo": "jogos/snes/jogo-10/imagens/logo.png",
     "ordem": 10,
-    "adicionadoEm": "2026-07-22"
+    "adicionadoEm": "2026-07-22",
+    "sha256": "fc80161cfdfec240e884b6ae961639ee3b2f0ad7b1d36c3421eb3ebc7a487562",
+    "bytes": 3145728
   },
   {
     "id": "snes-011",
@@ -201,7 +223,9 @@
     "banner": "jogos/snes/jogo-11/imagens/banner.jpg",
     "logo": "jogos/snes/jogo-11/imagens/logo.png",
     "ordem": 11,
-    "adicionadoEm": "2026-07-22"
+    "adicionadoEm": "2026-07-22",
+    "sha256": "8c23069f3a6efc58eb4537665675b5ddeeb3ba4c9bf26fe5b22ebe0cc812ae53",
+    "bytes": 4194816
   },
   {
     "id": "n64-002",
@@ -218,7 +242,9 @@
     "banner": "jogos/n64/jogo-002/imagens/banner.jpg",
     "logo": "jogos/n64/jogo-002/imagens/logo.png",
     "ordem": 13,
-    "adicionadoEm": "2026-07-22"
+    "adicionadoEm": "2026-07-22",
+    "sha256": "4e41e4d0290352db8e71ed523a8c71926dc495c1e68f4eadc403155b31bee37d",
+    "bytes": 12582912
   },
   {
     "id": "gb-001",
@@ -235,7 +261,9 @@
     "banner": "jogos/gb/jogo-001/imagens/banner.jpg",
     "logo": "jogos/gb/jogo-001/imagens/logo.png",
     "ordem": 14,
-    "adicionadoEm": "2026-07-25"
+    "adicionadoEm": "2026-07-25",
+    "sha256": "97ade3e3fd20803a8211c6e27dbf61e2f99262d555c069a17b1525b8a2184fa3",
+    "bytes": 2097152
   },
   {
     "id": "gba-001",

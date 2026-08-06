@@ -1,0 +1,27 @@
+CORREÇÃO LEVE — JOGOS EM TELA PRETA
+
+Esta atualização não substitui o site completo.
+
+Arquivos alterados:
+- service-worker.js
+- player.html
+- js/player.js
+- dados/games.json
+
+O que foi corrigido:
+1. ROMs não são mais armazenadas pelo cache genérico do Service Worker.
+2. Requisições com cabeçalho Range vão diretamente para a rede.
+3. Cada ROM recebe uma URL versionada pelo próprio SHA-256.
+4. Tamanho e SHA-256 foram registrados para todos os jogos.
+5. Nenhuma ROM, capa, sala, controle, layout ou função social foi alterada.
+
+Como instalar:
+1. Extraia o ZIP.
+2. Envie o conteúdo para a raiz do repositório RetroPlay.
+3. Permita substituir somente os quatro arquivos acima.
+4. Aguarde o GitHub Pages concluir a publicação.
+5. Feche todas as abas do RetroPlay no celular.
+6. Abra novamente em aba privada para o primeiro teste.
+
+Observação:
+O arquivo VALIDACAO-DAS-ROMS.txt mostra que as 17 ROMs cadastradas existem no pacote.
