@@ -1,0 +1,5 @@
+ID: der-tiger-battle-city-2p
+ROM: jogos/nes/der-tiger-battle-city-2p/rom/der-tiger-battle-city-2p.nes
+CAPA: jogos/nes/der-tiger-battle-city-2p/capa/der-tiger-battle-city-2p.png
+BYTES: 24592
+SHA-256: a869aead5b6957fc62002ff9636e048cc34baf0100d629b07dc51aa18f220c0c
