@@ -1,0 +1,9 @@
+{
+  "id": "gba-001",
+  "title": "Metroid Fusion",
+  "console": "GBA",
+  "year": 2002,
+  "genre": "Action / Adventure",
+  "rom": "gba-001-metroid-fusion.gba",
+  "cover": "gba-001-metroid-fusion.png"
+}
