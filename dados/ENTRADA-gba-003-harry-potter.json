@@ -1,0 +1,19 @@
+{
+  "id": "gba-003",
+  "nome": "Harry Potter and the Order of the Phoenix",
+  "console": "Game Boy Advance",
+  "ano": "2007",
+  "genero": "Ação / Aventura",
+  "desenvolvedora": "Visual Impact / Electronic Arts",
+  "descricao": "Aventura baseada no quinto ano de Harry Potter, com exploração, missões e desafios no universo de Hogwarts.",
+  "destaque": false,
+  "core": "gba",
+  "rom": "jogos/gba/jogo-003/rom/jogo.gba",
+  "capa": "jogos/gba/jogo-003/imagens/capa.jpg",
+  "banner": "jogos/gba/jogo-003/imagens/banner.jpg",
+  "logo": "",
+  "ordem": 18,
+  "adicionadoEm": "2026-08-20",
+  "sha256": "b96e359bbeac7058169ee8f92d54a5f68230879f25ddc2a04149f467fd8ece84",
+  "bytes": 16777216
+}
