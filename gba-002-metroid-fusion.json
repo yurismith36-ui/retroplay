@@ -1,0 +1,19 @@
+{
+  "id": "gba-002",
+  "nome": "Metroid Fusion",
+  "console": "Game Boy Advance",
+  "ano": "2002",
+  "genero": "Ação / Aventura",
+  "desenvolvedora": "Nintendo / Team NINJA",
+  "descricao": "Metroid Fusion é uma aventura de ação para Game Boy Advance, com exploração, combate e progressão por áreas da estação espacial.",
+  "destaque": false,
+  "core": "gba",
+  "rom": "jogos/gba/jogo-002/rom/jogo.gba",
+  "capa": "jogos/gba/jogo-002/imagens/capa.jpg",
+  "banner": "jogos/gba/jogo-002/imagens/banner.jpg",
+  "logo": "jogos/gba/jogo-002/imagens/logo.png",
+  "ordem": 16,
+  "adicionadoEm": "2026-08-20",
+  "sha256": "d8895542c728a7323cceb1490d07dab18664750afd5df1f0a24d9499e2757342",
+  "bytes": 8388608
+}
