@@ -234,6 +234,8 @@ body.retro-pseudo-fullscreen .isolated-emulator-stage {
    Só é ativado para jogos GBC em telas retrato.
    ================================================================ */
 @media (orientation: portrait) and (max-width: 760px) {
+  body.player-isolated-page.retro-console-gbc .retro-gbc-skin { display: block !important; }
+
   body.player-isolated-page.retro-console-gbc {
     background: #6816b6;
     color: #fff;
@@ -449,6 +451,8 @@ body.retro-pseudo-fullscreen .isolated-emulator-stage {
    D-pad e botões A/B separados do skin roxo do GBC.
    ================================================================ */
 @media (orientation: portrait) and (max-width: 760px) {
+  body.player-isolated-page.retro-console-gba .retro-gba-skin { display: block !important; }
+
   body.player-isolated-page.retro-console-gba {
     background: #34307d;
     color: #fff;

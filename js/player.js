@@ -372,21 +372,23 @@ async function startPlayer() {
     document.querySelector("#player-title").textContent = game.nome;
     document.querySelector("#player-console").textContent = game.console;
 
-    // Skins de portáteis em celulares na vertical: GBC e GBA têm aparelhos visuais diferentes.
+    // Skins de portáteis SOMENTE no celular em retrato. No PC o player permanece tradicional.
     const consoleName = String(game.console || "").toLowerCase();
     const isGBC = consoleName.includes("game boy color");
     const isGBA = consoleName.includes("game boy advance");
-    document.body.classList.toggle("retro-console-gbc", isGBC);
-    document.body.classList.toggle("retro-console-gba", isGBA);
-    if (isGBC) createGBCMobileSkin();
-    if (isGBA) createGBAMobileSkin();
+    const isPortraitMobile = window.matchMedia("(orientation: portrait) and (max-width: 760px)").matches;
+    document.body.classList.toggle("retro-console-gbc", isGBC && isPortraitMobile);
+    document.body.classList.toggle("retro-console-gba", isGBA && isPortraitMobile);
+    if (isPortraitMobile && isGBC) createGBCMobileSkin();
+    if (isPortraitMobile && isGBA) createGBAMobileSkin();
     try { sessionStorage.setItem("retroplay-rom-em-memoria", game.id); } catch (error) {}
 
     window.EJS_player = "#game";
     window.EJS_core = game.core;
     window.EJS_gameUrl = buildRomUrl(game);
     window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
-    window.EJS_startOnLoaded = false;
+    // No celular vertical iniciamos automaticamente; no PC mantemos o player tradicional com o botão JOGAR.
+    window.EJS_startOnLoaded = isPortraitMobile;
     window.EJS_gameName = game.nome;
     window.EJS_gameID = numericGameId(game.id);
     window.EJS_disableAutoUnload = false;

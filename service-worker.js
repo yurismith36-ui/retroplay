@@ -1,4 +1,4 @@
-const CACHE_VERSION = "retroplay-player-vertical-1";
+const CACHE_VERSION = "retroplay-player-vertical-2-1";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 
@@ -9,7 +9,7 @@ const APP_SHELL = [
   "./salas.html",
   "./arena-player.html",
   "./css/style.css?v=auth-1-0",
-  "./css/player-isolated.css?v=player-vertical-1-1",
+  "./css/player-isolated.css?v=handheld-skins-2-1",
   "./css/comunidade.css?v=community-1-0",
   "./css/comunidade-preview.css?v=community-1-0",
   "./css/arena.css?v=arena-2-0-2",
@@ -30,7 +30,7 @@ const APP_SHELL = [
   "./js/cloud.js?v=auth-1-0",
   "./js/stats.js?v=account-2-0",
   "./js/conta.js?v=account-2-0",
-  "./js/player.js?v=rom-range-fix-1",
+  "./js/player.js?v=mobile-skins-2-1",
   "./dados/games.json",
   "./assets/icone-controle.svg",
   "./assets/controle-retro.svg"
