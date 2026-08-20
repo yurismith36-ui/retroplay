@@ -1,4 +1,4 @@
-const CACHE_VERSION = "retroplay-rom-range-fix-1";
+const CACHE_VERSION = "retroplay-player-vertical-1";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 
@@ -9,6 +9,7 @@ const APP_SHELL = [
   "./salas.html",
   "./arena-player.html",
   "./css/style.css?v=auth-1-0",
+  "./css/player-isolated.css?v=player-vertical-1-1",
   "./css/comunidade.css?v=community-1-0",
   "./css/comunidade-preview.css?v=community-1-0",
   "./css/arena.css?v=arena-2-0-2",
