@@ -435,5 +435,24 @@
     "adicionadoEm": "2026-09-01",
     "sha256": "fcafd47af00b95b8c50db8d6b17d6fe7841ff51faba3113ed47fb4aed4fb9ce0",
     "bytes": 8388608
+  },
+  {
+    "id": "gba-008",
+    "nome": "Castlevania: Harmony of Dissonance",
+    "console": "Game Boy Advance",
+    "ano": "2002",
+    "genero": "Ação / Aventura",
+    "desenvolvedora": "Konami",
+    "descricao": "Castlevania: Harmony of Dissonance para Game Boy Advance.",
+    "destaque": false,
+    "core": "gba",
+    "rom": "jogos/gba/jogo-008/rom/jogo.gba",
+    "capa": "jogos/gba/jogo-008/imagens/capa.webp",
+    "banner": "jogos/gba/jogo-008/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 24,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "f14cb2fc6243400f7ef4478aed02e5489ca5b211ba863805c4ca6942628a3ac8",
+    "bytes": 8388608
   }
 ]
