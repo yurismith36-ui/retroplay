@@ -606,5 +606,24 @@
     "adicionadoEm": "2026-09-01",
     "sha256": "d8895542c728a7323cceb1490d07dab18664750afd5df1f0a24d9499e2757342",
     "bytes": 8388608
+  },
+  {
+    "id": "gba-017",
+    "nome": "Castlevania: Circle of the Moon",
+    "console": "Game Boy Advance",
+    "ano": "2001",
+    "genero": "Ação / Aventura",
+    "desenvolvedora": "Konami",
+    "descricao": "Castlevania: Circle of the Moon para Game Boy Advance.",
+    "destaque": false,
+    "core": "gba",
+    "rom": "jogos/gba/jogo-017/rom/jogo.gba",
+    "capa": "jogos/gba/jogo-017/imagens/capa.webp",
+    "banner": "jogos/gba/jogo-017/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 33,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "476e00f7c147ae713f7d79c56e981e08a056f99899f043af74c3120d93bc4015",
+    "bytes": 8388608
   }
 ]
