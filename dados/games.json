@@ -454,5 +454,24 @@
     "adicionadoEm": "2026-09-01",
     "sha256": "f14cb2fc6243400f7ef4478aed02e5489ca5b211ba863805c4ca6942628a3ac8",
     "bytes": 8388608
+  },
+  {
+    "id": "gba-009",
+    "nome": "Contra Advance: The Alien Wars EX",
+    "console": "Game Boy Advance",
+    "ano": "2002",
+    "genero": "Ação / Tiro",
+    "desenvolvedora": "Konami",
+    "descricao": "Contra Advance: The Alien Wars EX para Game Boy Advance.",
+    "destaque": false,
+    "core": "gba",
+    "rom": "jogos/gba/jogo-009/rom/jogo.gba",
+    "capa": "jogos/gba/jogo-009/imagens/capa.webp",
+    "banner": "jogos/gba/jogo-009/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 25,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "d02c2b0b228b3ee334360aaf77634ae54137a204eb435902a3f7fa926c8849cb",
+    "bytes": 4194304
   }
 ]
