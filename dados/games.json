@@ -720,5 +720,24 @@
     "adicionadoEm": "2026-09-01",
     "sha256": "e414324d8c2e2dcdbbf033b3e028897554df0d13affe5ee4484439a3e8d79b18",
     "bytes": 2097152
+  },
+  {
+    "id": "snes-027",
+    "nome": "E.V.O.: Search for Eden PT-BR",
+    "console": "SNES",
+    "ano": "1993",
+    "genero": "Ação / RPG",
+    "desenvolvedora": "Almanic / Enix",
+    "descricao": "E.V.O.: Search for Eden PT-BR para Super Nintendo.",
+    "destaque": false,
+    "core": "snes",
+    "rom": "jogos/snes/jogo-27/rom/EVO - Search for Eden.zip",
+    "capa": "jogos/snes/jogo-27/imagens/capa.webp",
+    "banner": "jogos/snes/jogo-27/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 39,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "b0ca9685fc0955389a434836afa3be42b2410bf7bdfe8e4ae93221755d08141c",
+    "bytes": 2097152
   }
 ]
