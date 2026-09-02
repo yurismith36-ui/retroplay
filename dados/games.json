@@ -663,5 +663,24 @@
     "adicionadoEm": "2026-09-01",
     "sha256": "23e1faf4eacb71359abb98bba07e7a97a676b9d9cfa2577ef1c8a04c8f257140",
     "bytes": 4194304
+  },
+  {
+    "id": "snes-024",
+    "nome": "Super Street Fighter II",
+    "console": "SNES",
+    "ano": "1994",
+    "genero": "Luta",
+    "desenvolvedora": "Capcom",
+    "descricao": "Super Street Fighter II para Super Nintendo.",
+    "destaque": false,
+    "core": "snes",
+    "rom": "jogos/snes/jogo-24/rom/Super Street Fighter II.zip",
+    "capa": "jogos/snes/jogo-24/imagens/capa.webp",
+    "banner": "jogos/snes/jogo-24/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 36,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "69c94bdc5f175c52990a2cc09744771aa004e2194031828beb26e985d6f31e7b",
+    "bytes": 4194816
   }
 ]
