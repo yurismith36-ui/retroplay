@@ -587,5 +587,24 @@
     "adicionadoEm": "2026-09-01",
     "sha256": "0d21d09fa98139af17e597b417c94a81cbdb23e086b8201f4c88e1c321e70cc5",
     "bytes": 8388608
+  },
+  {
+    "id": "gba-016",
+    "nome": "Metroid Fusion",
+    "console": "Game Boy Advance",
+    "ano": "2002",
+    "genero": "Ação / Aventura",
+    "desenvolvedora": "Nintendo",
+    "descricao": "Metroid Fusion para Game Boy Advance.",
+    "destaque": false,
+    "core": "gba",
+    "rom": "jogos/gba/jogo-016/rom/jogo.gba",
+    "capa": "jogos/gba/jogo-016/imagens/capa.webp",
+    "banner": "jogos/gba/jogo-016/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 32,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "d8895542c728a7323cceb1490d07dab18664750afd5df1f0a24d9499e2757342",
+    "bytes": 8388608
   }
 ]
