@@ -492,5 +492,24 @@
     "adicionadoEm": "2026-09-01",
     "sha256": "f37f78185fba53009ad157513b68c4973de98df81c2bc42fadf8c3ea522f3cbe",
     "bytes": 16777216
+  },
+  {
+    "id": "gba-011",
+    "nome": "Lara Croft Tomb Raider: The Prophecy",
+    "console": "Game Boy Advance",
+    "ano": "2002",
+    "genero": "Ação / Aventura",
+    "desenvolvedora": "Core Design / Ubi Soft",
+    "descricao": "Lara Croft Tomb Raider: The Prophecy para Game Boy Advance.",
+    "destaque": false,
+    "core": "gba",
+    "rom": "jogos/gba/jogo-011/rom/jogo.gba",
+    "capa": "jogos/gba/jogo-011/imagens/capa.webp",
+    "banner": "jogos/gba/jogo-011/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 27,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "68c518acb1cf301164196394f7b54a41ab1e18ae564c3101d069e4f135d5daab",
+    "bytes": 8388608
   }
 ]
