@@ -473,5 +473,24 @@
     "adicionadoEm": "2026-09-01",
     "sha256": "d02c2b0b228b3ee334360aaf77634ae54137a204eb435902a3f7fa926c8849cb",
     "bytes": 4194304
+  },
+  {
+    "id": "gba-010",
+    "nome": "Kirby & the Amazing Mirror",
+    "console": "Game Boy Advance",
+    "ano": "2004",
+    "genero": "Plataforma / Aventura",
+    "desenvolvedora": "HAL Laboratory",
+    "descricao": "Kirby & the Amazing Mirror para Game Boy Advance.",
+    "destaque": false,
+    "core": "gba",
+    "rom": "jogos/gba/jogo-010/rom/jogo.gba",
+    "capa": "jogos/gba/jogo-010/imagens/capa.webp",
+    "banner": "jogos/gba/jogo-010/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 26,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "f37f78185fba53009ad157513b68c4973de98df81c2bc42fadf8c3ea522f3cbe",
+    "bytes": 16777216
   }
 ]
