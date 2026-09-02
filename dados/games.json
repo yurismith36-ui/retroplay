@@ -739,5 +739,24 @@
     "adicionadoEm": "2026-09-01",
     "sha256": "b0ca9685fc0955389a434836afa3be42b2410bf7bdfe8e4ae93221755d08141c",
     "bytes": 2097152
+  },
+  {
+    "id": "gba-018",
+    "nome": "Pokémon Extended Fire Red",
+    "console": "Game Boy Advance",
+    "ano": "2004",
+    "genero": "RPG",
+    "desenvolvedora": "Game Freak / Hack ROM",
+    "descricao": "Pokémon Extended Fire Red para Game Boy Advance.",
+    "destaque": false,
+    "core": "gba",
+    "rom": "jogos/gba/jogo-018/rom/jogo.gba",
+    "capa": "jogos/gba/jogo-018/imagens/capa.webp",
+    "banner": "jogos/gba/jogo-018/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 40,
+    "adicionadoEm": "2026-09-02",
+    "sha256": "da5e248026dea0483786640b7c91805e2f4fcb0ec4916156ef5b651bee2046e0",
+    "bytes": 33554432
   }
 ]
