@@ -701,5 +701,24 @@
     "adicionadoEm": "2026-09-01",
     "sha256": "28045ade8096bca7799fff35b922bc324a9bed028f5d40a63b514c4b6f438e56",
     "bytes": 3145728
+  },
+  {
+    "id": "snes-026",
+    "nome": "The Legend of Zelda: A Link to the Past PT-BR",
+    "console": "SNES",
+    "ano": "1992",
+    "genero": "Ação / Aventura",
+    "desenvolvedora": "Nintendo",
+    "descricao": "The Legend of Zelda: A Link to the Past para Super Nintendo, versão em português do Brasil.",
+    "destaque": false,
+    "core": "snes",
+    "rom": "jogos/snes/jogo-26/rom/The Legend of Zelda - A Link to the Past.zip",
+    "capa": "jogos/snes/jogo-26/imagens/capa.webp",
+    "banner": "jogos/snes/jogo-26/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 38,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "e414324d8c2e2dcdbbf033b3e028897554df0d13affe5ee4484439a3e8d79b18",
+    "bytes": 2097152
   }
 ]
