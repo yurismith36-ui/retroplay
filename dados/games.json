@@ -511,5 +511,24 @@
     "adicionadoEm": "2026-09-01",
     "sha256": "68c518acb1cf301164196394f7b54a41ab1e18ae564c3101d069e4f135d5daab",
     "bytes": 8388608
+  },
+  {
+    "id": "gba-012",
+    "nome": "Marvel: Ultimate Alliance",
+    "console": "Game Boy Advance",
+    "ano": "2006",
+    "genero": "Ação / RPG",
+    "desenvolvedora": "Activision",
+    "descricao": "Marvel: Ultimate Alliance para Game Boy Advance.",
+    "destaque": false,
+    "core": "gba",
+    "rom": "jogos/gba/jogo-012/rom/jogo.gba",
+    "capa": "jogos/gba/jogo-012/imagens/capa.webp",
+    "banner": "jogos/gba/jogo-012/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 28,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "2503890fe656c681519c52d10ea96f964a999766155aff162334c4594d3e2805",
+    "bytes": 8388608
   }
 ]
