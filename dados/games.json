@@ -416,5 +416,24 @@
     "adicionadoEm": "2026-09-01",
     "sha256": "4a5728de4ac36fb1c2adaca7d410ad8ee07bbe5fde0e83ad43f96f49132c3ace",
     "bytes": 16777216
+  },
+  {
+    "id": "gba-007",
+    "nome": "Castlevania: Aria of Sorrow",
+    "console": "Game Boy Advance",
+    "ano": "2003",
+    "genero": "Ação / Aventura",
+    "desenvolvedora": "Konami",
+    "descricao": "Castlevania: Aria of Sorrow para Game Boy Advance.",
+    "destaque": false,
+    "core": "gba",
+    "rom": "jogos/gba/jogo-007/rom/jogo.gba",
+    "capa": "jogos/gba/jogo-007/imagens/capa.webp",
+    "banner": "jogos/gba/jogo-007/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 23,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "fcafd47af00b95b8c50db8d6b17d6fe7841ff51faba3113ed47fb4aed4fb9ce0",
+    "bytes": 8388608
   }
 ]
