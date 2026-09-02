@@ -340,5 +340,24 @@
     "adicionadoEm": "2026-08-20",
     "sha256": "b96e359bbeac7058169ee8f92d54a5f68230879f25ddc2a04149f467fd8ece84",
     "bytes": 16777216
+  },
+  {
+    "id": "snes-021",
+    "nome": "Choplifter III: Rescue & Survive PT-BR",
+    "console": "SNES",
+    "ano": "1994",
+    "genero": "Ação / Tiro",
+    "desenvolvedora": "Beam Software",
+    "descricao": "Pilote um helicóptero em missões de resgate, enfrente forças inimigas e salve reféns. Versão em português do Brasil.",
+    "destaque": false,
+    "core": "snes",
+    "rom": "jogos/snes/jogo-21/rom/jogo.smc",
+    "capa": "jogos/snes/jogo-21/imagens/capa.webp",
+    "banner": "jogos/snes/jogo-21/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 19,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "e9ccaa5c4171a6656169db24ebc1b42b6362142f2a7c079ec8dbb014773c833f",
+    "bytes": 524288
   }
 ]
