@@ -625,5 +625,43 @@
     "adicionadoEm": "2026-09-01",
     "sha256": "476e00f7c147ae713f7d79c56e981e08a056f99899f043af74c3120d93bc4015",
     "bytes": 8388608
+  },
+  {
+    "id": "snes-022",
+    "nome": "Donkey Kong Country PT-BR",
+    "console": "SNES",
+    "ano": "1994",
+    "genero": "Plataforma",
+    "desenvolvedora": "Rare / Nintendo",
+    "descricao": "Donkey Kong Country para Super Nintendo, versão em português do Brasil.",
+    "destaque": false,
+    "core": "snes",
+    "rom": "jogos/snes/jogo-22/rom/Donkey Kong Country.zip",
+    "capa": "jogos/snes/jogo-22/imagens/capa.webp",
+    "banner": "jogos/snes/jogo-22/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 34,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "cdd94033448d9d60253c16ec400a24b6ea90ee46414e6d666ee1bcf40d30a0a7",
+    "bytes": 4194816
+  },
+  {
+    "id": "snes-023",
+    "nome": "Killer Instinct",
+    "console": "SNES",
+    "ano": "1995",
+    "genero": "Luta",
+    "desenvolvedora": "Rare / Nintendo",
+    "descricao": "Killer Instinct para Super Nintendo.",
+    "destaque": false,
+    "core": "snes",
+    "rom": "jogos/snes/jogo-23/rom/Killer Instinct.zip",
+    "capa": "jogos/snes/jogo-23/imagens/capa.webp",
+    "banner": "jogos/snes/jogo-23/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 35,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "23e1faf4eacb71359abb98bba07e7a97a676b9d9cfa2577ef1c8a04c8f257140",
+    "bytes": 4194304
   }
 ]
