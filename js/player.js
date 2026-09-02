@@ -221,169 +221,6 @@ async function openMainMenu() {
   location.replace("index.html");
 }
 
-function createGBCMobileSkin() {
-  if (document.querySelector(".retro-gbc-skin")) return;
-
-  const stage = document.querySelector("#emulator-stage");
-  if (!stage) return;
-
-  const skin = document.createElement("div");
-  skin.className = "retro-gbc-skin";
-  skin.setAttribute("aria-label", "Controles Game Boy Color");
-  skin.innerHTML = `
-    <div class="retro-gbc-screen-shell">
-      <div class="retro-gbc-screen-inner">
-        <div class="retro-gbc-screen-label">RETROPLAY</div>
-        <div class="retro-gbc-screen-slot" aria-hidden="true"></div>
-      </div>
-    </div>
-    <div class="retro-gbc-brand">GAME BOY <b>COLOR</b></div>
-    <div class="retro-gbc-led" aria-label="Jogo ligado"></div>
-    <div class="retro-gbc-controls">
-      <div class="retro-gbc-dpad" aria-label="Direcional">
-        <button class="retro-gbc-key dpad-up" data-key="ArrowUp" aria-label="Cima">▲</button>
-        <button class="retro-gbc-key dpad-left" data-key="ArrowLeft" aria-label="Esquerda">◀</button>
-        <div class="dpad-center" aria-hidden="true"></div>
-        <button class="retro-gbc-key dpad-right" data-key="ArrowRight" aria-label="Direita">▶</button>
-        <button class="retro-gbc-key dpad-down" data-key="ArrowDown" aria-label="Baixo">▼</button>
-      </div>
-      <div class="retro-gbc-face-buttons" aria-label="Botões de ação">
-        <button class="retro-gbc-key retro-gbc-b" data-key="x" aria-label="B">B</button>
-        <button class="retro-gbc-key retro-gbc-a" data-key="z" aria-label="A">A</button>
-      </div>
-    </div>
-    <div class="retro-gbc-meta-controls">
-      <button class="retro-gbc-key retro-gbc-select" data-key="Shift" aria-label="Select">SELECT</button>
-      <button class="retro-gbc-key retro-gbc-start" data-key="Enter" aria-label="Start">START</button>
-    </div>
-    <div class="retro-gbc-speaker" aria-hidden="true"></div>
-  `;
-  stage.appendChild(skin);
-
-  const sendKey = (type, key) => {
-    const event = new KeyboardEvent(type, {
-      key,
-      code: key === "ArrowUp" ? "ArrowUp" : key === "ArrowDown" ? "ArrowDown" : key === "ArrowLeft" ? "ArrowLeft" : key === "ArrowRight" ? "ArrowRight" : key === "Enter" ? "Enter" : key === "Shift" ? "ShiftLeft" : key === "z" ? "KeyZ" : "KeyX",
-      bubbles: true,
-      cancelable: true,
-      composed: true,
-      repeat: type === "keydown"
-    });
-    document.dispatchEvent(event);
-  };
-
-  skin.querySelectorAll(".retro-gbc-key").forEach(button => {
-    const key = button.dataset.key;
-    let held = false;
-    const down = event => {
-      event.preventDefault();
-      if (held) return;
-      held = true;
-      button.classList.add("is-pressed");
-      try { button.setPointerCapture?.(event.pointerId); } catch (_) {}
-      sendKey("keydown", key);
-    };
-    const up = event => {
-      event.preventDefault();
-      if (!held) return;
-      held = false;
-      button.classList.remove("is-pressed");
-      sendKey("keyup", key);
-    };
-    button.addEventListener("pointerdown", down);
-    button.addEventListener("pointerup", up);
-    button.addEventListener("pointercancel", up);
-    button.addEventListener("lostpointercapture", up);
-    button.addEventListener("contextmenu", e => e.preventDefault());
-  });
-
-  window.addEventListener("blur", () => {
-    skin.querySelectorAll(".retro-gbc-key.is-pressed").forEach(button => {
-      button.classList.remove("is-pressed");
-      sendKey("keyup", button.dataset.key);
-    });
-  });
-}
-
-
-function createGBAMobileSkin() {
-  if (document.querySelector(".retro-gba-skin")) return;
-
-  const stage = document.querySelector("#emulator-stage");
-  if (!stage) return;
-
-  const skin = document.createElement("div");
-  skin.className = "retro-gba-skin";
-  skin.setAttribute("aria-label", "Controles Game Boy Advance");
-  skin.innerHTML = `
-    <div class="retro-gba-shoulder retro-gba-l" data-key="a" role="button" aria-label="L">L</div>
-    <div class="retro-gba-shoulder retro-gba-r" data-key="s" role="button" aria-label="R">R</div>
-    <div class="retro-gba-screen-frame">
-      <div class="retro-gba-screen-label">GAME BOY ADVANCE</div>
-    </div>
-    <div class="retro-gba-brand">GAME BOY <b>ADVANCE</b></div>
-    <div class="retro-gba-controls">
-      <div class="retro-gba-dpad" aria-label="Direcional">
-        <button class="retro-gba-key gba-up" data-key="ArrowUp" aria-label="Cima">▲</button>
-        <button class="retro-gba-key gba-left" data-key="ArrowLeft" aria-label="Esquerda">◀</button>
-        <div class="gba-dpad-center" aria-hidden="true"></div>
-        <button class="retro-gba-key gba-right" data-key="ArrowRight" aria-label="Direita">▶</button>
-        <button class="retro-gba-key gba-down" data-key="ArrowDown" aria-label="Baixo">▼</button>
-      </div>
-      <div class="retro-gba-face-buttons" aria-label="Botões de ação">
-        <button class="retro-gba-key gba-b" data-key="x" aria-label="B">B</button>
-        <button class="retro-gba-key gba-a" data-key="z" aria-label="A">A</button>
-      </div>
-    </div>
-    <div class="retro-gba-meta-controls">
-      <button class="retro-gba-key gba-select" data-key="Shift" aria-label="Select">SELECT</button>
-      <button class="retro-gba-key gba-start" data-key="Enter" aria-label="Start">START</button>
-    </div>
-    <div class="retro-gba-speaker" aria-hidden="true"></div>
-    <div class="retro-gba-led" aria-label="Jogo ligado"></div>
-  `;
-  stage.appendChild(skin);
-
-  const sendKey = (type, key) => {
-    const code = key === "ArrowUp" ? "ArrowUp" : key === "ArrowDown" ? "ArrowDown" : key === "ArrowLeft" ? "ArrowLeft" : key === "ArrowRight" ? "ArrowRight" : key === "Enter" ? "Enter" : key === "Shift" ? "ShiftLeft" : key === "z" ? "KeyZ" : key === "x" ? "KeyX" : key === "a" ? "KeyA" : "KeyS";
-    document.dispatchEvent(new KeyboardEvent(type, {
-      key, code, bubbles: true, cancelable: true, composed: true, repeat: type === "keydown"
-    }));
-  };
-
-  skin.querySelectorAll(".retro-gba-key, .retro-gba-shoulder").forEach(button => {
-    const key = button.dataset.key;
-    let held = false;
-    const down = event => {
-      event.preventDefault();
-      if (held) return;
-      held = true;
-      button.classList.add("is-pressed");
-      try { button.setPointerCapture?.(event.pointerId); } catch (_) {}
-      sendKey("keydown", key);
-    };
-    const up = event => {
-      event.preventDefault();
-      if (!held) return;
-      held = false;
-      button.classList.remove("is-pressed");
-      sendKey("keyup", key);
-    };
-    button.addEventListener("pointerdown", down);
-    button.addEventListener("pointerup", up);
-    button.addEventListener("pointercancel", up);
-    button.addEventListener("lostpointercapture", up);
-    button.addEventListener("contextmenu", e => e.preventDefault());
-  });
-
-  window.addEventListener("blur", () => {
-    skin.querySelectorAll(".is-pressed").forEach(button => {
-      button.classList.remove("is-pressed");
-      if (button.dataset.key) sendKey("keyup", button.dataset.key);
-    });
-  });
-}
-
 async function startPlayer() {
   if (!gameId) {
     showError("Nenhum jogo foi selecionado.");
@@ -406,15 +243,12 @@ async function startPlayer() {
     document.querySelector("#player-title").textContent = game.nome;
     document.querySelector("#player-console").textContent = game.console;
 
-    // Skins de portáteis SOMENTE no celular em retrato. No PC o player permanece tradicional.
-    const consoleName = String(game.console || "").toLowerCase();
-    const isGBC = consoleName.includes("game boy color");
-    const isGBA = consoleName.includes("game boy advance");
+    // Player padrão em todos os consoles.
+    // As skins personalizadas de Game Boy Advance e Game Boy Color foram removidas.
+    // O menu cristal e os controles nativos do EmulatorJS continuam funcionando normalmente.
     const isPortraitMobile = window.matchMedia("(orientation: portrait) and (max-width: 760px)").matches;
-    document.body.classList.toggle("retro-console-gbc", isGBC && isPortraitMobile);
-    document.body.classList.toggle("retro-console-gba", isGBA && isPortraitMobile);
-    if (isPortraitMobile && isGBC) createGBCMobileSkin();
-    if (isPortraitMobile && isGBA) createGBAMobileSkin();
+    document.body.classList.remove("retro-console-gbc", "retro-console-gba");
+    document.querySelectorAll(".retro-gbc-skin, .retro-gba-skin").forEach(skin => skin.remove());
     try { sessionStorage.setItem("retroplay-rom-em-memoria", game.id); } catch (error) {}
 
     window.EJS_player = "#game";
