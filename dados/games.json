@@ -530,5 +530,24 @@
     "adicionadoEm": "2026-09-01",
     "sha256": "2503890fe656c681519c52d10ea96f964a999766155aff162334c4594d3e2805",
     "bytes": 8388608
+  },
+  {
+    "id": "gba-013",
+    "nome": "Mega Man & Bass",
+    "console": "Game Boy Advance",
+    "ano": "2003",
+    "genero": "Ação / Plataforma",
+    "desenvolvedora": "Capcom",
+    "descricao": "Mega Man & Bass para Game Boy Advance.",
+    "destaque": false,
+    "core": "gba",
+    "rom": "jogos/gba/jogo-013/rom/jogo.gba",
+    "capa": "jogos/gba/jogo-013/imagens/capa.webp",
+    "banner": "jogos/gba/jogo-013/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 29,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "0b2d46c7fe18445ea0d4def20ae6eb41a02ee701d60e20a58658674d49657c13",
+    "bytes": 8388608
   }
 ]
