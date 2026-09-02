@@ -696,3 +696,129 @@ body.retro-pseudo-fullscreen .isolated-emulator-stage {
     z-index: 100;
   }
 }
+
+
+/* ================================================================
+   RetroPlay — Menu Cristal universal / mobile vertical
+   Aparece em qualquer console sem alterar os controles do emulador.
+   ================================================================ */
+.retro-quick-menu {
+  display: none;
+}
+
+@media (orientation: portrait) and (max-width: 760px) {
+  .player-isolated-page .retro-quick-menu {
+    display: block;
+    position: fixed;
+    z-index: 140;
+    top: 53.5dvh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(286px, calc(100vw - 36px));
+    pointer-events: none;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .player-isolated-page .retro-quick-menu-toggle {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 112px;
+    height: 48px;
+    margin: 0 auto;
+    padding: 0 14px;
+    border: 1px solid rgba(255,255,255,.34);
+    border-radius: 13px;
+    background:
+      linear-gradient(145deg, rgba(255,255,255,.15), rgba(255,255,255,.045) 46%, rgba(95,140,190,.09)),
+      rgba(10,14,22,.18);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.33),
+      inset 0 -1px 0 rgba(255,255,255,.08),
+      0 7px 20px rgba(0,0,0,.22),
+      0 0 16px rgba(185,225,255,.08);
+    -webkit-backdrop-filter: blur(8px) saturate(1.35);
+    backdrop-filter: blur(8px) saturate(1.35);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .player-isolated-page .retro-quick-menu-toggle span {
+    display: block;
+    font-size: 26px;
+    line-height: 1;
+    font-weight: 900;
+    letter-spacing: 2.5px;
+    background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(221,242,255,.58) 45%, rgba(149,202,238,.28));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: .55px rgba(255,255,255,.58);
+    text-shadow:
+      0 1px 0 rgba(255,255,255,.22),
+      0 0 7px rgba(214,241,255,.22),
+      0 2px 4px rgba(0,0,0,.42);
+  }
+
+  .player-isolated-page .retro-quick-menu.open .retro-quick-menu-toggle {
+    border-color: rgba(225,245,255,.58);
+    background:
+      linear-gradient(145deg, rgba(255,255,255,.21), rgba(255,255,255,.075) 48%, rgba(110,175,220,.13)),
+      rgba(10,14,22,.25);
+  }
+
+  .player-isolated-page .retro-quick-menu-panel {
+    pointer-events: auto;
+    position: absolute;
+    top: 58px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(270px, calc(100vw - 46px));
+    padding: 9px;
+    display: grid;
+    gap: 8px;
+    border: 1px solid rgba(255,255,255,.28);
+    border-radius: 14px;
+    background:
+      linear-gradient(145deg, rgba(255,255,255,.13), rgba(255,255,255,.045)),
+      rgba(7,10,17,.58);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.2),
+      0 12px 30px rgba(0,0,0,.42);
+    -webkit-backdrop-filter: blur(13px) saturate(1.3);
+    backdrop-filter: blur(13px) saturate(1.3);
+  }
+
+  .player-isolated-page .retro-quick-menu-panel[hidden] {
+    display: none !important;
+  }
+
+  .player-isolated-page .retro-quick-menu-panel button {
+    min-height: 43px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255,255,255,.24);
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.045));
+    color: rgba(242,249,255,.88);
+    font: 800 13px/1.1 Arial, Helvetica, sans-serif;
+    letter-spacing: .8px;
+    text-shadow: 0 1px 3px rgba(0,0,0,.7), 0 0 7px rgba(210,240,255,.16);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.14);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .player-isolated-page .retro-quick-menu-panel button:active {
+    transform: translateY(1px);
+    background: rgba(255,255,255,.16);
+  }
+
+  .player-isolated-page .retro-quick-menu-panel button:disabled {
+    opacity: .58;
+  }
+
+  body.memory-cleared .retro-quick-menu {
+    display: none !important;
+  }
+}

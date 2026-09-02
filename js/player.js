@@ -5,6 +5,11 @@ const gameContainer = document.querySelector("#game");
 const fullscreenButton = document.querySelector("#fullscreen-button");
 const clearMemoryButton = document.querySelector("#clear-player-memory");
 const backButton = document.querySelector(".player-back");
+const quickMenu = document.querySelector("#retro-quick-menu");
+const quickMenuToggle = document.querySelector("#retro-quick-menu-toggle");
+const quickMenuPanel = document.querySelector("#retro-quick-menu-panel");
+const quickClearMemoryButton = document.querySelector("#retro-quick-clear-memory");
+const quickHomeButton = document.querySelector("#retro-quick-home");
 
 let loaderScript = null;
 let memoryWasReleased = false;
@@ -179,12 +184,41 @@ function releaseEmulatorMemory(showBlackScreen = true) {
   cleanupInProgress = false;
 }
 
+function setQuickMenuOpen(open) {
+  if (!quickMenuPanel || !quickMenuToggle) return;
+  quickMenuPanel.hidden = !open;
+  quickMenu.classList.toggle("open", open);
+  quickMenuToggle.setAttribute("aria-expanded", String(open));
+}
+
+function closeQuickMenu() {
+  setQuickMenuOpen(false);
+}
+
 async function clearMemoryAndOpenBlackScreen() {
-  clearMemoryButton.disabled = true;
-  clearMemoryButton.textContent = "SALVANDO...";
+  closeQuickMenu();
+  if (clearMemoryButton) {
+    clearMemoryButton.disabled = true;
+    clearMemoryButton.textContent = "SALVANDO...";
+  }
+  if (quickClearMemoryButton) {
+    quickClearMemoryButton.disabled = true;
+    quickClearMemoryButton.textContent = "SALVANDO...";
+  }
   await saveBeforeLeaving();
   releaseEmulatorMemory(true);
   location.replace("limpar.html");
+}
+
+async function openMainMenu() {
+  closeQuickMenu();
+  if (quickHomeButton) {
+    quickHomeButton.disabled = true;
+    quickHomeButton.textContent = "SALVANDO...";
+  }
+  await saveBeforeLeaving();
+  releaseEmulatorMemory(true);
+  location.replace("index.html");
 }
 
 function createGBCMobileSkin() {
@@ -440,6 +474,25 @@ async function startPlayer() {
 
 fullscreenButton.addEventListener("click", toggleFullscreen);
 clearMemoryButton.addEventListener("click", clearMemoryAndOpenBlackScreen);
+
+quickMenuToggle?.addEventListener("click", event => {
+  event.preventDefault();
+  event.stopPropagation();
+  setQuickMenuOpen(Boolean(quickMenuPanel?.hidden));
+});
+
+quickMenuPanel?.addEventListener("click", event => event.stopPropagation());
+quickClearMemoryButton?.addEventListener("click", clearMemoryAndOpenBlackScreen);
+quickHomeButton?.addEventListener("click", openMainMenu);
+
+document.addEventListener("pointerdown", event => {
+  if (!quickMenu?.classList.contains("open")) return;
+  if (!quickMenu.contains(event.target)) closeQuickMenu();
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeQuickMenu();
+});
 
 backButton.addEventListener("click", async event => {
   event.preventDefault();

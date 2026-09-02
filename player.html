@@ -11,7 +11,7 @@
   <title>RetroPlay — Jogando</title>
   <link rel="icon" href="assets/icone-controle.svg">
   <link rel="stylesheet" href="css/style.css?v=player-isolado-1-0">
-  <link rel="stylesheet" href="css/player-isolated.css?v=handheld-skins-2-1">
+  <link rel="stylesheet" href="css/player-isolated.css?v=handheld-skins-2-2-menu-cristal">
   <style>#retroplay-translation-ui{display:none!important}</style>
 </head>
 <body class="player-page player-isolated-page">
@@ -33,6 +33,16 @@
     <button id="fullscreen-button" type="button" aria-pressed="false">TELA CHEIA</button>
     <button id="clear-player-memory" class="clear-player-memory" type="button">SAIR E LIMPAR</button>
   </section>
+  <div id="retro-quick-menu" class="retro-quick-menu" aria-label="Menu rápido do RetroPlay">
+    <button id="retro-quick-menu-toggle" class="retro-quick-menu-toggle" type="button"
+            aria-expanded="false" aria-controls="retro-quick-menu-panel">
+      <span>MENU</span>
+    </button>
+    <div id="retro-quick-menu-panel" class="retro-quick-menu-panel" hidden>
+      <button id="retro-quick-clear-memory" type="button">LIMPAR MEMÓRIA</button>
+      <button id="retro-quick-home" type="button">MENU INICIAL</button>
+    </div>
+  </div>
   <main class="isolated-player-main">
     <section class="emulator-stage isolated-emulator-stage" id="emulator-stage">
       <div id="player-status" class="player-status">
@@ -70,7 +80,7 @@
   <script src="js/cloud.js?v=cloud-3-1"></script>
   <script src="js/cloud-save-state.js?v=cloud-3-1"></script>
   <script src="js/vs-system-controls.js?v=battle-city-vs-coin-1"></script>
-  <script src="js/player.js?v=mobile-skins-2-1"></script>
+  <script src="js/player.js?v=mobile-skins-2-2-menu-cristal"></script>
   <script src="js/translate-screen.js?v=captura-interna-3-0"></script>
 </body>
 </html>
