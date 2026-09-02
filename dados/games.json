@@ -397,5 +397,24 @@
     "adicionadoEm": "2026-09-01",
     "sha256": "1a655b2a84e6408af50513a3ad1e5c3a4ae4b56f2bffc3f533dbac9e8cc678ff",
     "bytes": 16777216
+  },
+  {
+    "id": "gba-006",
+    "nome": "Mortal Kombat: Deadly Alliance",
+    "console": "Game Boy Advance",
+    "ano": "2002",
+    "genero": "Luta",
+    "desenvolvedora": "Midway",
+    "descricao": "Mortal Kombat: Deadly Alliance para Game Boy Advance.",
+    "destaque": false,
+    "core": "gba",
+    "rom": "jogos/gba/jogo-006/rom/jogo.gba",
+    "capa": "jogos/gba/jogo-006/imagens/capa.webp",
+    "banner": "jogos/gba/jogo-006/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 22,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "4a5728de4ac36fb1c2adaca7d410ad8ee07bbe5fde0e83ad43f96f49132c3ace",
+    "bytes": 16777216
   }
 ]
