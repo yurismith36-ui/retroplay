@@ -378,5 +378,24 @@
     "adicionadoEm": "2026-09-01",
     "sha256": "289b322982f3ad4e95f4a09c84311e66af1c8c808338ec61d0a160cc47df2791",
     "bytes": 16777216
+  },
+  {
+    "id": "gba-005",
+    "nome": "Moemon - Fire Red PTBR",
+    "console": "Game Boy Advance",
+    "ano": "2004",
+    "genero": "RPG",
+    "desenvolvedora": "Game Freak / Mod",
+    "descricao": "Versão modificada de Pokémon FireRed para Game Boy Advance.",
+    "destaque": false,
+    "core": "gba",
+    "rom": "jogos/gba/jogo-005/rom/jogo.gba",
+    "capa": "jogos/gba/jogo-005/imagens/capa.webp",
+    "banner": "jogos/gba/jogo-005/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 21,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "1a655b2a84e6408af50513a3ad1e5c3a4ae4b56f2bffc3f533dbac9e8cc678ff",
+    "bytes": 16777216
   }
 ]
