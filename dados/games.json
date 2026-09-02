@@ -549,5 +549,24 @@
     "adicionadoEm": "2026-09-01",
     "sha256": "0b2d46c7fe18445ea0d4def20ae6eb41a02ee701d60e20a58658674d49657c13",
     "bytes": 8388608
+  },
+  {
+    "id": "gba-014",
+    "nome": "Metal Slug Advance",
+    "console": "Game Boy Advance",
+    "ano": "2004",
+    "genero": "Ação / Tiro",
+    "desenvolvedora": "SNK Playmore",
+    "descricao": "Metal Slug Advance para Game Boy Advance.",
+    "destaque": false,
+    "core": "gba",
+    "rom": "jogos/gba/jogo-014/rom/jogo.gba",
+    "capa": "jogos/gba/jogo-014/imagens/capa.webp",
+    "banner": "jogos/gba/jogo-014/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 30,
+    "adicionadoEm": "2026-09-01",
+    "sha256": "061dc985d8bbb8a890994d324977b37ea9c177f14f9045e974193bcd94259251",
+    "bytes": 8388608
   }
 ]
