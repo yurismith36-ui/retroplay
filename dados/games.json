@@ -834,5 +834,24 @@
     "adicionadoEm": "2026-09-03",
     "sha256": "70ab6fe8431a45b5185c42937478168f24cb5d4a96e6390a5d64693b98b39702",
     "bytes": 1048576
+  },
+  {
+    "id": "gbc-002",
+    "nome": "Pokémon Crystal Version PT-BR",
+    "console": "Game Boy Color",
+    "ano": "2000",
+    "genero": "RPG",
+    "desenvolvedora": "Game Freak / Tradução PT-BR",
+    "descricao": "Pokémon Crystal Version em português para Game Boy Color, com a aventura clássica de Johto e Kanto.",
+    "destaque": false,
+    "core": "gb",
+    "rom": "jogos/gbc/jogo-002/rom/Pokemon Crystal Version PT-BR.gbc",
+    "capa": "jogos/gbc/jogo-002/imagens/capa.webp",
+    "banner": "jogos/gbc/jogo-002/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 45,
+    "adicionadoEm": "2026-09-03",
+    "sha256": "f4e99f45bff337c088781d0a266f59ee89cd9462087a1b0b985a161f78b4749e",
+    "bytes": 2097152
   }
 ]
