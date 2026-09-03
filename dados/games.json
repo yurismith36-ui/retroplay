@@ -750,14 +750,14 @@
     "descricao": "Pokémon Extended Fire Red para Game Boy Advance.",
     "destaque": false,
     "core": "gba",
-    "rom": "jogos/gba/jogo-018/rom/jogo.gba",
+    "rom": "jogos/gba/jogo-018/rom/jogo.zip",
     "capa": "jogos/gba/jogo-018/imagens/capa.webp",
     "banner": "jogos/gba/jogo-018/imagens/banner.jpg",
     "logo": "",
     "ordem": 40,
     "adicionadoEm": "2026-09-02",
-    "sha256": "da5e248026dea0483786640b7c91805e2f4fcb0ec4916156ef5b651bee2046e0",
-    "bytes": 33554432
+    "sha256": "121a58bf847e1ae16b0e45a7cd133f2f3197bf8d8b15c34bde2b4026ae3f7b6d",
+    "bytes": 5416327
   },
   {
     "id": "snes-028",
@@ -815,5 +815,24 @@
     "adicionadoEm": "2026-09-02",
     "sha256": "3ce45e1b17a88eb1129d3a5558e387310c2358db53ec0113353958cafa76b039",
     "bytes": 786432
+  },
+  {
+    "id": "gbc-001",
+    "nome": "Pokémon Yellow: Special Pikachu Edition",
+    "console": "Game Boy Color",
+    "ano": "1998",
+    "genero": "RPG",
+    "desenvolvedora": "Game Freak",
+    "descricao": "Pokémon Yellow: Special Pikachu Edition para Game Boy Color, com Pikachu acompanhando o jogador durante a aventura.",
+    "destaque": false,
+    "core": "gb",
+    "rom": "jogos/gbc/jogo-001/rom/Pokemon Special Pikachu Edition.gbc",
+    "capa": "jogos/gbc/jogo-001/imagens/capa.webp",
+    "banner": "jogos/gbc/jogo-001/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 44,
+    "adicionadoEm": "2026-09-03",
+    "sha256": "70ab6fe8431a45b5185c42937478168f24cb5d4a96e6390a5d64693b98b39702",
+    "bytes": 1048576
   }
 ]
