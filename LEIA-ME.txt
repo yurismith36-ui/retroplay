@@ -1,14 +1,31 @@
-RETROPLAY — ATUALIZAÇÃO 004 — MACE: THE DARK AGE
+RETROPLAY — CORREÇÃO POKÉMON YELLOW / IPHONE / NFC 1.0
 
-Inclui ROM, capa, banner, logo e games.json atualizado.
+PROBLEMA ENCONTRADO
+O cadastro do Pokémon Yellow aponta para:
+  jogos/gbc/jogo-001/rom/Pokemon Special Pikachu Edition.gbc
+
+Mas essa ROM não está nesse caminho no repositório atual.
+A ROM original enviada pelo usuário foi confirmada como POKEMON YELLOW,
+com 1.048.576 bytes e SHA-256:
+70ab6fe8431a45b5185c42937478168f24cb5d4a96e6390a5d64693b98b39702
+
+CORREÇÃO
+Foi criado um caminho exclusivo para o Yellow, sem mexer no Crystal:
+  jogos/gbc/pokemon-yellow/rom/jogo.gbc
+
+O ID continua sendo:
+  gbc-001
+
+Assim, a tag NFC do Yellow não precisa mudar se ela já usa:
+  player.html?id=gbc-001
 
 COMO INSTALAR
 1. Extraia este ZIP.
-2. No GitHub, envie as pastas dados e jogos.
-3. Aceite substituir dados/games.json.
-4. Faça o Commit changes.
-5. Aguarde e atualize o site.
+2. Envie/substitua a pasta dados no repositório.
+3. Envie a pasta jogos/gbc/pokemon-yellow inteira.
+4. Faça o commit.
+5. Aguarde o GitHub Pages publicar.
+6. No iPhone, teste novamente a tag NFC do Yellow.
 
-ROM: Mace - The Dark Age (USA).n64
-Tamanho: 12.00 MB
-SHA-256: 4e41e4d0290352db8e71ed523a8c71926dc495c1e68f4eadc403155b31bee37d
+IMPORTANTE
+Esta correção NÃO altera os arquivos do Pokémon Crystal.
