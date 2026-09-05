@@ -1,0 +1,122 @@
+.rp-install-target,
+.rp-browser-install-wrap {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.rp-browser-install-wrap {
+  margin-left: 10px;
+}
+
+.rp-browser-install-btn {
+  appearance: none;
+  border: 1px solid rgba(80, 255, 145, .72);
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(180deg, rgba(22, 40, 29, .98), rgba(8, 19, 12, .98));
+  color: #8cffae;
+  font: 800 10px/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: .04em;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 0 16px rgba(70, 255, 120, .12), inset 0 0 0 1px rgba(255,255,255,.03);
+}
+
+.rp-browser-install-btn:hover,
+.rp-browser-install-btn:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 0 20px rgba(70, 255, 120, .22), inset 0 0 0 1px rgba(255,255,255,.05);
+  outline: none;
+}
+
+.rp-browser-install-btn__icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.rp-browser-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 18px;
+}
+
+.rp-browser-modal.is-open { display: flex; }
+
+.rp-browser-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .74);
+  backdrop-filter: blur(5px);
+}
+
+.rp-browser-modal__card {
+  position: relative;
+  width: min(460px, 100%);
+  border: 1px solid rgba(80, 255, 145, .5);
+  border-radius: 18px;
+  padding: 24px 20px 20px;
+  background: #0a0c0b;
+  color: #f3f6f4;
+  box-shadow: 0 24px 80px rgba(0,0,0,.5), 0 0 30px rgba(75,255,135,.08);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.rp-browser-modal__icon { font-size: 34px; margin-bottom: 6px; }
+.rp-browser-modal__card h2 { margin: 0 34px 14px 0; font-size: 20px; color: #8cffae; }
+.rp-browser-modal__card p { color: #d7ded9; line-height: 1.5; }
+.rp-browser-modal__close {
+  position: absolute;
+  right: 12px;
+  top: 8px;
+  border: 0;
+  background: transparent;
+  color: #aaa;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.rp-browser-steps { margin: 14px 0; padding-left: 22px; }
+.rp-browser-steps li { margin: 10px 0; line-height: 1.45; }
+.rp-share-icon { font-size: 18px; white-space: nowrap; }
+.rp-browser-note { font-size: 13px; opacity: .8; }
+.rp-browser-ok { color: #8cffae !important; font-weight: 700; }
+
+.rp-browser-primary {
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  padding: 13px 16px;
+  margin-top: 8px;
+  background: #56ef87;
+  color: #071009;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.rp-install-modal-open { overflow: hidden; }
+
+@media (max-width: 720px) {
+  .rp-install-target,
+  .rp-browser-install-wrap {
+    display: flex;
+    width: 100%;
+  }
+
+  .rp-browser-install-wrap {
+    margin: 8px 0 0;
+  }
+
+  .rp-browser-install-btn {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}
