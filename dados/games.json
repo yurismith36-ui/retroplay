@@ -872,5 +872,24 @@
     "adicionadoEm": "2026-09-05",
     "sha256": "6bb6e01b7a173f5ef4221df97a56ed6751b13919bf06f15d1e9e734d5f1bbfb4",
     "bytes": 1048576
+  },
+  {
+    "id": "gbc-004",
+    "nome": "Pokémon Red Version PT-BR",
+    "console": "Game Boy Color",
+    "ano": "1998",
+    "genero": "RPG",
+    "desenvolvedora": "Game Freak / Tradução PT-BR",
+    "descricao": "Pokémon Red Version em português para Game Boy Color, com a aventura clássica de Kanto.",
+    "destaque": false,
+    "core": "gb",
+    "rom": "jogos/gbc/jogo-004/rom/Pokemon Red Version PT-BR.gb",
+    "capa": "jogos/gbc/jogo-004/imagens/capa.webp",
+    "banner": "jogos/gbc/jogo-004/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 47,
+    "adicionadoEm": "2026-09-05",
+    "sha256": "2448a6c8f7be69c112df8146c8538966839fdfe1160d8ce867967b972d6bf73b",
+    "bytes": 1048576
   }
 ]
