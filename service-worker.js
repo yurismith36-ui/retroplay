@@ -1,4 +1,4 @@
-const CACHE_VERSION = "retroplay-standard-controls-3-0";
+const CACHE_VERSION = "retroplay-ios-nfc-1-0";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 
@@ -30,7 +30,7 @@ const APP_SHELL = [
   "./js/cloud.js?v=auth-1-0",
   "./js/stats.js?v=account-2-0",
   "./js/conta.js?v=account-2-0",
-  "./js/player.js?v=standard-controls-3-0-menu-cristal",
+  "./js/player.js?v=ios-nfc-1-0",
   "./dados/games.json",
   "./assets/icone-controle.svg",
   "./assets/controle-retro.svg"

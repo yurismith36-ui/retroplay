@@ -1,0 +1,35 @@
+RETROPLAY — CORREÇÃO IPHONE + NFC 1.0
+
+PROBLEMA
+Ao abrir um jogo diretamente por NFC no iPhone, o player pode mostrar os controles, mas o jogo não inicia.
+No Android o comportamento continua normal.
+
+CAUSA
+O player estava usando EJS_startOnLoaded=true em celular vertical. No Safari/iOS, uma página aberta diretamente por NFC pode não ter uma interação válida do usuário para liberar o início automático do EmulatorJS.
+
+CORREÇÃO
+- iPhone em modo vertical: não força autoplay. O EmulatorJS mostra o botão "TOQUE PARA INICIAR".
+- Android em modo vertical: continua iniciando automaticamente como antes.
+- PC: continua com o comportamento tradicional.
+- Fundo do início do emulador passa a preto.
+- Service Worker recebe nova versão para evitar manter o JavaScript antigo.
+
+ARQUIVOS PARA SUBSTITUIR NO GITHUB
+1) /player.html
+2) /js/player.js
+3) /service-worker.js
+
+NÃO HÁ ROMS NESTE PATCH.
+
+COMO TESTAR
+1. Faça backup/commit do site atual.
+2. Substitua os 3 arquivos acima mantendo exatamente as mesmas pastas.
+3. Faça o commit no GitHub.
+4. Aguarde o GitHub Pages publicar.
+5. No iPhone, encoste no NFC e abra o jogo.
+6. Deve aparecer "TOQUE PARA INICIAR" na área do jogo.
+7. Toque uma vez e o jogo deve começar.
+8. Teste também no Android: deve continuar iniciando automaticamente.
+
+OBSERVAÇÃO
+O toque no iPhone é intencional. É a forma compatível com a política de interação do Safari/iOS e evita a tela vazia ao abrir pelo NFC.

@@ -143,7 +143,8 @@ function clearEJSReferences() {
   const names = [
     "EJS_player", "EJS_core", "EJS_gameUrl", "EJS_biosUrl",
     "EJS_pathtodata", "EJS_gameName", "EJS_gameID", "EJS_emulator",
-    "EJS_ready", "EJS_onGameStart", "EJS_onExit"
+    "EJS_ready", "EJS_onGameStart", "EJS_onExit",
+    "EJS_startOnLoaded", "EJS_startButtonName", "EJS_alignStartButton", "EJS_backgroundColor"
   ];
 
   names.forEach(name => {
@@ -255,8 +256,15 @@ async function startPlayer() {
     window.EJS_core = game.core;
     window.EJS_gameUrl = buildRomUrl(game);
     window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
-    // No celular vertical iniciamos automaticamente; no PC mantemos o player tradicional com o botão JOGAR.
-    window.EJS_startOnLoaded = isPortraitMobile;
+    // iPhone/Safari: quando o player é aberto diretamente por NFC, o iOS pode
+    // bloquear a inicialização automática por falta de uma interação do usuário.
+    // No iPhone mostramos o botão nativo do EmulatorJS para liberar a execução
+    // com um toque. Android continua iniciando automaticamente no modo vertical.
+    const iosNeedsUserGesture = isIOS && isPortraitMobile;
+    window.EJS_startOnLoaded = isPortraitMobile && !iosNeedsUserGesture;
+    window.EJS_startButtonName = iosNeedsUserGesture ? "TOQUE PARA INICIAR" : "JOGAR";
+    window.EJS_alignStartButton = "center";
+    window.EJS_backgroundColor = "#000000";
     window.EJS_gameName = game.nome;
     window.EJS_gameID = numericGameId(game.id);
     window.EJS_disableAutoUnload = false;
