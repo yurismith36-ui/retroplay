@@ -826,9 +826,9 @@
     "descricao": "Pokémon Yellow: Special Pikachu Edition para Game Boy Color, com Pikachu acompanhando o jogador durante a aventura.",
     "destaque": false,
     "core": "gb",
-    "rom": "jogos/gbc/pokemon-yellow/rom/jogo.gbc",
-    "capa": "jogos/gbc/pokemon-yellow/imagens/capa.jpg",
-    "banner": "jogos/gbc/pokemon-yellow/imagens/banner.jpg",
+    "rom": "jogos/gbc/jogo-001/rom/Pokemon Special Pikachu Edition.gbc",
+    "capa": "jogos/gbc/jogo-001/imagens/capa.webp",
+    "banner": "jogos/gbc/jogo-001/imagens/banner.jpg",
     "logo": "",
     "ordem": 44,
     "adicionadoEm": "2026-09-03",
@@ -853,5 +853,24 @@
     "adicionadoEm": "2026-09-03",
     "sha256": "f4e99f45bff337c088781d0a266f59ee89cd9462087a1b0b985a161f78b4749e",
     "bytes": 2097152
+  },
+  {
+    "id": "gbc-003",
+    "nome": "Pokémon Blue Version PT-BR",
+    "console": "Game Boy Color",
+    "ano": "1998",
+    "genero": "RPG",
+    "desenvolvedora": "Game Freak / Tradução PT-BR",
+    "descricao": "Pokémon Blue Version em português para Game Boy Color, com a aventura clássica de Kanto.",
+    "destaque": false,
+    "core": "gb",
+    "rom": "jogos/gbc/jogo-003/rom/Pokemon Blue Version PT-BR.gb",
+    "capa": "jogos/gbc/jogo-003/imagens/capa.webp",
+    "banner": "jogos/gbc/jogo-003/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 46,
+    "adicionadoEm": "2026-09-05",
+    "sha256": "6bb6e01b7a173f5ef4221df97a56ed6751b13919bf06f15d1e9e734d5f1bbfb4",
+    "bytes": 1048576
   }
 ]
