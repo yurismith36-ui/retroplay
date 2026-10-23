@@ -891,5 +891,24 @@
     "adicionadoEm": "2026-09-05",
     "sha256": "2448a6c8f7be69c112df8146c8538966839fdfe1160d8ce867967b972d6bf73b",
     "bytes": 1048576
+  },
+  {
+    "id": "snes-031",
+    "nome": "Super Bomberman",
+    "console": "SNES",
+    "ano": "1993",
+    "genero": "Ação / Labirinto",
+    "desenvolvedora": "Hudson Soft",
+    "descricao": "Super Bomberman para Super Nintendo, versão americana em inglês.",
+    "destaque": false,
+    "core": "snes",
+    "rom": "jogos/snes/jogo-31/rom/Super Bomberman.zip",
+    "capa": "jogos/snes/jogo-31/imagens/capa.webp",
+    "banner": "jogos/snes/jogo-31/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 48,
+    "adicionadoEm": "2026-10-23",
+    "sha256": "4efab3f49cbe91ec77b6cba747ddfedfdc0b080c755a8b6ba51234f0676c000f",
+    "bytes": 524288
   }
 ]
