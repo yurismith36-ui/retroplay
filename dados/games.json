@@ -910,5 +910,24 @@
     "adicionadoEm": "2026-10-23",
     "sha256": "4efab3f49cbe91ec77b6cba747ddfedfdc0b080c755a8b6ba51234f0676c000f",
     "bytes": 524288
+  },
+  {
+    "id": "snes-032",
+    "nome": "Side Pocket",
+    "console": "SNES",
+    "ano": "1993",
+    "genero": "Esporte / Sinuca",
+    "desenvolvedora": "Data East",
+    "descricao": "Side Pocket para Super Nintendo, versão americana em inglês.",
+    "destaque": false,
+    "core": "snes",
+    "rom": "jogos/snes/jogo-32/rom/Side Pocket.zip",
+    "capa": "jogos/snes/jogo-32/imagens/capa.webp",
+    "banner": "jogos/snes/jogo-32/imagens/banner.jpg",
+    "logo": "",
+    "ordem": 49,
+    "adicionadoEm": "2026-10-23",
+    "sha256": "d09ca5adaee65cfd686742482bc55b1a3ce9bc5ebed61f24c5631555151a7fc7",
+    "bytes": 1048576
   }
 ]
